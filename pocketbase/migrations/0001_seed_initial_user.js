@@ -1,0 +1,23 @@
+migrate(
+  (app) => {
+    const users = app.findCollectionByNameOrId('users')
+
+    try {
+      app.findAuthRecordByEmail('users', 'joao.batista@qgassist.com.br')
+      return
+    } catch (_) {}
+
+    const record = new Record(users)
+    record.setEmail('joao.batista@qgassist.com.br')
+    record.setPassword('Skip@Pass')
+    record.setVerified(true)
+    record.set('name', 'João Batista de Paula')
+    app.save(record)
+  },
+  (app) => {
+    try {
+      const record = app.findAuthRecordByEmail('users', 'joao.batista@qgassist.com.br')
+      app.delete(record)
+    } catch (_) {}
+  },
+)
