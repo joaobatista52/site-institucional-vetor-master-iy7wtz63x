@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ComponentType } from 'react'
 import {
   AlertTriangle,
   ArrowRight,
+  Award,
   BarChart3,
   BriefcaseBusiness,
   Building2,
@@ -11,6 +12,7 @@ import {
   Cpu,
   Dumbbell,
   Factory,
+  Globe2,
   GraduationCap,
   HardHat,
   HeartPulse,
@@ -33,6 +35,7 @@ import {
 } from 'lucide-react'
 
 import BrandLogo from '@/components/BrandLogo'
+import founderPhoto from '@/assets/foto-jbp-linkedin-copia-1-d051a.png'
 import {
   Accordion,
   AccordionContent,
@@ -45,34 +48,153 @@ import { Button } from '@/components/ui/button'
 const whatsappLink =
   'https://wa.me/?text=Ol%C3%A1%2C%20quero%20come%C3%A7ar%20meu%20Diagn%C3%B3stico%20Estrat%C3%A9gico%20com%20a%20VETOR%20MASTER.'
 
-type Icon = ComponentType<{ className?: string; 'aria-hidden'?: boolean }>
+type Icon = ComponentType<{ className?: string; 'aria-hidden'?: boolean | string }>
 
-const featuredSectors: Array<{ name: string; description: string; icon: Icon }> = [
+interface SectorItem {
+  id: string
+  name: string
+  tagline: string
+  description: string
+  painPoint: string
+  solutionPillar: string
+  kpi: string
+  icon: Icon
+}
+
+const allSectors: SectorItem[] = [
   {
+    id: 'saude',
     name: 'Saúde',
-    description: 'Decisões de gestão com precisão, eficiência operacional e visão de escala.',
+    tagline: 'Clínicas, Hospitais e Serviços Médicos',
+    description:
+      'Decisões de gestão com precisão, conformidade regulatória rigorosa, eficiência operacional e visão de escala sustentável.',
+    painPoint: 'Margem estrangulada por glosas de convênios e sobrecarga dos diretores clínicos.',
+    solutionPillar:
+      'Modelagem de capacidade instalada, governança clínica e alocação ótima de equipe.',
+    kpi: '+28% Margem EBITDA operacional',
     icon: HeartPulse,
   },
   {
+    id: 'varejo',
     name: 'Varejo',
-    description: 'Margem, canais e recorrência organizados em uma rota objetiva de crescimento.',
+    tagline: 'Redes, Franquias e E-commerce',
+    description:
+      'Margem, canais omnicanal, giro de estoque e recorrência organizados em uma rota objetiva e determinística de crescimento.',
+    painPoint: 'Guerra de preços, ruptura de estoque e dependência excessiva de tráfego pago.',
+    solutionPillar: 'Curva ABC preditiva, repasse inteligente de margem e esteira de retenção LTV.',
+    kpi: '3.2x Giro de capital de giro',
     icon: ShoppingBag,
   },
   {
+    id: 'servicos',
     name: 'Serviços Profissionais',
-    description: 'Estrutura comercial, posicionamento e capacidade de entrega sob controle.',
+    tagline: 'B2B, Consultorias, Engenharia e Advocacia',
+    description:
+      'Estrutura comercial previsível, precificação baseada em valor percebido e capacidade de entrega sob rigoroso controle.',
+    painPoint: 'Teto de faturamento atrelado às horas dos sócios e precificação deficitária.',
+    solutionPillar:
+      'Empacotamento de produtos escaláveis e matriz de alocação de squads consultivos.',
+    kpi: '94% Previsibilidade de receita anual',
     icon: BriefcaseBusiness,
   },
-]
-
-const secondarySectors: Array<{ name: string; icon: Icon }> = [
-  { name: 'Indústria', icon: Factory },
-  { name: 'Agronegócio', icon: Sprout },
-  { name: 'Tecnologia e Startups', icon: Cpu },
-  { name: 'Construção Civil', icon: HardHat },
-  { name: 'Transporte e Logística', icon: Truck },
-  { name: 'Educação', icon: GraduationCap },
-  { name: 'Academias de Ginástica', icon: Dumbbell },
+  {
+    id: 'industria',
+    name: 'Indústria',
+    tagline: 'Manufatura, Transformação e Bens de Consumo',
+    description:
+      'Eficiência global de equipamentos (OEE), controle de custos de insumos e alinhamento entre comercial e chão de fábrica.',
+    painPoint:
+      'Capacidade ociosa, gargalos de setup e divergência de prioridades entre vendas e produção.',
+    solutionPillar: 'S&OP determinístico e renegociação estratégica de contratos de fornecimento.',
+    kpi: '-35% Tempo de ciclo produtivo',
+    icon: Factory,
+  },
+  {
+    id: 'agronegocio',
+    name: 'Agronegócio',
+    tagline: 'Produtores, Insumos, Agroindústria e Cooperativas',
+    description:
+      'Gestão de risco de commodities, fluxo de caixa em ciclos de safra e modernização da governança do campo.',
+    painPoint: 'Volatilidade climática e de câmbio aliada à sobrecarga da sucessão familiar.',
+    solutionPillar:
+      'Hedge operacional, estruturação de governança familiar e gestão de risco safra.',
+    kpi: '100% Blindagem de caixa entre safras',
+    icon: Sprout,
+  },
+  {
+    id: 'educacao',
+    name: 'Educação',
+    tagline: 'Colégios, Faculdades, Edtechs e Cursos Técnicos',
+    description:
+      'Retenção contínua de alunos, captação eficiente e estruturação pedagógica aliada à sustentabilidade financeira.',
+    painPoint: 'Sazonalidade extrema de matrículas e evasão ao longo do ano letivo.',
+    solutionPillar:
+      'Esteira de engajamento determinística e CAC reduzido por indicação institucional.',
+    kpi: '-42% Evasão no ciclo letivo',
+    icon: GraduationCap,
+  },
+  {
+    id: 'tecnologia',
+    name: 'Tecnologia e Startups',
+    tagline: 'SaaS, Software Houses e Serviços Tech',
+    description:
+      'Unit economics sob controle, aceleração de tração, redução de churn e preparação estruturada para captação de investimento.',
+    painPoint: 'Queima de caixa desordenada e desalinhamento entre produto e go-to-market.',
+    solutionPillar:
+      'Validação determinística de ICP, CAC:LTV equilibrado e governança para rodadas.',
+    kpi: '4.8x Eficiência de queima de caixa',
+    icon: Cpu,
+  },
+  {
+    id: 'construcao',
+    name: 'Construção Civil',
+    tagline: 'Incorporadoras, Construtoras e Empreiteiras',
+    description:
+      'Controle rígido de orçamento por obra, cronograma físico-financeiro determinístico e gestão de caixa de longo prazo.',
+    painPoint:
+      'Estouro de custos em materiais e descumprimento de prazos contratuais com penalidades.',
+    solutionPillar:
+      'Matriz de acompanhamento diário de produtividade e suprimentos com travas financeiras.',
+    kpi: '0% Desvio orçamentário por etapa',
+    icon: HardHat,
+  },
+  {
+    id: 'logistica',
+    name: 'Transporte e Logística',
+    tagline: 'Transportadoras, Operadores e Frotistas',
+    description:
+      'Gestão de frota com rentabilidade por rota, otimização de combustível e rastreabilidade de ponta a ponta.',
+    painPoint: 'Custo de combustível imprevisível, retorno de carga vazio e sinistralidade.',
+    solutionPillar:
+      'Algoritmo de roteirização por margem líquida e gestão proativa de manutenção preventiva.',
+    kpi: '+19% Margem líquida por km rodado',
+    icon: Truck,
+  },
+  {
+    id: 'academias',
+    name: 'Academias de Ginástica',
+    tagline: 'Redes Fitness, Studios e Centros de Treinamento',
+    description:
+      'Recorrência automática de mensalidades, retenção de alunos acima da média do setor e maximização de metro quadrado.',
+    painPoint: 'Alta taxa de cancelamento após os 3 primeiros meses e sazonalidade pós-verão.',
+    solutionPillar:
+      'Jornada de ativação do aluno por metas e modelos híbridos de receita complementar.',
+    kpi: '+55% Tempo de permanência do aluno',
+    icon: Dumbbell,
+  },
+  {
+    id: 'comercio-internacional',
+    name: 'Comércio Internacional - Trading Company',
+    tagline: 'Importação, Exportação, Tradings e Distribuição Global',
+    description:
+      'Inteligência aduaneira, hedge cambial, gestão de fretes internacionais e conformidade com comércio exterior.',
+    painPoint:
+      'Flutuação cambial brusca, atrasos de desembaraço e exigências de capital intensivo em trânsito.',
+    solutionPillar:
+      'Estruturação de funding de importação, governança aduaneira e trava cambial determinística.',
+    kpi: '100% Rastreabilidade e trava cambial',
+    icon: Globe2,
+  },
 ]
 
 const solutions = [
@@ -122,7 +244,7 @@ const faqItems = [
   {
     question: 'Qual é o perfil e porte de empresa atendido?',
     answer:
-      'O Vetor Master é desenhado especificamente para PMEs brasileiras com faturamento anual de R$ 400 mil a R$ 150 milhões, com foco em destravar a sobrecarga decisória do fundador e destravar o crescimento sustentável.',
+      'O Vetor Master é desenhado especificamente para PMEs brasileiras com faturamento anual de R$ 400 mil a R$ 150 milhões, com foco em destravar a sobrecarga decisória do fundador e destravar o crescimento sustentável em 11 setores da economia.',
   },
   {
     question: 'Qual é o investimento inicial?',
@@ -253,6 +375,10 @@ function HeroPattern() {
 }
 
 export default function Index() {
+  const [selectedSectorId, setSelectedSectorId] = useState<string>('saude')
+
+  const activeSector = allSectors.find((s) => s.id === selectedSectorId) || allSectors[0]
+
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>('.reveal')
     const observer = new IntersectionObserver(
@@ -293,7 +419,7 @@ export default function Index() {
               A primeira plataforma determinística que democratiza o acesso ao C-Level para PMEs
               brasileiras (faturamento de R$ 400 mil a R$ 150 milhões) — codificando mais de 40 anos
               de decisões executivas em um motor digital rápido, acessível e com{' '}
-              <strong>zero alucinação</strong>.
+              <strong>zero alucinação</strong> em 11 setores da economia.
             </p>
 
             <p className="hero-subtitle">C-Level as a Service — Mentorship as a Software</p>
@@ -319,7 +445,7 @@ export default function Index() {
                 <Check aria-hidden="true" /> 40 anos de decisões C-Level codificadas
               </span>
               <span>
-                <Check aria-hidden="true" /> SLA de 72h com suporte executivo
+                <Check aria-hidden="true" /> SLA de 72h em 11 setores estruturados
               </span>
             </div>
           </div>
@@ -413,7 +539,7 @@ export default function Index() {
               <div className="hero-card-footer">
                 <div className="hero-footer-item">
                   <CheckCircle2 aria-hidden="true" />
-                  <span>Para PMEs de R$ 400k a R$ 150M</span>
+                  <span>Para PMEs em 11 setores</span>
                 </div>
                 <div className="hero-footer-item">
                   <CheckCircle2 aria-hidden="true" />
@@ -447,10 +573,9 @@ export default function Index() {
             source="Dado oficial Sebrae"
           />
           <AnimatedStat
-            value={72}
-            suffix="h"
-            label="SLA de entrega do Diagnóstico Estratégico"
-            source="Retorno e devolutiva em até 5 dias"
+            value={11}
+            label="setores atendidos com motor determinístico"
+            source="Metodologia validada"
           />
         </div>
       </section>
@@ -571,7 +696,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* 3. O MÉTODO / COMO FUNCIONA (Ordem do menu: Início -> O Método -> Setores -> Soluções -> FAQ -> Fundador) */}
+      {/* 3. O MÉTODO / COMO FUNCIONA */}
       <section className="section process-section" id="metodo">
         <div className="site-container">
           <SectionHeading
@@ -634,53 +759,131 @@ export default function Index() {
         </div>
       </section>
 
-      {/* 4. PARA SEU SETOR (10 setores) */}
+      {/* 4. PARA SEU SETOR (11 setores - Interativo com Seleção Ativa e Alto Contraste) */}
       <section className="section sectors-section" id="setores">
         <div className="site-container">
           <SectionHeading
             eyebrow="PARA SEU SETOR"
             title="Estratégia específica para a realidade da sua empresa."
-            description="O mesmo rigor determinístico, aplicado aos indicadores, gargalos e alavancas que definem os 10 principais setores da economia brasileira."
+            description="O mesmo rigor determinístico, aplicado aos indicadores, gargalos e alavancas que definem os 11 principais setores da economia brasileira. Clique em um setor para explorar a rota estratégica."
           />
 
-          <div className="featured-sector-grid reveal">
-            {featuredSectors.map((sector, index) => {
+          {/* Seletor Interativo com 11 Caixas de Setor */}
+          <div
+            className="sectors-interactive-grid reveal"
+            role="tablist"
+            aria-label="Setores atendidos pela VETOR MASTER"
+          >
+            {allSectors.map((sector, index) => {
               const SectorIcon = sector.icon
+              const isActive = sector.id === selectedSectorId
               return (
-                <article className={`sector-card sector-card-${index + 1}`} key={sector.name}>
-                  <div className="sector-icon">
-                    <SectorIcon aria-hidden={true} />
+                <button
+                  type="button"
+                  key={sector.id}
+                  role="tab"
+                  id={`sector-tab-${sector.id}`}
+                  aria-selected={isActive}
+                  aria-controls={`sector-panel-${sector.id}`}
+                  onClick={() => setSelectedSectorId(sector.id)}
+                  className={`sector-interactive-box ${isActive ? 'is-active' : ''}`}
+                >
+                  <div className="sector-box-top">
+                    <div className="sector-box-icon">
+                      <SectorIcon aria-hidden="true" />
+                    </div>
+                    <span className="sector-box-number">{String(index + 1).padStart(2, '0')}</span>
                   </div>
-                  <span className="sector-number">0{index + 1}</span>
-                  <h3>{sector.name}</h3>
-                  <p>{sector.description}</p>
-                  <a className="sector-link" href={whatsappLink} target="_blank" rel="noreferrer">
-                    Diagnóstico do setor <ArrowRight aria-hidden="true" />
-                  </a>
-                </article>
+                  <strong className="sector-box-title">{sector.name}</strong>
+                  <span className="sector-box-tagline">{sector.tagline}</span>
+                </button>
               )
             })}
           </div>
 
-          <div className="secondary-sector-grid reveal">
-            {secondarySectors.map((sector) => {
-              const SectorIcon = sector.icon
-              return (
-                <div className="secondary-sector" key={sector.name}>
-                  <SectorIcon aria-hidden={true} />
-                  <span>{sector.name}</span>
+          {/* Painel de Destaque Detalhado do Setor Ativo */}
+          {activeSector && (
+            <div
+              className="sector-detail-panel reveal is-visible"
+              id={`sector-panel-${activeSector.id}`}
+              role="tabpanel"
+              aria-labelledby={`sector-tab-${activeSector.id}`}
+            >
+              <div className="sector-panel-header">
+                <div className="sector-panel-badge">
+                  {(() => {
+                    const ActiveIcon = activeSector.icon
+                    return <ActiveIcon aria-hidden="true" />
+                  })()}
+                  <span>
+                    SETOR{' '}
+                    {String(allSectors.findIndex((s) => s.id === activeSector.id) + 1).padStart(
+                      2,
+                      '0',
+                    )}{' '}
+                    · {activeSector.name.toUpperCase()}
+                  </span>
                 </div>
-              )
-            })}
-          </div>
+                <div className="sector-panel-kpi">
+                  <span className="kpi-label">Impacto Médio Determinístico</span>
+                  <strong className="kpi-value">{activeSector.kpi}</strong>
+                </div>
+              </div>
+
+              <div className="sector-panel-body">
+                <div className="sector-panel-main">
+                  <h3>{activeSector.name}</h3>
+                  <p className="sector-panel-desc">{activeSector.description}</p>
+
+                  <div className="sector-panel-cards">
+                    <div className="sector-subcard sector-subcard-pain">
+                      <span className="subcard-title">
+                        <AlertTriangle aria-hidden="true" /> Gargalo Crítico Típico
+                      </span>
+                      <p>{activeSector.painPoint}</p>
+                    </div>
+
+                    <div className="sector-subcard sector-subcard-solution">
+                      <span className="subcard-title">
+                        <CheckCircle2 aria-hidden="true" /> Alavanca Determinística VETOR MASTER
+                      </span>
+                      <p>{activeSector.solutionPillar}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="sector-panel-action">
+                  <div className="sector-action-box">
+                    <h4>Pronto para destravar o setor de {activeSector.name}?</h4>
+                    <p>
+                      Inicie o Diagnóstico Estratégico com foco nas particularidades da sua operação
+                      em até 72h.
+                    </p>
+                    <Button className="conversion-button w-full" size="lg" asChild>
+                      <a
+                        href={`https://wa.me/?text=Ol%C3%A1%2C%20gostaria%20de%20iniciar%20o%20Diagn%C3%B3stico%20Estrat%C3%A9gico%20para%20o%20setor%20de%20${encodeURIComponent(
+                          activeSector.name,
+                        )}%20com%20a%20VETOR%20MASTER.`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Diagnóstico para {activeSector.name}
+                        <ArrowRight aria-hidden="true" />
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="sector-cta reveal">
             <div>
               <span className="eyebrow">SEU PRÓXIMO VETOR</span>
               <p>
-                Existe uma rota estratégica sob medida para cada segmento e fase de maturidade.
-                Responda o Questionário Estratégico do seu setor e descubra o caminho certo para
-                romper o teto do seu faturamento.
+                Existe uma rota estratégica sob medida para cada um dos 11 segmentos e fases de
+                maturidade. Responda o Questionário Estratégico do seu setor e descubra o caminho
+                certo para romper o teto do seu faturamento.
               </p>
             </div>
             <Button className="conversion-button" size="lg" asChild>
@@ -783,13 +986,18 @@ export default function Index() {
         </div>
       </section>
 
-      {/* 7. SOBRE O FUNDADOR (NOVA SEÇÃO DEDICADA — id="fundador") */}
+      {/* 7. SOBRE O FUNDADOR (SEÇÃO DEDICADA COM FOTO OFICIAL DO JOÃO BATISTA DE PAULA) */}
       <section className="section founder-section" id="fundador">
         <div className="site-container">
           <div className="founder-grid reveal">
             <div className="founder-profile-card">
-              <div className="founder-avatar-wrap">
-                <div className="founder-avatar-initials">JP</div>
+              <div className="founder-photo-wrap">
+                <img
+                  src={founderPhoto}
+                  alt="João Batista de Paula — Founder & CEO da VETOR MASTER"
+                  className="founder-photo-img"
+                  loading="lazy"
+                />
                 <div className="founder-experience-chip">
                   <strong>40+</strong>
                   <span>anos de liderança</span>
@@ -800,33 +1008,39 @@ export default function Index() {
                 <span className="founder-role">Founder &amp; CEO · VETOR MASTER</span>
               </div>
               <div className="founder-metrics-pills">
-                <span className="founder-pill">Direção Estratégica</span>
-                <span className="founder-pill">C-Level as a Service</span>
-                <span className="founder-pill">Governança Determinística</span>
+                <span className="founder-pill">
+                  <Target aria-hidden="true" /> Direção Estratégica Determinística
+                </span>
+                <span className="founder-pill">
+                  <Award aria-hidden="true" /> C-Level as a Service para PMEs
+                </span>
+                <span className="founder-pill">
+                  <ShieldCheck aria-hidden="true" /> Rigor Executivo sem Alucinação
+                </span>
               </div>
             </div>
 
             <div className="founder-bio">
               <SectionHeading
                 eyebrow="SOBRE O FUNDADOR"
-                title="Quarenta anos de decisões executivas traduzidos em código."
-                description="O Vetor Master nasceu da vivência real em conselhos e diretorias executivas, identificando o abismo que separa as grandes corporações das PMEs brasileiras."
+                title="Quarenta anos de decisões executivas traduzidos em código determinístico."
+                description="A VETOR MASTER nasceu da vivência real em conselhos e diretorias executivas, identificando o abismo que separa as grandes corporações das PMEs brasileiras."
               />
 
               <div className="founder-text-body">
                 <p>
                   Ao longo de mais de quatro décadas de trajetória corporativa em liderança
-                  executiva,
-                  <strong> João Batista de Paula</strong> vivenciou os ciclos de crescimento,
-                  reestruturação e tomada de decisão em múltiplos setores da economia brasileira.
+                  executiva, <strong>João Batista de Paula</strong> vivenciou os ciclos de
+                  crescimento, reestruturação e tomada de decisão em múltiplos setores da economia
+                  brasileira — liderando operações de alta complexidade e conselhos consultivos.
                 </p>
                 <p>
-                  A constatação foi direta: enquanto grandes corporações contam com conselhos
-                  consultivos e consultorias multinacionais milionárias, os líderes de PMEs
-                  enfrentam a solidão decisória diária. O <strong>Vetor Master</strong> foi fundado
-                  exatamente para democratizar essa inteligência C-Level, codificando heurísticas
-                  executivas reais e uma biblioteca de 138 obras seminais em uma plataforma digital
-                  acessível, ágil e determinística.
+                  A constatação foi direta e incisiva: enquanto grandes multinacionais contam com
+                  conselhos consultivos e consultorias milionárias, os líderes de PMEs enfrentam a
+                  solidão decisória diária. O <strong>VETOR MASTER</strong> foi fundado exatamente
+                  para democratizar essa inteligência C-Level, codificando heurísticas executivas
+                  reais e uma base de 138 obras seminais em um motor digital ágil, de alta precisão
+                  e <strong>zero alucinação</strong> em 11 setores da economia.
                 </p>
               </div>
 
