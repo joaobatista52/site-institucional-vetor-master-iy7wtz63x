@@ -23,7 +23,7 @@ import {
   UserRoundCheck,
 } from 'lucide-react'
 
-import logoImage from '@/assets/logo-5-vetor-master-06jul26-2c08a.png'
+import logoImage from '@/assets/logo-5e-vetor-master-14jul26-6e983.png'
 import {
   Accordion,
   AccordionContent,
@@ -273,14 +273,72 @@ export default function Index() {
           <div className="hero-visual" aria-label="VETOR MASTER — Direção, Conexão e Crescimento">
             <div className="hero-image-orbit orbit-one" />
             <div className="hero-image-orbit orbit-two" />
-            <div className="hero-logo-card">
-              <img src={logoImage} alt="Logomarca VETOR MASTER — Direção, Conexão e Crescimento" />
+            <div className="hero-dashboard-preview">
+              <div className="hero-preview-topbar">
+                <div className="preview-dots">
+                  <span className="dot dot-red" />
+                  <span className="dot dot-yellow" />
+                  <span className="dot dot-green" />
+                </div>
+                <div className="preview-title">
+                  <span className="preview-status-indicator" />
+                  Diagnóstico Determinístico Ativo
+                </div>
+                <div className="preview-brand-tag">72h SLA</div>
+              </div>
+
+              <div className="hero-preview-brand-banner">
+                <img
+                  src={logoImage}
+                  alt="VETOR MASTER — Direção, Conexão, Crescimento"
+                  className="hero-preview-logo"
+                />
+              </div>
+
+              <div className="hero-preview-body">
+                <div className="preview-metric-row">
+                  <div className="preview-metric-card">
+                    <span className="metric-tag">Acurácia Semântica</span>
+                    <strong>95%+</strong>
+                    <span className="metric-sub">Base 138 obras</span>
+                  </div>
+                  <div className="preview-metric-card">
+                    <span className="metric-tag">Tempo de Entrega</span>
+                    <strong>72h</strong>
+                    <span className="metric-sub">Devolutiva 45 min</span>
+                  </div>
+                </div>
+
+                <div className="preview-pillars">
+                  <div className="pillar-item">
+                    <div className="pillar-bullet pillar-blue" />
+                    <div>
+                      <strong>Direção</strong>
+                      <span>Prioridades & Governança</span>
+                    </div>
+                  </div>
+                  <div className="pillar-item">
+                    <div className="pillar-bullet pillar-cyan" />
+                    <div>
+                      <strong>Conexão</strong>
+                      <span>MaaS + CaaS Integrados</span>
+                    </div>
+                  </div>
+                  <div className="pillar-item">
+                    <div className="pillar-bullet pillar-green" />
+                    <div>
+                      <strong>Crescimento</strong>
+                      <span>Escala Determinística</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="data-chip chip-top">
-              <Target aria-hidden="true" /> Direção
+              <Target aria-hidden="true" /> Direção Estratégica
             </div>
             <div className="data-chip chip-bottom">
-              <LineChart aria-hidden="true" /> Crescimento
+              <LineChart aria-hidden="true" /> Crescimento Exponencial
             </div>
           </div>
         </div>

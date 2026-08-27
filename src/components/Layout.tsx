@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ArrowUpRight, Mail, Menu, MessageCircle } from 'lucide-react'
 
-import logoImage from '@/assets/logo-5-vetor-master-06jul26-2c08a.png'
+import logoImage from '@/assets/logo-5e-vetor-master-14jul26-6e983.png'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -25,14 +25,16 @@ const whatsappLink =
 
 function BrandLogo({ light = false }: { light?: boolean }) {
   return (
-    <a className="brand-logo" href="#inicio" aria-label="VETOR MASTER — Início">
-      <span className="brand-mark-crop" aria-hidden="true">
-        <img src={logoImage} alt="" />
-      </span>
-      <span className="brand-wordmark">
-        <strong>VETOR</strong>
-        <strong className={light ? 'brand-master-light' : 'brand-master'}>MASTER</strong>
-      </span>
+    <a
+      className={`brand-logo ${light ? 'brand-logo-light' : ''}`}
+      href="#inicio"
+      aria-label="VETOR MASTER — Início"
+    >
+      <img
+        src={logoImage}
+        alt="VETOR MASTER — Direção, Conexão, Crescimento"
+        className="brand-logo-img"
+      />
     </a>
   )
 }
@@ -173,7 +175,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <>
       <div className={`preloader ${loading ? 'is-loading' : 'is-complete'}`} aria-hidden={!loading}>
         <div className="preloader-mark">
-          <img src={logoImage} alt="" />
+          <img src={logoImage} alt="VETOR MASTER" />
         </div>
         <span>INTELIGÊNCIA EXECUTIVA DETERMINÍSTICA</span>
       </div>
