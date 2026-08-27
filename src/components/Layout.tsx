@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ArrowUpRight, Mail, Menu, MessageCircle } from 'lucide-react'
 
-import logoImage from '@/assets/logo-5e-vetor-master-14jul26-6e983.png'
+import BrandLogoComponent from '@/components/BrandLogo'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -23,18 +23,20 @@ const navigation = [
 const whatsappLink =
   'https://wa.me/?text=Ol%C3%A1%2C%20quero%20come%C3%A7ar%20meu%20Diagn%C3%B3stico%20Estrat%C3%A9gico%20com%20a%20VETOR%20MASTER.'
 
-function BrandLogo({ light = false }: { light?: boolean }) {
+function HeaderLogo() {
   return (
-    <a
-      className={`brand-logo ${light ? 'brand-logo-light' : ''}`}
-      href="#inicio"
-      aria-label="VETOR MASTER — Início"
-    >
-      <img
-        src={logoImage}
-        alt="VETOR MASTER — Direção, Conexão, Crescimento"
-        className="brand-logo-img"
-      />
+    <a className="brand-logo header-logo-wrap" href="#inicio" aria-label="VETOR MASTER — Início">
+      {/* Logo 5 (Oficial Principal: vetor ACIMA do nome) */}
+      <BrandLogoComponent variant="stacked" className="header-logo-svg" />
+    </a>
+  )
+}
+
+function FooterLogo() {
+  return (
+    <a className="brand-logo footer-logo-wrap" href="#inicio" aria-label="VETOR MASTER — Início">
+      {/* Logo 5 (Oficial Principal) em versão light no rodapé */}
+      <BrandLogoComponent variant="stacked" light className="footer-logo-svg" />
     </a>
   )
 }
@@ -43,7 +45,7 @@ function Header() {
   return (
     <header className="site-header">
       <div className="site-container header-inner">
-        <BrandLogo />
+        <HeaderLogo />
 
         <nav className="desktop-nav" aria-label="Navegação principal">
           {navigation.map((item) => (
@@ -73,7 +75,7 @@ function Header() {
           <SheetContent side="right" className="mobile-sheet">
             <SheetHeader>
               <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
-              <BrandLogo />
+              <HeaderLogo />
             </SheetHeader>
             <nav className="mobile-nav" aria-label="Navegação em dispositivos móveis">
               {navigation.map((item) => (
@@ -100,29 +102,31 @@ function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="site-footer" id="fundador">
+    <footer className="site-footer" id="rodape">
       <div className="site-container footer-grid">
         <div className="footer-brand-column">
-          <BrandLogo light />
+          <FooterLogo />
           <p className="footer-slogan">
             Expertise Executiva. Velocidade Tecnológica. Preço Acessível.
           </p>
           <p className="founder-note">
             <strong>João Batista de Paula</strong>
-            <span>Founder &amp; CEO · 40 anos de liderança traduzidos em código.</span>
+            <span>
+              Founder &amp; CEO · 40 anos de liderança traduzidos em código determinístico.
+            </span>
           </p>
         </div>
 
         <div>
           <h2>Navegação</h2>
           <ul className="footer-links">
-            {navigation.slice(0, 4).map((item) => (
+            {navigation.map((item) => (
               <li key={item.href}>
                 <a href={item.href}>{item.label}</a>
               </li>
             ))}
             <li>
-              <a href="#faq">Perguntas frequentes</a>
+              <a href="#faq">Perguntas Frequentes</a>
             </li>
           </ul>
         </div>
@@ -175,7 +179,8 @@ export default function Layout({ children }: { children: ReactNode }) {
     <>
       <div className={`preloader ${loading ? 'is-loading' : 'is-complete'}`} aria-hidden={!loading}>
         <div className="preloader-mark">
-          <img src={logoImage} alt="VETOR MASTER" />
+          {/* Logo 5 Oficial Principal no Preloader */}
+          <BrandLogoComponent variant="stacked" className="preloader-logo-svg" />
         </div>
         <span>INTELIGÊNCIA EXECUTIVA DETERMINÍSTICA</span>
       </div>
