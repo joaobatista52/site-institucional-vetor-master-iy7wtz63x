@@ -26,8 +26,8 @@ const whatsappLink =
 function HeaderLogo() {
   return (
     <a className="brand-logo header-logo-wrap" href="#inicio" aria-label="VETOR MASTER — Início">
-      {/* Logo 5 (Oficial Principal: vetor ACIMA do nome) */}
-      <BrandLogoComponent variant="stacked" className="header-logo-svg" />
+      {/* Logo 5e (Variante horizontal no maior tamanho possível) */}
+      <BrandLogoComponent variant="logo5e" className="header-logo-svg" />
     </a>
   )
 }
@@ -35,8 +35,8 @@ function HeaderLogo() {
 function FooterLogo() {
   return (
     <a className="brand-logo footer-logo-wrap" href="#inicio" aria-label="VETOR MASTER — Início">
-      {/* Logo 5 (Oficial Principal) em versão light no rodapé */}
-      <BrandLogoComponent variant="stacked" light className="footer-logo-svg" />
+      {/* Logo 5d (Variante com vetor + nome + tríade Direção/Conexão/Crescimento no maior tamanho possível) */}
+      <BrandLogoComponent variant="logo5d" className="footer-logo-svg" />
     </a>
   )
 }
@@ -180,7 +180,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <div className={`preloader ${loading ? 'is-loading' : 'is-complete'}`} aria-hidden={!loading}>
         <div className="preloader-mark">
           {/* Logo 5 Oficial Principal no Preloader */}
-          <BrandLogoComponent variant="stacked" className="preloader-logo-svg" />
+          <BrandLogoComponent variant="logo5" className="preloader-logo-svg" />
         </div>
         <span>INTELIGÊNCIA EXECUTIVA DETERMINÍSTICA</span>
       </div>

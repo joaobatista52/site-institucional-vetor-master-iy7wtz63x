@@ -110,6 +110,56 @@ const allSectors: SectorItem[] = [
     icon: Factory,
   },
   {
+    id: 'comercio-internacional',
+    name: 'Comércio Internacional - Trading Company',
+    tagline: 'Importação, Exportação, Tradings e Distribuição Global',
+    description:
+      'Inteligência aduaneira, hedge cambial, gestão de fretes internacionais e conformidade com comércio exterior.',
+    painPoint:
+      'Flutuação cambial brusca, atrasos de desembaraço e exigências de capital intensivo em trânsito.',
+    solutionPillar:
+      'Estruturação de funding de importação, governança aduaneira e trava cambial determinística.',
+    kpi: '100% Rastreabilidade e trava cambial',
+    icon: Globe2,
+  },
+  {
+    id: 'tecnologia',
+    name: 'Tecnologia e Startups',
+    tagline: 'SaaS, Software Houses e Serviços Tech',
+    description:
+      'Unit economics sob controle, aceleração de tração, redução de churn e preparação estruturada para captação de investimento.',
+    painPoint: 'Queima de caixa desordenada e desalinhamento entre produto e go-to-market.',
+    solutionPillar:
+      'Validação determinística de ICP, CAC:LTV equilibrado e governança para rodadas.',
+    kpi: '4.8x Eficiência de queima de caixa',
+    icon: Cpu,
+  },
+  {
+    id: 'logistica',
+    name: 'Logística e Transporte',
+    tagline: 'Transportadoras, Operadores e Frotistas',
+    description:
+      'Gestão de frota com rentabilidade por rota, otimização de combustível e rastreabilidade de ponta a ponta.',
+    painPoint: 'Custo de combustível imprevisível, retorno de carga vazio e sinistralidade.',
+    solutionPillar:
+      'Algoritmo de roteirização por margem líquida e gestão proativa de manutenção preventiva.',
+    kpi: '+19% Margem líquida por km rodado',
+    icon: Truck,
+  },
+  {
+    id: 'construcao',
+    name: 'Construção Civil',
+    tagline: 'Incorporadoras, Construtoras e Empreiteiras',
+    description:
+      'Controle rígido de orçamento por obra, cronograma físico-financeiro determinístico e gestão de caixa de longo prazo.',
+    painPoint:
+      'Estouro de custos em materiais e descumprimento de prazos contratuais com penalidades.',
+    solutionPillar:
+      'Matriz de acompanhamento diário de produtividade e suprimentos com travas financeiras.',
+    kpi: '0% Desvio orçamentário por etapa',
+    icon: HardHat,
+  },
+  {
     id: 'agronegocio',
     name: 'Agronegócio',
     tagline: 'Produtores, Insumos, Agroindústria e Cooperativas',
@@ -134,43 +184,6 @@ const allSectors: SectorItem[] = [
     icon: GraduationCap,
   },
   {
-    id: 'tecnologia',
-    name: 'Tecnologia e Startups',
-    tagline: 'SaaS, Software Houses e Serviços Tech',
-    description:
-      'Unit economics sob controle, aceleração de tração, redução de churn e preparação estruturada para captação de investimento.',
-    painPoint: 'Queima de caixa desordenada e desalinhamento entre produto e go-to-market.',
-    solutionPillar:
-      'Validação determinística de ICP, CAC:LTV equilibrado e governança para rodadas.',
-    kpi: '4.8x Eficiência de queima de caixa',
-    icon: Cpu,
-  },
-  {
-    id: 'construcao',
-    name: 'Construção Civil',
-    tagline: 'Incorporadoras, Construtoras e Empreiteiras',
-    description:
-      'Controle rígido de orçamento por obra, cronograma físico-financeiro determinístico e gestão de caixa de longo prazo.',
-    painPoint:
-      'Estouro de custos em materiais e descumprimento de prazos contratuais com penalidades.',
-    solutionPillar:
-      'Matriz de acompanhamento diário de produtividade e suprimentos com travas financeiras.',
-    kpi: '0% Desvio orçamentário por etapa',
-    icon: HardHat,
-  },
-  {
-    id: 'logistica',
-    name: 'Transporte e Logística',
-    tagline: 'Transportadoras, Operadores e Frotistas',
-    description:
-      'Gestão de frota com rentabilidade por rota, otimização de combustível e rastreabilidade de ponta a ponta.',
-    painPoint: 'Custo de combustível imprevisível, retorno de carga vazio e sinistralidade.',
-    solutionPillar:
-      'Algoritmo de roteirização por margem líquida e gestão proativa de manutenção preventiva.',
-    kpi: '+19% Margem líquida por km rodado',
-    icon: Truck,
-  },
-  {
     id: 'academias',
     name: 'Academias de Ginástica',
     tagline: 'Redes Fitness, Studios e Centros de Treinamento',
@@ -181,19 +194,6 @@ const allSectors: SectorItem[] = [
       'Jornada de ativação do aluno por metas e modelos híbridos de receita complementar.',
     kpi: '+55% Tempo de permanência do aluno',
     icon: Dumbbell,
-  },
-  {
-    id: 'comercio-internacional',
-    name: 'Comércio Internacional - Trading Company',
-    tagline: 'Importação, Exportação, Tradings e Distribuição Global',
-    description:
-      'Inteligência aduaneira, hedge cambial, gestão de fretes internacionais e conformidade com comércio exterior.',
-    painPoint:
-      'Flutuação cambial brusca, atrasos de desembaraço e exigências de capital intensivo em trânsito.',
-    solutionPillar:
-      'Estruturação de funding de importação, governança aduaneira e trava cambial determinística.',
-    kpi: '100% Rastreabilidade e trava cambial',
-    icon: Globe2,
   },
 ]
 
@@ -467,9 +467,9 @@ export default function Index() {
                 <span className="hero-card-pill">SLA 72h</span>
               </div>
 
-              {/* Logo 5 Oficial em Destaque no Topo do Painel */}
+              {/* Logo 5 Oficial em Destaque Máximo no Topo do Painel (Ponto Focal) */}
               <div className="hero-card-brand">
-                <BrandLogo variant="stacked" className="hero-brand-logo" />
+                <BrandLogo variant="logo5" className="hero-brand-logo" />
               </div>
 
               {/* Métricas Principais Integradas */}
@@ -768,37 +768,94 @@ export default function Index() {
             description="O mesmo rigor determinístico, aplicado aos indicadores, gargalos e alavancas que definem os 11 principais setores da economia brasileira. Clique em um setor para explorar a rota estratégica."
           />
 
-          {/* Seletor Interativo com 11 Caixas de Setor */}
-          <div
-            className="sectors-interactive-grid reveal"
-            role="tablist"
-            aria-label="Setores atendidos pela VETOR MASTER"
-          >
-            {allSectors.map((sector, index) => {
-              const SectorIcon = sector.icon
-              const isActive = sector.id === selectedSectorId
-              return (
-                <button
-                  type="button"
-                  key={sector.id}
-                  role="tab"
-                  id={`sector-tab-${sector.id}`}
-                  aria-selected={isActive}
-                  aria-controls={`sector-panel-${sector.id}`}
-                  onClick={() => setSelectedSectorId(sector.id)}
-                  className={`sector-interactive-box ${isActive ? 'is-active' : ''}`}
-                >
-                  <div className="sector-box-top">
-                    <div className="sector-box-icon">
-                      <SectorIcon aria-hidden="true" />
+          {/* Grade de Setores: Destaque Top 3 (Saúde, Varejo, Serviços) + Grade Secundária (8 setores) */}
+          <div className="sectors-structure-wrap reveal">
+            {/* Top 3 Setores de Destaque */}
+            <div className="sectors-featured-heading">
+              <span className="sectors-group-label">PRINCIPAIS SETORES DE ATUAÇÃO</span>
+            </div>
+
+            <div
+              className="sectors-featured-grid"
+              role="tablist"
+              aria-label="Principais setores de destaque VETOR MASTER"
+            >
+              {allSectors.slice(0, 3).map((sector, index) => {
+                const SectorIcon = sector.icon
+                const isActive = sector.id === selectedSectorId
+                return (
+                  <button
+                    type="button"
+                    key={sector.id}
+                    role="tab"
+                    id={`sector-tab-${sector.id}`}
+                    aria-selected={isActive}
+                    aria-controls={`sector-panel-${sector.id}`}
+                    onClick={() => setSelectedSectorId(sector.id)}
+                    className={`sector-interactive-box sector-box-featured ${
+                      isActive ? 'is-active' : ''
+                    }`}
+                  >
+                    <div className="sector-featured-badge">DESTAQUE 0{index + 1}</div>
+                    <div className="sector-box-top">
+                      <div className="sector-box-icon">
+                        <SectorIcon aria-hidden="true" />
+                      </div>
+                      <span className="sector-box-number">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
                     </div>
-                    <span className="sector-box-number">{String(index + 1).padStart(2, '0')}</span>
-                  </div>
-                  <strong className="sector-box-title">{sector.name}</strong>
-                  <span className="sector-box-tagline">{sector.tagline}</span>
-                </button>
-              )
-            })}
+                    <strong className="sector-box-title">{sector.name}</strong>
+                    <span className="sector-box-tagline">{sector.tagline}</span>
+                    <div className="sector-box-kpi-chip">
+                      <span>Impacto: {sector.kpi}</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Grade Secundária: Demais 8 Setores Estruturados */}
+            <div className="sectors-secondary-heading">
+              <span className="sectors-group-label">DEMAIS SETORES ATENDIDOS</span>
+            </div>
+
+            <div
+              className="sectors-secondary-grid"
+              role="tablist"
+              aria-label="Demais setores atendidos pela VETOR MASTER"
+            >
+              {allSectors.slice(3).map((sector, index) => {
+                const SectorIcon = sector.icon
+                const isActive = sector.id === selectedSectorId
+                const globalIndex = index + 4
+                return (
+                  <button
+                    type="button"
+                    key={sector.id}
+                    role="tab"
+                    id={`sector-tab-${sector.id}`}
+                    aria-selected={isActive}
+                    aria-controls={`sector-panel-${sector.id}`}
+                    onClick={() => setSelectedSectorId(sector.id)}
+                    className={`sector-interactive-box sector-box-secondary ${
+                      isActive ? 'is-active' : ''
+                    }`}
+                  >
+                    <div className="sector-box-top">
+                      <div className="sector-box-icon">
+                        <SectorIcon aria-hidden="true" />
+                      </div>
+                      <span className="sector-box-number">
+                        {String(globalIndex).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <strong className="sector-box-title">{sector.name}</strong>
+                    <span className="sector-box-tagline">{sector.tagline}</span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           {/* Painel de Destaque Detalhado do Setor Ativo */}
