@@ -589,9 +589,9 @@ svg {
 }
 
 .hero-card-container {
-  width: min(100%, 480px);
+  width: min(100%, 520px);
   border: 1px solid rgba(0, 102, 204, 0.16);
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--white);
   box-shadow:
     0 20px 50px rgba(0, 68, 136, 0.12),
@@ -668,27 +668,27 @@ svg {
   border-radius: 5px;
 }
 
-/* Banner da Logo 5 no Hero Card — PONTO FOCAL NO MAIOR TAMANHO POSSÍVEL */
+/* Banner da Logo 5 no Hero Card — PONTO FOCAL MAXIMIZADO */
 .hero-card-brand {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 28px 20px 24px;
+  padding: 32px 24px 28px;
   background: linear-gradient(180deg, #ffffff 0%, #fafdff 100%);
   border-bottom: 1px solid #f1f5f9;
 }
 
 .hero-brand-logo {
-  height: 195px;
+  height: 250px;
   width: auto;
-  max-width: min(100%, 420px);
+  max-width: min(100%, 460px);
   object-fit: contain;
   transition: transform 250ms ease;
-  filter: drop-shadow(0 4px 12px rgba(0, 102, 204, 0.08));
+  filter: drop-shadow(0 6px 16px rgba(0, 102, 204, 0.1));
 }
 
 .hero-brand-logo:hover {
-  transform: scale(1.03);
+  transform: scale(1.025);
 }
 
 /* Faixa de Métricas do Card */
@@ -1315,7 +1315,7 @@ svg {
 }
 
 /* =====================================================================
-   4. PARA SEU SETOR (11 Setores Interativos)
+   4. PARA SEU SETOR (12 Setores Interativos)
    ===================================================================== */
 .sectors-section {
   background: #f8fafc;
@@ -1502,19 +1502,24 @@ svg {
 
 /* CAIXA ATIVA: Fundo Azul Estratégico com TEXTO EM BRANCO DE ALTO CONTRASTE */
 .sector-interactive-box.is-active {
-  background: linear-gradient(145deg, #0066cc 0%, #004f9f 100%);
-  border-color: #004f9f;
-  box-shadow: 0 12px 28px rgba(0, 102, 204, 0.32);
+  background: linear-gradient(145deg, #0066cc 0%, #004f9f 100%) !important;
+  border-color: #004f9f !important;
+  box-shadow: 0 12px 28px rgba(0, 102, 204, 0.35);
   transform: translateY(-3px);
 }
 
 .sector-interactive-box.is-active .sector-box-icon {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+}
+
+.sector-interactive-box.is-active .sector-box-icon svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 .sector-interactive-box.is-active .sector-box-number {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .sector-interactive-box.is-active .sector-box-title {
@@ -1523,7 +1528,23 @@ svg {
 }
 
 .sector-interactive-box.is-active .sector-box-tagline {
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: #ffffff !important;
+  opacity: 0.95;
+}
+
+.sector-interactive-box.is-active .sector-box-kpi-chip {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.sector-interactive-box.is-active .sector-box-kpi-chip span {
+  color: #ffffff !important;
+}
+
+.sector-interactive-box.is-active .sector-featured-badge {
+  background: #ffffff !important;
+  color: var(--strategic-blue-dark) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Painel Detalhado de Destaque do Setor Selecionado */
@@ -2606,7 +2627,7 @@ svg {
   }
 
   .hero-brand-logo {
-    height: 140px;
+    height: 180px;
     max-width: 100%;
   }
 

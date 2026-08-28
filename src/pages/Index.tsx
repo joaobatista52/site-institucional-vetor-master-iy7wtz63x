@@ -147,6 +147,19 @@ const allSectors: SectorItem[] = [
     icon: Truck,
   },
   {
+    id: 'facilities',
+    name: 'Facilities',
+    tagline: 'Gestão Predial, Segurança, Limpeza e Manutenção Terceirizada',
+    description:
+      'Eficiência na escala de mão de obra, gestão de SLAs contratuais, controle de turnover e repasse assertivo de dissídios.',
+    painPoint:
+      'Turnover elevado de postos operacionais, margem erodida por encargos trabalhistas e multas de SLA contratual.',
+    solutionPillar:
+      'Dimensionamento preditivo de escalas, matriz de conformidade trabalhista e precificação dinâmica de contratos.',
+    kpi: '+24% Rentabilidade média por contrato',
+    icon: Building2,
+  },
+  {
     id: 'construcao',
     name: 'Construção Civil',
     tagline: 'Incorporadoras, Construtoras e Empreiteiras',
@@ -244,7 +257,7 @@ const faqItems = [
   {
     question: 'Qual é o perfil e porte de empresa atendido?',
     answer:
-      'O Vetor Master é desenhado especificamente para PMEs brasileiras com faturamento anual de R$ 400 mil a R$ 150 milhões, com foco em destravar a sobrecarga decisória do fundador e destravar o crescimento sustentável em 11 setores da economia.',
+      'O Vetor Master é desenhado especificamente para PMEs brasileiras com faturamento anual de R$ 400 mil a R$ 150 milhões, com foco em destravar a sobrecarga decisória do fundador e destravar o crescimento sustentável em 12 setores da economia.',
   },
   {
     question: 'Qual é o investimento inicial?',
@@ -419,7 +432,7 @@ export default function Index() {
               A primeira plataforma determinística que democratiza o acesso ao C-Level para PMEs
               brasileiras (faturamento de R$ 400 mil a R$ 150 milhões) — codificando mais de 40 anos
               de decisões executivas em um motor digital rápido, acessível e com{' '}
-              <strong>zero alucinação</strong> em 11 setores da economia.
+              <strong>zero alucinação</strong> em 12 setores da economia.
             </p>
 
             <p className="hero-subtitle">C-Level as a Service — Mentorship as a Software</p>
@@ -445,7 +458,7 @@ export default function Index() {
                 <Check aria-hidden="true" /> 40 anos de decisões C-Level codificadas
               </span>
               <span>
-                <Check aria-hidden="true" /> SLA de 72h em 11 setores estruturados
+                <Check aria-hidden="true" /> SLA de 72h em 12 setores estruturados
               </span>
             </div>
           </div>
@@ -539,7 +552,7 @@ export default function Index() {
               <div className="hero-card-footer">
                 <div className="hero-footer-item">
                   <CheckCircle2 aria-hidden="true" />
-                  <span>Para PMEs em 11 setores</span>
+                  <span>Para PMEs em 12 setores</span>
                 </div>
                 <div className="hero-footer-item">
                   <CheckCircle2 aria-hidden="true" />
@@ -573,7 +586,7 @@ export default function Index() {
             source="Dado oficial Sebrae"
           />
           <AnimatedStat
-            value={11}
+            value={12}
             label="setores atendidos com motor determinístico"
             source="Metodologia validada"
           />
@@ -759,16 +772,16 @@ export default function Index() {
         </div>
       </section>
 
-      {/* 4. PARA SEU SETOR (11 setores - Interativo com Seleção Ativa e Alto Contraste) */}
+      {/* 4. PARA SEU SETOR (12 setores - Interativo com Seleção Ativa e Alto Contraste) */}
       <section className="section sectors-section" id="setores">
         <div className="site-container">
           <SectionHeading
             eyebrow="PARA SEU SETOR"
             title="Estratégia específica para a realidade da sua empresa."
-            description="O mesmo rigor determinístico, aplicado aos indicadores, gargalos e alavancas que definem os 11 principais setores da economia brasileira. Clique em um setor para explorar a rota estratégica."
+            description="O mesmo rigor determinístico, aplicado aos indicadores, gargalos e alavancas que definem os 12 principais setores da economia brasileira. Clique em um setor para explorar a rota estratégica."
           />
 
-          {/* Grade de Setores: Destaque Top 3 (Saúde, Varejo, Serviços) + Grade Secundária (8 setores) */}
+          {/* Grade de Setores: Destaque Top 3 (Saúde, Varejo, Serviços) + Grade Secundária (9 setores) */}
           <div className="sectors-structure-wrap reveal">
             {/* Top 3 Setores de Destaque */}
             <div className="sectors-featured-heading">
@@ -815,7 +828,7 @@ export default function Index() {
               })}
             </div>
 
-            {/* Grade Secundária: Demais 8 Setores Estruturados */}
+            {/* Grade Secundária: Demais 9 Setores Estruturados */}
             <div className="sectors-secondary-heading">
               <span className="sectors-group-label">DEMAIS SETORES ATENDIDOS</span>
             </div>
@@ -938,7 +951,7 @@ export default function Index() {
             <div>
               <span className="eyebrow">SEU PRÓXIMO VETOR</span>
               <p>
-                Existe uma rota estratégica sob medida para cada um dos 11 segmentos e fases de
+                Existe uma rota estratégica sob medida para cada um dos 12 segmentos e fases de
                 maturidade. Responda o Questionário Estratégico do seu setor e descubra o caminho
                 certo para romper o teto do seu faturamento.
               </p>
@@ -1097,7 +1110,7 @@ export default function Index() {
                   solidão decisória diária. O <strong>VETOR MASTER</strong> foi fundado exatamente
                   para democratizar essa inteligência C-Level, codificando heurísticas executivas
                   reais e uma base de 138 obras seminais em um motor digital ágil, de alta precisão
-                  e <strong>zero alucinação</strong> em 11 setores da economia.
+                  e <strong>zero alucinação</strong> em 12 setores da economia.
                 </p>
               </div>
 
