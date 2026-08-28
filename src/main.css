@@ -90,13 +90,14 @@ svg {
 }
 
 .section {
-  padding: 44px 0 54px;
+  padding: 40px 0 50px;
 }
 
 /* Sections & Scroll Anchoring */
 section[id],
 div[id],
-footer[id] {
+footer[id],
+[id] {
   scroll-margin-top: 86px;
 }
 
@@ -414,9 +415,9 @@ footer[id] {
 .hero-section {
   position: relative;
   overflow: hidden;
-  /* Header tem 86px: 86px (compensação do header fixo) + 20px (respiro compacto e equilibrado) */
-  padding: 106px 0 46px;
-  scroll-margin-top: 86px;
+  /* Header fixo tem 86px de altura. Compensamos os 86px + 14px de respiro estético inicial */
+  padding: 100px 0 44px;
+  scroll-margin-top: 0px;
   background:
     radial-gradient(circle at 86% 18%, rgba(34, 177, 76, 0.07), transparent 32%),
     linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
@@ -435,7 +436,7 @@ footer[id] {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(430px, 0.92fr);
-  align-items: center;
+  align-items: start;
   gap: 52px;
 }
 
@@ -443,13 +444,17 @@ footer[id] {
   position: relative;
   z-index: 2;
   animation: heroIn 650ms 150ms ease both;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero-overline {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-top: 0;
   margin-bottom: 16px;
+  width: fit-content;
   border: 1px solid rgba(0, 102, 204, 0.16);
   border-radius: 999px;
   padding: 6px 14px 6px 10px;
@@ -593,6 +598,8 @@ footer[id] {
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  margin-top: 0;
   animation: heroVisualIn 750ms 220ms ease both;
 }
 
@@ -2728,8 +2735,14 @@ footer[id] {
 
   section[id],
   div[id],
-  footer[id] {
+  footer[id],
+  [id] {
     scroll-margin-top: 74px;
+  }
+
+  .hero-section#inicio,
+  #inicio {
+    scroll-margin-top: 0px;
   }
 
   .site-container {
@@ -2737,7 +2750,7 @@ footer[id] {
   }
 
   .section {
-    padding: 36px 0 42px;
+    padding: 32px 0 38px;
   }
 
   .section-heading {
@@ -2772,7 +2785,7 @@ footer[id] {
   }
 
   .hero-section {
-    padding: 88px 0 40px;
+    padding: 86px 0 36px;
   }
 
   .hero-overline {
