@@ -36,6 +36,8 @@ import {
 
 import BrandLogo from '@/components/BrandLogo'
 import founderPhoto from '@/assets/foto-jbp-linkedin-copia-1-d051a.png'
+const prisaoFundadorImg =
+  'https://img.usecurling.com/p/800/1066?q=exhausted+executive+desk+papers+night+overworked'
 import {
   Accordion,
   AccordionContent,
@@ -610,45 +612,78 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="trap-grid reveal">
-            <div className="trap-card">
-              <div className="trap-card-icon danger">
-                <Users aria-hidden="true" />
+          {/* Layout Principal: Imagem 'Prisão do Fundador' ao lado dos dados/diagnóstico FDC (98% decidem sozinhos) */}
+          <div className="founder-prison-showcase reveal">
+            <div className="prison-image-container">
+              <div className="prison-image-wrapper">
+                <img
+                  src={prisaoFundadorImg}
+                  alt="A Prisão do Fundador — Sobrecarga, pilhas de documentos e solidão decisória do empresário"
+                  className="prison-image"
+                  loading="lazy"
+                />
+                <div className="prison-image-overlay">
+                  <div className="prison-image-tag">
+                    <AlertTriangle aria-hidden="true" />
+                    <span>O GARGALO DA OPERAÇÃO</span>
+                  </div>
+                  <p className="prison-image-caption">
+                    Trabalhar mais horas não produz mais resultado quando você é o único gargalo.
+                  </p>
+                </div>
               </div>
-              <h3>98% Decidem Sozinhos</h3>
-              <p>
-                Líderes de PMEs acumulam sozinhos a responsabilidade por uma média de{' '}
-                <strong>5 áreas críticas</strong> de decisão, sem um C-Level ou conselho para
-                desafiar suas premissas.
-              </p>
-              <span className="trap-source">
-                Pesquisa "Cabeça de Dono" · Itaú + Locomotiva / FDC
-              </span>
             </div>
 
-            <div className="trap-card">
-              <div className="trap-card-icon warning">
-                <Clock3 aria-hidden="true" />
+            <div className="prison-content-column">
+              <div className="trap-card trap-card-highlight">
+                <div className="trap-card-icon danger">
+                  <Users aria-hidden="true" />
+                </div>
+                <div className="trap-card-badge">DADO CRÍTICO FDC</div>
+                <h3>98% Decidem Sozinhos</h3>
+                <p>
+                  Líderes de PMEs acumulam sozinhos a responsabilidade por uma média de{' '}
+                  <strong>5 áreas críticas</strong> de decisão (comercial, financeiro, operações, RH
+                  e estratégia), sem um C-Level ou conselho executivo para desafiar premissas e
+                  direcionar a escala.
+                </p>
+                <div className="trap-card-impact">
+                  <Lock aria-hidden="true" />
+                  <span>
+                    Sintoma central da <strong>Prisão do Fundador</strong>: a empresa cresce apenas
+                    até o limite do tempo e energia do seu líder.
+                  </span>
+                </div>
+                <span className="trap-source">
+                  Pesquisa "Cabeça de Dono" · Itaú + Locomotiva / FDC (Fundação Dom Cabral)
+                </span>
               </div>
-              <h3>78% Trabalham &gt; 50h/Semana</h3>
-              <p>
-                Presos no operacional diário e em apagar incêndios constantes, os fundadores não
-                encontram tempo para planejar o próximo vetor de crescimento do negócio.
-              </p>
-              <span className="trap-source">Fundação Dom Cabral</span>
-            </div>
 
-            <div className="trap-card">
-              <div className="trap-card-icon danger">
-                <ShieldAlert aria-hidden="true" />
+              <div className="trap-secondary-cards">
+                <div className="trap-card trap-card-compact">
+                  <div className="trap-card-icon warning">
+                    <Clock3 aria-hidden="true" />
+                  </div>
+                  <h4>78% Trabalham &gt; 50h/Semana</h4>
+                  <p>
+                    Presos na rotina de apagar incêndios e microgestão diária, fundadores sacrificam
+                    a visão de longo prazo.
+                  </p>
+                  <span className="trap-source">Fundação Dom Cabral</span>
+                </div>
+
+                <div className="trap-card trap-card-compact">
+                  <div className="trap-card-icon danger">
+                    <ShieldAlert aria-hidden="true" />
+                  </div>
+                  <h4>60% Fecham em 5 Anos</h4>
+                  <p>
+                    A mortalidade precoce decorre de falhas na gestão estratégica e falta de rigor
+                    decisório preventivo.
+                  </p>
+                  <span className="trap-source">Estudo de Sobrevivência · Sebrae</span>
+                </div>
               </div>
-              <h3>60% Fecham em 5 Anos</h3>
-              <p>
-                A mortalidade precoce das empresas não decorre de falta de esforço, mas de{' '}
-                <strong>falhas de gestão estratégica</strong> e ausência de inteligência executiva
-                preventiva.
-              </p>
-              <span className="trap-source">Estudo de Sobrevivência · Sebrae</span>
             </div>
           </div>
 
