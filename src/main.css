@@ -2204,7 +2204,7 @@ footer[id],
   display: grid;
   grid-template-columns: 380px 1fr;
   gap: 64px;
-  align-items: center;
+  align-items: start;
 }
 
 .founder-profile-card {
@@ -2310,6 +2310,7 @@ footer[id],
 }
 
 .founder-bio .section-heading {
+  max-width: none;
   margin-bottom: 24px;
 }
 
