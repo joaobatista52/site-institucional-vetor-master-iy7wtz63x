@@ -36,8 +36,7 @@ import {
 
 import BrandLogo from '@/components/BrandLogo'
 import founderPhoto from '@/assets/foto-jbp-linkedin-copia-1-d051a.png'
-const prisaoFundadorImg =
-  'https://img.usecurling.com/p/800/1066?q=exhausted+executive+desk+papers+night+overworked'
+import prisaoFundadorImg from '@/assets/prisao-do-fundador-1-27ago26-0a050.png'
 import {
   Accordion,
   AccordionContent,
