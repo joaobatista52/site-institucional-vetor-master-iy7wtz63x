@@ -28,7 +28,6 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 86px;
 }
 
 body {
@@ -2729,10 +2728,6 @@ footer[id],
 }
 
 @media (max-width: 640px) {
-  html {
-    scroll-padding-top: 74px;
-  }
-
   section[id],
   div[id],
   footer[id],
