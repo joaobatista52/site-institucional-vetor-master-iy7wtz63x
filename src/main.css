@@ -97,7 +97,7 @@ section[id],
 div[id],
 footer[id],
 [id] {
-  scroll-margin-top: 86px;
+  scroll-margin-top: 156px;
 }
 
 /* Headings */
@@ -226,7 +226,8 @@ footer[id],
   top: 0;
   right: 0;
   left: 0;
-  height: 86px;
+  /* Altura ampliada para acomodar a Logo 5e (cabeçalho) com o dobro do tamanho */
+  height: 156px;
   border-bottom: 1px solid rgba(0, 102, 204, 0.09);
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
@@ -265,15 +266,17 @@ footer[id],
 .header-logo-wrap {
   display: flex;
   align-items: center;
-  height: 74px;
-  max-width: 360px;
+  height: 144px;
+  max-width: 420px;
 }
 
+/* Logo 5e (1536x864, proporção 16:9): height 140px = 2x os 68px originais.
+   A largura acompanha via width:auto (~249px), sem estourar o menu. */
 .header-logo-img,
 .header-logo-svg {
-  height: 68px;
+  height: 140px;
   width: auto;
-  max-width: 340px;
+  max-width: 400px;
   object-fit: contain;
 }
 
@@ -414,8 +417,8 @@ footer[id],
 .hero-section {
   position: relative;
   overflow: hidden;
-  /* Header fixo tem 86px de altura. Compensamos os 86px + 14px de respiro estético inicial */
-  padding: 100px 0 44px;
+  /* Header fixo tem 156px de altura. Compensamos os 156px + 14px de respiro estético inicial */
+  padding: 170px 0 44px;
   scroll-margin-top: 0px;
   background:
     radial-gradient(circle at 86% 18%, rgba(34, 177, 76, 0.07), transparent 32%),
@@ -2447,7 +2450,7 @@ footer[id],
    FOOTER (Logo 5 Oficial Stacked em destaque no rodapé)
    ===================================================================== */
 .site-footer {
-  scroll-margin-top: 86px;
+  scroll-margin-top: 156px;
   padding: 56px 0 0;
   background: var(--dark);
   color: rgba(255, 255, 255, 0.7);
@@ -2639,7 +2642,7 @@ footer[id],
   }
 
   .hero-section {
-    padding: 98px 0 40px;
+    padding: 170px 0 40px;
   }
 
   .hero-grid {
@@ -2733,7 +2736,7 @@ footer[id],
   div[id],
   footer[id],
   [id] {
-    scroll-margin-top: 74px;
+    scroll-margin-top: 124px;
   }
 
   .hero-section#inicio,
@@ -2758,17 +2761,19 @@ footer[id],
   }
 
   .site-header {
-    height: 74px;
+    height: 124px;
   }
 
   .header-logo-wrap {
-    height: 64px;
-    max-width: 260px;
+    height: 116px;
+    max-width: 240px;
   }
 
+  /* Logo 5e no mobile: 112px = 2x os 56px originais (~199px de largura,
+     cabe ao lado do menu hambúrguer a partir de 320px) */
   .header-logo-svg {
-    height: 56px;
-    max-width: 250px;
+    height: 112px;
+    max-width: 220px;
   }
 
   .footer-logo-wrap {
@@ -2781,7 +2786,7 @@ footer[id],
   }
 
   .hero-section {
-    padding: 86px 0 36px;
+    padding: 134px 0 36px;
   }
 
   .hero-overline {
