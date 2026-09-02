@@ -4,6 +4,8 @@
 // · Saúde Econômico-Financeira · Expectativas/Ambição · Inovação/Tecnologia.
 // As 3 seções finais (Próximos Passos, Documentação e Cadastro) são tratadas
 // como etapas próprias do wizard, fora deste arquivo.
+// As listas específicas por setor (Comércio Internacional e Facilities) estão
+// em ./questionnaireSectors, expostas via getQuestionnaireSections().
 
 export type QuestionType = 'text' | 'textarea' | 'select' | 'yes-no' // Sim / Não / Parcialmente
 
@@ -62,7 +64,7 @@ export const certificationsList = [
 
 export const engagementFormats = ['MaaS', 'Híbrido', 'CaaS', 'Ainda não sei']
 
-export const questionnaireSections: QuestionSection[] = [
+export const baseQuestionnaireSections: QuestionSection[] = [
   {
     id: 'identificacao',
     stepNumber: 1,
@@ -574,3 +576,10 @@ export const questionnaireSections: QuestionSection[] = [
     ],
   },
 ]
+
+export function getQuestionnaireSections(sectorId: string | undefined): QuestionSection[] {
+  if (!sectorId) return baseQuestionnaireSections
+  if (sectorId === 'comercio-internacional') return comercioInternacionalSections
+  if (sectorId === 'facilities') return facilitiesSections
+  return baseQuestionnaireSections
+}

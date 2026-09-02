@@ -19,15 +19,7 @@ import {
 import pb from '@/lib/pocketbase/client'
 import { getErrorMessage } from '@/lib/pocketbase/errors'
 import { findSector } from '@/data/sectors'
-import {
-  certificationsList,
-  companyStructures,
-  engagementFormats,
-  questionnaireSections,
-  revenueRanges,
-  taxRegimes,
-  type Question,
-} from '@/data/questionnaire'
+import { engagementFormats, getQuestionnaireSections } from '@/data/questionnaire'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -70,7 +62,7 @@ const emptyCadastro: CadastroData = {
 }
 
 // 9 seções de perguntas + Próximos Passos + Documentação + Cadastro = 12 etapas
-const TOTAL_STEPS = questionnaireSections.length + 3
+const TOTAL_STEPS = 12
 
 function maskCNPJ(value: string): string {
   return value
@@ -135,7 +127,10 @@ export default function Questionnaire() {
     if (!sector) navigate('/setores', { replace: true })
   }, [sector, navigate])
 
-  const sections = questionnaireSections
+  // Cada setor carrega sua própria versão das seções (perguntas literais do PDF
+  // "Questionários_Consolidados_12_Setores_V6.7", incluindo as variações de
+  // Comércio Internacional e Facilities).
+  const sections = useMemo(() => getQuestionnaireSections(sectorId), [sectorId])
   const nextStepsStep = sections.length
   const docsStep = sections.length + 1
   const cadastroStep = sections.length + 2
