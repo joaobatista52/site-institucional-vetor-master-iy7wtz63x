@@ -19,7 +19,10 @@ import {
 import pb from '@/lib/pocketbase/client'
 import { getErrorMessage } from '@/lib/pocketbase/errors'
 import { findSector } from '@/data/sectors'
-import { engagementFormats, getQuestionnaireSections } from '@/data/questionnaire'
+import { engagementFormats } from '@/data/questionnaire'
+import type { Question } from '@/data/questionnaire'
+import { getQuestionnaireSections } from '@/data/questionnaireSectors'
+import { revenueRanges } from '@/data/questionnaireBase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -91,7 +94,9 @@ function isValidCNPJ(cnpj: string): boolean {
   return digits.length === 14
 }
 
-function yesNoOptions(question: Question): { value: string; label: string }[] {
+function yesNoOptions(
+  question: import('@/data/questionnaire').Question,
+): { value: string; label: string }[] {
   return [
     { value: 'Sim', label: 'Sim' },
     { value: 'Não', label: 'Não' },

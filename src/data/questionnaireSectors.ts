@@ -1,10 +1,10 @@
-import type { QuestionSection } from './questionnaire'
-import { baseQuestionnaireSections } from './questionnaireBase'
-
 // Seções de perguntas ESPECÍFICAS de cada setor, extraídas LITERALMENTE do PDF
 // "Questionários_Consolidados_12_Setores_V6.7_29ago26" (autor: João Batista de Paula).
 // Setores sem lista própria no PDF (indústria, tech, construção, logística, educação,
 // agronegócio e academias) recebem a lista base consolidada (id = base).
+
+import type { QuestionSection } from './questionnaire'
+import { baseQuestionnaireSections } from './questionnaire'
 
 export function getQuestionnaireSections(sectorId: string | undefined): QuestionSection[] {
   if (!sectorId) return baseQuestionnaireSections

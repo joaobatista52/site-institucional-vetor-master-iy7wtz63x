@@ -409,7 +409,7 @@ export const baseQuestionnaireSections: QuestionSection[] = [
     questions: [
       {
         id: 'fin1',
-        label: 'Você conhece sua margem operacional real por produto/serviço/contrato?',
+        label: 'Você conhece sua margem operacional real por produto, serviço ou contrato?',
         type: 'yes-no',
         required: true,
       },
@@ -450,7 +450,7 @@ export const baseQuestionnaireSections: QuestionSection[] = [
         label: 'Qual o principal desafio econômico-financeiro hoje?',
         type: 'textarea',
         required: true,
-        placeholder: 'Ex.: margem comprimida, prazo de recebimento, custo de folha, inadimplência.',
+        placeholder: 'Descreva o desafio: caixa, margem, prazos, endividamento, inadimplência…',
       },
     ],
   },
@@ -577,9 +577,4 @@ export const baseQuestionnaireSections: QuestionSection[] = [
   },
 ]
 
-export function getQuestionnaireSections(sectorId: string | undefined): QuestionSection[] {
-  if (!sectorId) return baseQuestionnaireSections
-  if (sectorId === 'comercio-internacional') return comercioInternacionalSections
-  if (sectorId === 'facilities') return facilitiesSections
-  return baseQuestionnaireSections
-}
+export { getQuestionnaireSections } from './questionnaireSectors'
