@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Mail, Menu, MessageCircle } from 'lucide-react'
 
 import BrandLogoComponent from '@/components/BrandLogo'
@@ -13,11 +14,11 @@ import {
 } from '@/components/ui/sheet'
 
 const navigation = [
-  { label: 'Início', href: '#inicio' },
-  { label: 'O Método', href: '#metodo' },
-  { label: 'Para seu setor', href: '#setores' },
-  { label: 'Soluções', href: '#solucoes' },
-  { label: 'Sobre o Fundador', href: '#fundador' },
+  { label: 'Início', href: '/#inicio' },
+  { label: 'O Método', href: '/#metodo' },
+  { label: 'Para seu setor', href: '/setores' },
+  { label: 'Soluções', href: '/#solucoes' },
+  { label: 'Sobre o Fundador', href: '/#fundador' },
 ]
 
 const whatsappLink =
@@ -25,34 +26,43 @@ const whatsappLink =
 
 function HeaderLogo() {
   return (
-    <a className="brand-logo header-logo-wrap" href="#inicio" aria-label="VETOR MASTER — Início">
+    <Link className="brand-logo header-logo-wrap" to="/" aria-label="VETOR MASTER — Início">
       {/* Logo 5e (Variante horizontal no maior tamanho possível) */}
       <BrandLogoComponent variant="logo5e" className="header-logo-svg" />
-    </a>
+    </Link>
   )
 }
 
 function FooterLogo() {
   return (
-    <a className="brand-logo footer-logo-wrap" href="#inicio" aria-label="VETOR MASTER — Início">
+    <Link className="brand-logo footer-logo-wrap" to="/" aria-label="VETOR MASTER — Início">
       {/* Logo 5d (Variante com vetor + nome + tríade Direção/Conexão/Crescimento no maior tamanho possível) */}
       <BrandLogoComponent variant="logo5d" className="footer-logo-svg" />
-    </a>
+    </Link>
   )
 }
 
 function Header() {
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
+
   return (
     <header className="site-header">
       <div className="site-container header-inner">
         <HeaderLogo />
 
         <nav className="desktop-nav" aria-label="Navegação principal">
-          {navigation.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
-            </a>
-          ))}
+          {navigation.map((item) =>
+            isHome && item.href.startsWith('/#') ? (
+              <a key={item.href} href={item.href.replace(/^\/#/, '#')}>
+                {item.label}
+              </a>
+            ) : (
+              <Link key={item.href} to={item.href}>
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <Button className="header-cta" asChild>
@@ -78,11 +88,17 @@ function Header() {
               <HeaderLogo />
             </SheetHeader>
             <nav className="mobile-nav" aria-label="Navegação em dispositivos móveis">
-              {navigation.map((item) => (
-                <SheetClose asChild key={item.href}>
-                  <a href={item.href}>{item.label}</a>
-                </SheetClose>
-              ))}
+              {navigation.map((item) =>
+                isHome && item.href.startsWith('/#') ? (
+                  <SheetClose asChild key={item.href}>
+                    <a href={item.href.replace(/^\/#/, '#')}>{item.label}</a>
+                  </SheetClose>
+                ) : (
+                  <SheetClose asChild key={item.href}>
+                    <Link to={item.href}>{item.label}</Link>
+                  </SheetClose>
+                ),
+              )}
             </nav>
             <SheetClose asChild>
               <Button className="mobile-sheet-cta" asChild>
@@ -122,11 +138,11 @@ function Footer() {
           <ul className="footer-links">
             {navigation.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
+                <Link to={item.href}>{item.label}</Link>
               </li>
             ))}
             <li>
-              <a href="#faq">Perguntas Frequentes</a>
+              <Link to="/#faq">Perguntas Frequentes</Link>
             </li>
           </ul>
         </div>
@@ -158,7 +174,7 @@ function Footer() {
       <div className="site-container footer-bottom">
         <p>© {year} VETOR MASTER. Todos os direitos reservados.</p>
         <div>
-          <a href="#privacidade">Privacidade e LGPD</a>
+          <Link to="/#privacidade">Privacidade e LGPD</Link>
           <span aria-hidden="true">•</span>
           <span id="privacidade">Seus dados tratados com transparência.</span>
         </div>

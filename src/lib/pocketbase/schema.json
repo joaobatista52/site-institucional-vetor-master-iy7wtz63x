@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-02T21:01:47.231Z",
+  "generatedAt": "2026-09-02T22:02:19.917Z",
   "collections": [
     {
       "name": "users",
@@ -43,6 +43,89 @@
         "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
         "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
       ]
+    },
+    {
+      "name": "leads",
+      "type": "base",
+      "apiRules": {
+        "list": "",
+        "view": "",
+        "create": "",
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "setor",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "setor_id",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "cadastro",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "respostas",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "contrato_social",
+          "type": "file",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "certificacoes",
+          "type": "file",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "documentacao_adicional",
+          "type": "file",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "autorizacao_devolutiva",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": ["Sim, autorizo", "Não autorizo"]
+        },
+        {
+          "name": "formato_interesse",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": ["MaaS", "Híbrido", "CaaS", "Ainda não sei"]
+        },
+        {
+          "name": "responsavel_documentos",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": ["novo", "em_analise", "devolutiva_agendada", "concluido", "descartado"]
+        }
+      ],
+      "indexes": ["CREATE INDEX `idx_leads_setor` ON `leads` (setor)"]
     }
   ]
 }
