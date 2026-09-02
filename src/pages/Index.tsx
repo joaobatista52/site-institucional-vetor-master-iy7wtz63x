@@ -58,155 +58,154 @@ interface SectorItem {
   description: string
   painPoint: string
   solutionPillar: string
-  kpi: string
   icon: Icon
 }
 
+const kpiPromise = 'Diagnóstico em 72h · Devolutiva de 45 min'
+
+// Textos dos 12 setores fiéis ao documento aprovado pelo cliente
+// (Descrição, Gargalo Crítico Típico e Alavanca Determinística — sem alterações).
 const allSectors: SectorItem[] = [
   {
     id: 'saude',
     name: 'Saúde',
-    tagline: 'Clínicas, Hospitais e Serviços Médicos',
+    tagline: 'Hospitalar, Clínica, Odontológica, Laboratório e Home Care.',
     description:
-      'Decisões de gestão com precisão, conformidade regulatória rigorosa, eficiência operacional e visão de escala sustentável.',
-    painPoint: 'Margem estrangulada por glosas de convênios e sobrecarga dos diretores clínicos.',
+      'Hospitalar, Clínica, Odontológica, Laboratório e Home Care. Operação assistencial com gestão concentrada no fundador e margens pressionadas por convênios.',
+    painPoint:
+      'Glosa hospitalar invisível · baixa taxa de ocupação de leitos e/ou consultórios · retrabalho de faturamento · descasamento entre prontuário e conta.',
     solutionPillar:
-      'Modelagem de capacidade instalada, governança clínica e alocação ótima de equipe.',
-    kpi: '+28% Margem EBITDA operacional',
+      'Diagnóstico Estratégico que quantifica a glosa e o retrabalho, prioriza as micro-epifanias e aponta o caminho para recuperar margem — com devolutiva de 45 min.',
     icon: HeartPulse,
   },
   {
     id: 'varejo',
     name: 'Varejo',
-    tagline: 'Redes, Franquias e E-commerce',
+    tagline: 'Lojas Físicas, E-commerce, Distribuição, Alimentação e Moda.',
     description:
-      'Margem, canais omnicanal, giro de estoque e recorrência organizados em uma rota objetiva e determinística de crescimento.',
-    painPoint: 'Guerra de preços, ruptura de estoque e dependência excessiva de tráfego pago.',
-    solutionPillar: 'Curva ABC preditiva, repasse inteligente de margem e esteira de retenção LTV.',
-    kpi: '3.2x Giro de capital de giro',
+      'Lojas Físicas, E-commerce, Distribuição, Alimentação e Moda. Margem dependente de giro, ticket e controle de estoque.',
+    painPoint:
+      'Ruptura de estoque · vendas perdidas · quebra/perda · ticket médio · margem por categoria.',
+    solutionPillar:
+      'Diagnóstico Estratégico que revela onde o estoque trava o caixa e prioriza as ações de maior impacto em margem e giro.',
     icon: ShoppingBag,
   },
   {
     id: 'servicos',
     name: 'Serviços Profissionais',
-    tagline: 'B2B, Consultorias, Engenharia e Advocacia',
+    tagline: 'Consultoria, Advocacia, Contabilidade, Arquitetura, Agência e TI.',
     description:
-      'Estrutura comercial previsível, precificação baseada em valor percebido e capacidade de entrega sob rigoroso controle.',
-    painPoint: 'Teto de faturamento atrelado às horas dos sócios e precificação deficitária.',
-    solutionPillar:
-      'Empacotamento de produtos escaláveis e matriz de alocação de squads consultivos.',
-    kpi: '94% Previsibilidade de receita anual',
-    icon: BriefcaseBusiness,
-  },
-  {
-    id: 'industria',
-    name: 'Indústria',
-    tagline: 'Manufatura, Transformação e Bens de Consumo',
-    description:
-      'Eficiência global de equipamentos (OEE), controle de custos de insumos e alinhamento entre comercial e chão de fábrica.',
+      'Consultoria, Advocacia, Contabilidade, Arquitetura, Agência e TI. Receita dependente de horas e da presença pessoal do sócio.',
     painPoint:
-      'Capacidade ociosa, gargalos de setup e divergência de prioridades entre vendas e produção.',
-    solutionPillar: 'S&OP determinístico e renegociação estratégica de contratos de fornecimento.',
-    kpi: '-35% Tempo de ciclo produtivo',
-    icon: Factory,
+      'Horas não cobradas · taxa de utilização abaixo do ideal · contratos sem revisão de preço · custo de oportunidade do sócio.',
+    solutionPillar:
+      'Diagnóstico Estratégico que revela o vazamento de honorários e a ociosidade da equipe, e estrutura o caminho para escalar sem o sócio ser o gargalo.',
+    icon: BriefcaseBusiness,
   },
   {
     id: 'comercio-internacional',
     name: 'Comércio Internacional - Trading Company',
-    tagline: 'Importação, Exportação, Tradings e Distribuição Global',
+    tagline: 'Importação, Exportação, Trading, Despacho Aduaneiro, Câmbio e Cativeiro de Crédito.',
     description:
-      'Inteligência aduaneira, hedge cambial, gestão de fretes internacionais e conformidade com comércio exterior.',
+      'Importação, Exportação, Trading, Despacho Aduaneiro, Câmbio e Cativeiro de Crédito. Capital intensivo com ciclo de caixa longo e exposição cambial.',
     painPoint:
-      'Flutuação cambial brusca, atrasos de desembaraço e exigências de capital intensivo em trânsito.',
+      'Créditos tributários não aproveitados · fim do ICMS como produto · retenção de caixa no Split Payment · ciclo de caixa longo · exposição cambial · retrabalho aduaneiro · capital imobilizado em trânsito · bitributação no regime dual até 2033.',
     solutionPillar:
-      'Estruturação de funding de importação, governança aduaneira e trava cambial determinística.',
-    kpi: '100% Rastreabilidade e trava cambial',
+      'Diagnóstico Estratégico que revela créditos não aproveitados e capital imobilizado, e estrutura o caminho para liberar caixa e margem.',
     icon: Globe2,
-  },
-  {
-    id: 'tecnologia',
-    name: 'Tecnologia e Startups',
-    tagline: 'SaaS, Software Houses e Serviços Tech',
-    description:
-      'Unit economics sob controle, aceleração de tração, redução de churn e preparação estruturada para captação de investimento.',
-    painPoint: 'Queima de caixa desordenada e desalinhamento entre produto e go-to-market.',
-    solutionPillar:
-      'Validação determinística de ICP, CAC:LTV equilibrado e governança para rodadas.',
-    kpi: '4.8x Eficiência de queima de caixa',
-    icon: Cpu,
-  },
-  {
-    id: 'logistica',
-    name: 'Logística e Transporte',
-    tagline: 'Transportadoras, Operadores e Frotistas',
-    description:
-      'Gestão de frota com rentabilidade por rota, otimização de combustível e rastreabilidade de ponta a ponta.',
-    painPoint: 'Custo de combustível imprevisível, retorno de carga vazio e sinistralidade.',
-    solutionPillar:
-      'Algoritmo de roteirização por margem líquida e gestão proativa de manutenção preventiva.',
-    kpi: '+19% Margem líquida por km rodado',
-    icon: Truck,
   },
   {
     id: 'facilities',
     name: 'Facilities',
-    tagline: 'Gestão Predial, Segurança, Limpeza e Manutenção Terceirizada',
+    tagline:
+      'Facilities Management, Limpeza e Conservação, Segurança Patrimonial, Manutenção Predial, Portaria/Recepção e Serviços Terceirizados.',
     description:
-      'Eficiência na escala de mão de obra, gestão de SLAs contratuais, controle de turnover e repasse assertivo de dissídios.',
+      'Facilities Management, Limpeza e Conservação, Segurança Patrimonial, Manutenção Predial, Portaria/Recepção e Serviços Terceirizados. Venda de mão de obra com margem apertada.',
     painPoint:
-      'Turnover elevado de postos operacionais, margem erodida por encargos trabalhistas e multas de SLA contratual.',
+      'Contratos sem revisão · horas ociosas · retrabalho · turnover · aditivos não cobrados · margem por contrato · venda de mão de obra física (HH) enquanto as maiores vendem SLA.',
     solutionPillar:
-      'Dimensionamento preditivo de escalas, matriz de conformidade trabalhista e precificação dinâmica de contratos.',
-    kpi: '+24% Rentabilidade média por contrato',
+      'Diagnóstico Estratégico que revela horas ociosas e contratos sem revisão, e estrutura o caminho para migrar de venda de horas para venda de resultado.',
     icon: Building2,
+  },
+  {
+    id: 'industria',
+    name: 'Indústria',
+    tagline: 'Manufatura, Metalurgia, Alimentos, Químico, Têxtil e Plástico.',
+    description:
+      'Manufatura, Metalurgia, Alimentos, Químico, Têxtil e Plástico. Operação com capital intensivo e margem sensível à eficiência de chão de fábrica.',
+    painPoint:
+      'Refugo · paradas não programadas · ociosidade de máquinas · giro de estoque · custo real da ordem de produção.',
+    solutionPillar:
+      'Diagnóstico Estratégico que quantifica refugo e paradas, prioriza as alavancas de eficiência e define o roadmap de execução.',
+    icon: Factory,
+  },
+  {
+    id: 'tecnologia',
+    name: 'Tech/Startups',
+    tagline: 'SaaS, Fintech, Healthtech, Edtech e Marketplace.',
+    description:
+      'SaaS, Fintech, Healthtech, Edtech e Marketplace. Crescimento rápido com riscos de retenção e concentração de receita.',
+    painPoint:
+      'Churn · CAC/LTV desequilibrado · débito técnico · concentração de receita · runway.',
+    solutionPillar:
+      'Diagnóstico Estratégico que mapeia churn e economia unitária, e define o caminho para escalar com margem.',
+    icon: Cpu,
   },
   {
     id: 'construcao',
     name: 'Construção Civil',
-    tagline: 'Incorporadoras, Construtoras e Empreiteiras',
+    tagline: 'Edificações, Incorporação, Infraestrutura e Reformas.',
     description:
-      'Controle rígido de orçamento por obra, cronograma físico-financeiro determinístico e gestão de caixa de longo prazo.',
+      'Edificações, Incorporação, Infraestrutura e Reformas. Margem dependente do controle entre orçado e realizado.',
     painPoint:
-      'Estouro de custos em materiais e descumprimento de prazos contratuais com penalidades.',
+      'Desperdício de materiais · retrabalho · aditivos não cobrados · orçado vs. realizado.',
     solutionPillar:
-      'Matriz de acompanhamento diário de produtividade e suprimentos com travas financeiras.',
-    kpi: '0% Desvio orçamentário por etapa',
+      'Diagnóstico Estratégico que revela o desvio entre orçado e realizado e prioriza as alavancas de margem por obra.',
     icon: HardHat,
   },
   {
-    id: 'agronegocio',
-    name: 'Agronegócio',
-    tagline: 'Produtores, Insumos, Agroindústria e Cooperativas',
+    id: 'logistica',
+    name: 'Logística/Transporte',
+    tagline: 'Cargas, Passageiros, Distribuição e Armazenagem.',
     description:
-      'Gestão de risco de commodities, fluxo de caixa em ciclos de safra e modernização da governança do campo.',
-    painPoint: 'Volatilidade climática e de câmbio aliada à sobrecarga da sucessão familiar.',
+      'Cargas, Passageiros, Distribuição e Armazenagem. Operação com custo sensível a frota, rotas e manutenção.',
+    painPoint: 'Km vazios · ociosidade da frota · custo por km · manutenção corretiva.',
     solutionPillar:
-      'Hedge operacional, estruturação de governança familiar e gestão de risco safra.',
-    kpi: '100% Blindagem de caixa entre safras',
-    icon: Sprout,
+      'Diagnóstico Estratégico que quantifica km vazios e ociosidade, e estrutura o caminho para eficiência operacional.',
+    icon: Truck,
   },
   {
     id: 'educacao',
     name: 'Educação',
-    tagline: 'Colégios, Faculdades, Edtechs e Cursos Técnicos',
+    tagline: 'Básica, Superior, Técnico, Idiomas e Edtech.',
     description:
-      'Retenção contínua de alunos, captação eficiente e estruturação pedagógica aliada à sustentabilidade financeira.',
-    painPoint: 'Sazonalidade extrema de matrículas e evasão ao longo do ano letivo.',
+      'Básica, Superior, Técnico, Idiomas e Edtech. Receita recorrente dependente de retenção e ocupação.',
+    painPoint: 'Evasão · inadimplência · vagas ociosas · rotatividade docente.',
     solutionPillar:
-      'Esteira de engajamento determinística e CAC reduzido por indicação institucional.',
-    kpi: '-42% Evasão no ciclo letivo',
+      'Diagnóstico Estratégico que revela evasão e inadimplência, e define o caminho para reter e ocupar.',
     icon: GraduationCap,
+  },
+  {
+    id: 'agronegocio',
+    name: 'Agronegócio',
+    tagline: 'Grãos, Pecuária, Cana, Café e Fruticultura.',
+    description:
+      'Grãos, Pecuária, Cana, Café e Fruticultura. Operação sazonal com decisões concentradas e janelas críticas.',
+    painPoint:
+      'Perda na colheita · custo por hectare · ociosidade da frota · janelas perdidas · quebra técnica.',
+    solutionPillar:
+      'Diagnóstico Estratégico que quantifica perdas e ociosidade, e estrutura decisões para não travar nas janelas críticas.',
+    icon: Sprout,
   },
   {
     id: 'academias',
     name: 'Academias de Ginástica',
-    tagline: 'Redes Fitness, Studios e Centros de Treinamento',
+    tagline: 'Musculação, Estúdio, CrossFit, Pilates e Natação.',
     description:
-      'Recorrência automática de mensalidades, retenção de alunos acima da média do setor e maximização de metro quadrado.',
-    painPoint: 'Alta taxa de cancelamento após os 3 primeiros meses e sazonalidade pós-verão.',
+      'Musculação, Estúdio, CrossFit, Pilates e Natação. Receita dependente de retenção e ocupação por horário.',
+    painPoint: 'Evasão · capacidade ociosa · ocupação por horário · CAC por aluno.',
     solutionPillar:
-      'Jornada de ativação do aluno por metas e modelos híbridos de receita complementar.',
-    kpi: '+55% Tempo de permanência do aluno',
+      'Diagnóstico Estratégico que mapeia evasão e ociosidade, e estrutura o caminho para reter e ocupar.',
     icon: Dumbbell,
   },
 ]
@@ -855,7 +854,7 @@ export default function Index() {
                     <strong className="sector-box-title">{sector.name}</strong>
                     <span className="sector-box-tagline">{sector.tagline}</span>
                     <div className="sector-box-kpi-chip">
-                      <span>Impacto: {sector.kpi}</span>
+                      <span>{kpiPromise}</span>
                     </div>
                   </button>
                 )
@@ -929,9 +928,8 @@ export default function Index() {
                   </span>
                 </div>
                 <div className="sector-panel-kpi">
-                  <span className="kpi-label">Impacto Médio Determinístico</span>
-                  <strong className="kpi-value">{activeSector.kpi}</strong>
-                </div>
+                  <strong className="kpi-value">{kpiPromise}</strong>
+                </div>{' '}
               </div>
 
               <div className="sector-panel-body">
