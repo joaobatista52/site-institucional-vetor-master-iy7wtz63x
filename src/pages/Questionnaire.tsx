@@ -244,17 +244,45 @@ export default function Questionnaire() {
       )
     }
 
+    const isCnpjField = question.id.endsWith('_cnpj') || question.id === 'cnpj'
+
     return (
       <Input
         id={question.id}
         value={value}
-        onChange={(event) => setAnswer(question.id, event.target.value)}
+        onChange={(event) => {
+          const val = isCnpjField ? maskCNPJ(event.target.value) : event.target.value
+          setAnswer(question.id, val)
+        }}
         placeholder={question.placeholder}
       />
     )
   }
 
   function renderFilesStep() {
+    const isComercio = sectorId === 'comercio-internacional'
+    const isFacilities = sectorId === 'facilities'
+
+    const docItems = isComercio
+      ? [
+          'Balanço Patrimonial',
+          'DRE',
+          'Organograma',
+          'Relatórios de Vendas',
+          'Contratos de Câmbio',
+          'Planilha de Landed Cost',
+        ]
+      : isFacilities
+        ? [
+            'Balanço Patrimonial',
+            'DRE',
+            'Organograma',
+            'Relatórios de Vendas',
+            'Contratos',
+            'Planilha de Margem por Contrato',
+          ]
+        : ['Balanço Patrimonial', 'DRE', 'Organograma', 'Relatórios de Vendas']
+
     const groups: { key: FileGroup; title: string; help: string }[] = [
       {
         key: 'contratoSocial',
@@ -268,8 +296,8 @@ export default function Questionnaire() {
       },
       {
         key: 'documentacaoAdicional',
-        title: 'Documentação adicional (opcional, mas muito importante)',
-        help: 'Balanço Patrimonial (últimos 2 exercícios), DRE, Fluxo de Caixa, relatórios gerenciais, apresentações institucionais, indicadores específicos e demais arquivos que auxiliem a análise (PDF, XLS, DOC, JPG, PNG).',
+        title: 'DOCUMENTAÇÃO ADICIONAL (OPCIONAL)',
+        help: `Itens sugeridos para envio: ${docItems.join(' • ')} (além de Fluxo de Caixa e relatórios gerenciais).`,
       },
     ]
 
@@ -322,52 +350,49 @@ export default function Questionnaire() {
     return (
       <div className="wizard-next-steps">
         <div className="wizard-next-block">
-          <h4>Autorização da Devolutiva de 45 minutos</h4>
-          <p>
-            A Sessão de Devolutiva é uma reunião executiva de 45 minutos em que a equipe VETOR
-            MASTER apresenta o Diagnóstico Estratégico e o plano de ação. Autoriza o contato para
-            agendamento?
+          <p className="font-semibold text-foreground text-sm sm:text-base mb-1">
+            • 9.1 Você receberá um Diagnóstico Executivo com recomendações prioritárias.
           </p>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            A Sessão de Devolutiva é uma reunião executiva de 45 minutos em que a equipe VETOR
+            MASTER apresenta o Diagnóstico Estratégico e o plano de ação.
+          </p>
+        </div>
+
+        <div className="wizard-next-block">
+          <h4>• 9.2 Autoriza sessão de devolutiva de 45 min?</h4>
           <div className="wizard-choice-row">
-            {['Sim, autorizo', 'Não autorizo'].map((option) => (
+            {['Sim', 'Não'].map((option) => (
               <button
                 key={option}
                 type="button"
                 className={`wizard-choice ${autorizacaoDevolutiva === option ? 'is-selected' : ''}`}
                 onClick={() => setAutorizacaoDevolutiva(option)}
               >
-                {option}
+                ( ) {option}
               </button>
             ))}
           </div>
         </div>
 
         <div className="wizard-next-block">
-          <h4>Formato de interesse</h4>
-          <p>
-            Qual modelo de atuação faz mais sentido para a sua empresa neste momento? A escolha
-            orienta a leitura do diagnóstico, mas não impede a mudança depois da devolutiva.
-          </p>
+          <h4>• 9.3 Formato de interesse:</h4>
           <div className="wizard-choice-row">
-            {engagementFormats.map((format) => (
+            {['MaaS', 'Híbrido', 'CaaS', 'Ainda não sei'].map((format) => (
               <button
                 key={format}
                 type="button"
                 className={`wizard-choice ${formatoInteresse === format ? 'is-selected' : ''}`}
                 onClick={() => setFormatoInteresse(format)}
               >
-                {format}
+                ( ) {format}
               </button>
             ))}
           </div>
         </div>
 
         <div className="wizard-next-block">
-          <h4>Responsável pelos documentos</h4>
-          <p>
-            Informe quem responde pela documentação anexada (contrato social, certificações e
-            relatórios), caso a equipe precise de complementos.
-          </p>
+          <h4>• 9.4 Responsável pelos documentos:</h4>
           <Input
             value={responsavelDocumentos}
             onChange={(event) => setResponsavelDocumentos(event.target.value)}
@@ -446,16 +471,88 @@ export default function Questionnaire() {
     setSubmitError('')
 
     try {
-      // Herdar CNPJ e Faturamento coletados nas etapas iniciais
-      const inheritedCnpj = answers.cnpj || answers.trade_cnpj || answers.fac_cnpj || ''
+      // Herdar CNPJ e Faturamento coletados nas etapas iniciais de qualquer um dos 12 setores
+      const inheritedCnpj =
+        answers.saude_cnpj ||
+        answers.servicos_cnpj ||
+        answers.industria_cnpj ||
+        answers.varejo_cnpj ||
+        answers.agro_cnpj ||
+        answers.tech_cnpj ||
+        answers.const_cnpj ||
+        answers.log_cnpj ||
+        answers.edu_cnpj ||
+        answers.acad_cnpj ||
+        answers.trade_cnpj ||
+        answers.fac_cnpj ||
+        answers.cnpj ||
+        ''
       const inheritedFaturamento =
+        answers.saude_1_1 ||
+        answers.servicos_1_1 ||
+        answers.industria_1_1 ||
+        answers.varejo_1_1 ||
+        answers.agro_1_1 ||
+        answers.tech_1_1 ||
+        answers.const_1_1 ||
+        answers.log_1_1 ||
+        answers.edu_1_1 ||
+        answers.acad_1_1 ||
+        answers.trade_1_1 ||
+        answers.fac_1_1 ||
         answers.faturamentoAnual ||
-        answers.trade_faturamentoAnual ||
-        answers.fac_faturamentoAnual ||
+        ''
+      const inheritedRazaoSocial =
+        answers.saude_razaoSocial ||
+        answers.servicos_razaoSocial ||
+        answers.industria_razaoSocial ||
+        answers.varejo_razaoSocial ||
+        answers.agro_razaoSocial ||
+        answers.tech_razaoSocial ||
+        answers.const_razaoSocial ||
+        answers.log_razaoSocial ||
+        answers.edu_razaoSocial ||
+        answers.acad_razaoSocial ||
+        answers.trade_razaoSocial ||
+        answers.fac_razaoSocial ||
+        answers.razaoSocial ||
+        ''
+      const inheritedRespondente =
+        answers.saude_respondente ||
+        answers.servicos_respondente ||
+        answers.industria_respondente ||
+        answers.varejo_respondente ||
+        answers.agro_respondente ||
+        answers.tech_respondente ||
+        answers.const_respondente ||
+        answers.log_respondente ||
+        answers.edu_respondente ||
+        answers.acad_respondente ||
+        answers.trade_respondente ||
+        answers.fac_respondente ||
+        answers.respondente ||
+        ''
+      const inheritedCargo =
+        answers.saude_cargo ||
+        answers.servicos_cargo ||
+        answers.industria_cargo ||
+        answers.varejo_cargo ||
+        answers.agro_cargo ||
+        answers.tech_cargo ||
+        answers.const_cargo ||
+        answers.log_cargo ||
+        answers.edu_cargo ||
+        answers.acad_cargo ||
+        answers.trade_cargo ||
+        answers.fac_cargo ||
+        answers.cargo ||
         ''
 
       const consolidatedCadastro = {
         ...cadastro,
+        empresa: cadastro.empresa || inheritedRazaoSocial,
+        nomeCompleto: cadastro.nomeCompleto || inheritedRespondente,
+        cargo: inheritedCargo,
         cnpj: inheritedCnpj,
         faturamento: inheritedFaturamento,
       }
