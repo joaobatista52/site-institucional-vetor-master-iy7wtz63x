@@ -1,7 +1,9 @@
-// Seções de perguntas ESPECÍFICAS de cada setor, extraídas LITERALMENTE do PDF
-// "Questionários_Consolidados_12_Setores_V6.7_29ago26" (autor: João Batista de Paula).
-// Setores sem lista própria no PDF (indústria, tech, construção, logística, educação,
-// agronegócio e academias) recebem a lista base consolidada (id = base).
+// Questionários Estratégicos dos 12 Setores VETOR MASTER
+// Fonte: PDF "Questionários_Consolidados_12_Setores_V6.7_29ago26" (autor: João Batista de Paula).
+// Estrutura preservada para os 12 setores cadastrados:
+// Saúde, Varejo, Serviços Profissionais, Comércio Internacional - Trading Company,
+// Facilities, Indústria, Tech/Startups, Construção Civil, Logística/Transporte,
+// Educação, Agronegócio e Academias de Ginástica.
 
 import type { QuestionSection } from './questionnaire'
 import { baseQuestionnaireSections } from './questionnaire'
