@@ -4,6 +4,7 @@ import Layout from './components/Layout'
 import Index from './pages/Index'
 import Sectors from './pages/Sectors'
 import Questionnaire from './pages/Questionnaire'
+import Leads from './pages/Leads'
 import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/setores" element={<Sectors />} />
           <Route path="/questionario" element={<Navigate to="/setores" replace />} />
           <Route path="/questionario/:sectorId" element={<Questionnaire />} />
+          <Route path="/leads" element={<Leads />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

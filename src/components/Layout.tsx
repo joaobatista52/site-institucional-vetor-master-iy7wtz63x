@@ -170,10 +170,18 @@ function Footer() {
 
       <div className="site-container footer-bottom">
         <p>© {year} VETOR MASTER. Todos os direitos reservados.</p>
-        <div>
+        <div className="flex items-center gap-2">
           <Link to="/#privacidade">Privacidade e LGPD</Link>
           <span aria-hidden="true">•</span>
           <span id="privacidade">Seus dados tratados com transparência.</span>
+          <span aria-hidden="true">•</span>
+          <Link
+            to="/leads"
+            className="text-xs text-gray-400 hover:text-white transition-colors"
+            title="Acesso restrito da equipe executiva"
+          >
+            Área interna
+          </Link>
         </div>
       </div>
     </footer>
