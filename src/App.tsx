@@ -7,11 +7,25 @@ import Questionnaire from './pages/Questionnaire'
 import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
 
   useEffect(() => {
-    window.scrollTo({ top: 0 })
-  }, [pathname])
+    if (hash) {
+      const targetId = hash.replace(/^#/, '')
+      // Pequeno timeout para garantir que o DOM da rota destino já renderizou
+      const timer = window.setTimeout(() => {
+        const element = document.getElementById(targetId)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      }, 80)
+      return () => window.clearTimeout(timer)
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+    }
+  }, [pathname, hash])
 
   return null
 }

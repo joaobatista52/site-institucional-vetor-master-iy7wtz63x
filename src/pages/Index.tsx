@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ComponentType } from 'react'
+import { Link } from 'react-router-dom'
 import {
   AlertTriangle,
   ArrowRight,
@@ -35,6 +36,7 @@ import {
 } from 'lucide-react'
 
 import BrandLogo from '@/components/BrandLogo'
+import { SectorModal } from '@/components/SectorModal'
 import founderPhoto from '@/assets/foto-jbp-linkedin-copia-1-d051a.png'
 import prisaoFundadorImg from '@/assets/prisao-do-fundador-1-27ago26-0a050.png'
 import {
@@ -414,6 +416,7 @@ function HeroPattern() {
 
 export default function Index() {
   const [selectedSectorId, setSelectedSectorId] = useState<string>('saude')
+  const [sectorModalOpen, setSectorModalOpen] = useState(false)
 
   const activeSector = allSectors.find((s) => s.id === selectedSectorId) || allSectors[0]
 
@@ -463,11 +466,14 @@ export default function Index() {
             <p className="hero-subtitle">C-Level as a Service — Mentorship as a Software</p>
 
             <div className="hero-actions">
-              <Button className="conversion-button hero-button" size="lg" asChild>
-                <a href={whatsappLink} target="_blank" rel="noreferrer">
-                  Comece seu diagnóstico agora
-                  <ArrowRight aria-hidden="true" />
-                </a>
+              <Button
+                className="conversion-button hero-button"
+                size="lg"
+                type="button"
+                onClick={() => setSectorModalOpen(true)}
+              >
+                Comece seu diagnóstico agora
+                <ArrowRight aria-hidden="true" />
               </Button>
               <div className="hero-sla-badge">
                 <Clock3 aria-hidden="true" />
@@ -984,16 +990,10 @@ export default function Index() {
                     <h4>Pronto para destravar o setor de {activeSector.name}?</h4>
                     <p>{activeSector.unlock}</p>
                     <Button className="conversion-button w-full" size="lg" asChild>
-                      <a
-                        href={`https://wa.me/?text=Ol%C3%A1%2C%20gostaria%20de%20iniciar%20o%20Diagn%C3%B3stico%20Estrat%C3%A9gico%20para%20o%20setor%20de%20${encodeURIComponent(
-                          activeSector.name,
-                        )}%20com%20a%20VETOR%20MASTER.`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
+                      <Link to={`/questionario/${activeSector.id}`}>
                         Diagnóstico para {activeSector.name}
                         <ArrowRight aria-hidden="true" />
-                      </a>
+                      </Link>
                     </Button>
                   </div>
                 </div>
@@ -1010,11 +1010,14 @@ export default function Index() {
                 certo para romper o teto do seu faturamento.
               </p>
             </div>
-            <Button className="conversion-button" size="lg" asChild>
-              <a href={whatsappLink} target="_blank" rel="noreferrer">
-                Comece seu diagnóstico agora
-                <ArrowRight aria-hidden="true" />
-              </a>
+            <Button
+              className="conversion-button"
+              size="lg"
+              type="button"
+              onClick={() => setSectorModalOpen(true)}
+            >
+              Comece seu diagnóstico agora
+              <ArrowRight aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -1193,14 +1196,24 @@ export default function Index() {
               nossa equipe.
             </p>
           </div>
-          <Button className="final-cta-button" size="lg" asChild>
-            <a href={whatsappLink} target="_blank" rel="noreferrer">
-              Comece seu diagnóstico agora
-              <ArrowRight aria-hidden="true" />
-            </a>
+          <Button
+            className="final-cta-button"
+            size="lg"
+            type="button"
+            onClick={() => setSectorModalOpen(true)}
+          >
+            Comece seu diagnóstico agora
+            <ArrowRight aria-hidden="true" />
           </Button>
         </div>
       </section>
+
+      <SectorModal
+        open={sectorModalOpen}
+        onOpenChange={setSectorModalOpen}
+        title="Comece seu diagnóstico agora"
+        description="Escolha o segmento da sua empresa para direcionarmos o Questionário Estratégico com foco nos gargalos e alavancas da sua operação."
+      />
     </>
   )
 }

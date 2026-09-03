@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Mail, Menu, MessageCircle } from 'lucide-react'
 
 import BrandLogoComponent from '@/components/BrandLogo'
+import { SectorModal } from '@/components/SectorModal'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -42,7 +43,7 @@ function FooterLogo() {
   )
 }
 
-function Header() {
+function Header({ onOpenSectorModal }: { onOpenSectorModal: () => void }) {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
@@ -65,10 +66,8 @@ function Header() {
           )}
         </nav>
 
-        <Button className="header-cta" asChild>
-          <a href={whatsappLink} target="_blank" rel="noreferrer">
-            Comece seu diagnóstico agora
-          </a>
+        <Button className="header-cta" type="button" onClick={onOpenSectorModal}>
+          Comece seu diagnóstico agora
         </Button>
 
         <Sheet>
@@ -101,10 +100,8 @@ function Header() {
               )}
             </nav>
             <SheetClose asChild>
-              <Button className="mobile-sheet-cta" asChild>
-                <a href={whatsappLink} target="_blank" rel="noreferrer">
-                  Comece seu diagnóstico agora
-                </a>
+              <Button className="mobile-sheet-cta" type="button" onClick={onOpenSectorModal}>
+                Comece seu diagnóstico agora
               </Button>
             </SheetClose>
           </SheetContent>
@@ -185,6 +182,7 @@ function Footer() {
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
+  const [sectorModalOpen, setSectorModalOpen] = useState(false)
 
   useEffect(() => {
     const timer = window.setTimeout(() => setLoading(false), 900)
@@ -200,9 +198,15 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
         <span>INTELIGÊNCIA EXECUTIVA DETERMINÍSTICA</span>
       </div>
-      <Header />
+      <Header onOpenSectorModal={() => setSectorModalOpen(true)} />
       <main>{children}</main>
       <Footer />
+      <SectorModal
+        open={sectorModalOpen}
+        onOpenChange={setSectorModalOpen}
+        title="Comece seu diagnóstico agora"
+        description="Selecione o setor da sua empresa para preencher o Questionário Estratégico direcionado às alavancas da sua operação."
+      />
     </>
   )
 }
