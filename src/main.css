@@ -135,7 +135,7 @@ footer[id],
 
 .section-heading h2 {
   margin: 10px 0 16px;
-  color: var(--corporate-gray);
+  color: var(--strategic-blue);
   font-size: clamp(2rem, 3.8vw, 2.7rem);
   font-weight: 700;
   line-height: 1.18;
@@ -1004,7 +1004,7 @@ footer[id],
 
 .trap-header h2 {
   margin: 10px 0 14px;
-  color: var(--corporate-gray);
+  color: var(--strategic-blue);
   font-size: clamp(2rem, 3.6vw, 2.65rem);
   font-weight: 800;
   line-height: 1.2;
