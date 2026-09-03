@@ -466,9 +466,9 @@ export const saudeSections: QuestionSection[] = [
         type: 'select',
         required: true,
         options: [
-          { value: '1 — Básico', label: '1 — Básico' },
-          { value: '2 — Intermediário', label: '2 — Intermediário' },
-          { value: '3 — Avançado', label: '3 — Avançado' },
+          { value: '1', label: '1-Básico' },
+          { value: '2', label: '2-Intermediário' },
+          { value: '3', label: '3-Avançado' },
         ],
       },
       {
@@ -945,9 +945,9 @@ export const servicosSections: QuestionSection[] = [
         type: 'select',
         required: true,
         options: [
-          { value: '1', label: '1' },
-          { value: '2', label: '2' },
-          { value: '3', label: '3' },
+          { value: '1', label: '1-Básico' },
+          { value: '2', label: '2-Intermediário' },
+          { value: '3', label: '3-Avançado' },
         ],
       },
       {

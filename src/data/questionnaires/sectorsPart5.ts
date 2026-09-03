@@ -68,8 +68,29 @@ export const educacaoSections: QuestionSection[] = [
         type: 'textarea',
         required: true,
       },
-      { id: 'edu_1_6', label: '1.6 Estrutura de propriedade?', type: 'text', required: true },
-      { id: 'edu_1_7', label: '1.7 Regime tributário atual?', type: 'text', required: true },
+      {
+        id: 'edu_1_6',
+        label: '1.6 Estrutura de propriedade?',
+        type: 'select',
+        required: true,
+        options: [
+          { value: 'Familiar', label: 'Familiar' },
+          { value: 'Sócios', label: 'Sócios' },
+          { value: 'Investidores', label: 'Investidores' },
+          { value: 'Outro', label: 'Outro' },
+        ],
+      },
+      {
+        id: 'edu_1_7',
+        label: '1.7 Regime tributário atual?',
+        type: 'select',
+        required: true,
+        options: [
+          { value: 'Simples', label: 'Simples' },
+          { value: 'Lucro Presumido', label: 'Lucro Presumido' },
+          { value: 'Lucro Real', label: 'Lucro Real' },
+        ],
+      },
       {
         id: 'edu_1_8',
         label: '1.8 Fontes de receita (Mensalidades, Matrículas, Convênios)?',
@@ -430,9 +451,9 @@ export const educacaoSections: QuestionSection[] = [
         type: 'select',
         required: true,
         options: [
-          { value: '1', label: '1' },
-          { value: '2', label: '2' },
-          { value: '3', label: '3' },
+          { value: '1', label: '1-Básico' },
+          { value: '2', label: '2-Intermediário' },
+          { value: '3', label: '3-Avançado' },
         ],
       },
       {
@@ -508,8 +529,29 @@ export const academiasSections: QuestionSection[] = [
         type: 'textarea',
         required: true,
       },
-      { id: 'acad_1_6', label: '1.6 Estrutura de propriedade?', type: 'text', required: true },
-      { id: 'acad_1_7', label: '1.7 Regime tributário atual?', type: 'text', required: true },
+      {
+        id: 'acad_1_6',
+        label: '1.6 Estrutura de propriedade?',
+        type: 'select',
+        required: true,
+        options: [
+          { value: 'Familiar', label: 'Familiar' },
+          { value: 'Sócios', label: 'Sócios' },
+          { value: 'Investidores', label: 'Investidores' },
+          { value: 'Outro', label: 'Outro' },
+        ],
+      },
+      {
+        id: 'acad_1_7',
+        label: '1.7 Regime tributário atual?',
+        type: 'select',
+        required: true,
+        options: [
+          { value: 'Simples', label: 'Simples' },
+          { value: 'Lucro Presumido', label: 'Lucro Presumido' },
+          { value: 'Lucro Real', label: 'Lucro Real' },
+        ],
+      },
       {
         id: 'acad_1_8',
         label: '1.8 Fontes de receita (Mensalidades, Planos, Personal, Loja)?',
@@ -871,9 +913,9 @@ export const academiasSections: QuestionSection[] = [
         type: 'select',
         required: true,
         options: [
-          { value: '1', label: '1' },
-          { value: '2', label: '2' },
-          { value: '3', label: '3' },
+          { value: '1', label: '1-Básico' },
+          { value: '2', label: '2-Intermediário' },
+          { value: '3', label: '3-Avançado' },
         ],
       },
       {

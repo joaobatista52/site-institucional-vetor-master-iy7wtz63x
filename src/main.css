@@ -3224,6 +3224,12 @@ footer[id],
   color: var(--strategic-blue);
 }
 
+.wizard-progress li.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .wizard-progress li.is-current {
   background: rgba(0, 102, 204, 0.07);
   color: var(--strategic-blue);

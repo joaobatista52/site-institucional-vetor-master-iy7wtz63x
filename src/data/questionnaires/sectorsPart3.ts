@@ -453,9 +453,9 @@ export const agronegocioSections: QuestionSection[] = [
         type: 'select',
         required: true,
         options: [
-          { value: '1', label: '1' },
-          { value: '2', label: '2' },
-          { value: '3', label: '3' },
+          { value: '1', label: '1-Básico' },
+          { value: '2', label: '2-Intermediário' },
+          { value: '3', label: '3-Avançado' },
         ],
       },
       {
@@ -543,17 +543,27 @@ export const tecnologiaSections: QuestionSection[] = [
       },
       {
         id: 'tech_1_5',
-        label: '1.5 Propriedade:',
+        label: '1.5 Estrutura de propriedade:',
         type: 'select',
         required: true,
         options: [
-          { value: 'Founder-led', label: 'Founder-led' },
-          { value: 'Cofundadores', label: 'Cofundadores' },
+          { value: 'Familiar', label: 'Familiar' },
+          { value: 'Sócios', label: 'Sócios' },
           { value: 'Investidores', label: 'Investidores' },
-          { value: 'Grupo', label: 'Grupo' },
+          { value: 'Outro', label: 'Outro' },
         ],
       },
-      { id: 'tech_1_6', label: '1.6 Regime tributário atual?', type: 'text', required: true },
+      {
+        id: 'tech_1_6',
+        label: '1.6 Regime tributário atual?',
+        type: 'select',
+        required: true,
+        options: [
+          { value: 'Simples', label: 'Simples' },
+          { value: 'Lucro Presumido', label: 'Lucro Presumido' },
+          { value: 'Lucro Real', label: 'Lucro Real' },
+        ],
+      },
       {
         id: 'tech_1_7',
         label: '1.7 Fontes de receita (MRR, Contratos, Marketplace, Serviços)?',
@@ -914,9 +924,9 @@ export const tecnologiaSections: QuestionSection[] = [
         type: 'select',
         required: true,
         options: [
-          { value: '1', label: '1' },
-          { value: '2', label: '2' },
-          { value: '3', label: '3' },
+          { value: '1', label: '1-Básico' },
+          { value: '2', label: '2-Intermediário' },
+          { value: '3', label: '3-Avançado' },
         ],
       },
       {

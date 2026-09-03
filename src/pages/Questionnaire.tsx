@@ -80,6 +80,14 @@ function maskPhone(value: string): string {
     .replace(/(\d{5})(\d)/, '$1-$2')
 }
 
+function maskDate(value: string): string {
+  return value
+    .replace(/\D/g, '')
+    .slice(0, 8)
+    .replace(/(\d{2})(\d)/, '$1/$2')
+    .replace(/(\d{2})(\d)/, '$1/$2')
+}
+
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
@@ -165,6 +173,57 @@ export default function Questionnaire() {
     setFiles((prev) => ({ ...prev, [group]: prev[group].filter((_, i) => i !== index) }))
   }
 
+  const isStepComplete = useCallback(
+    (stepIndex: number): boolean => {
+      if (stepIndex < sections.length) {
+        const sec = sections[stepIndex]
+        if (!sec) return false
+        for (const question of sec.questions) {
+          const val = (answers[question.id] ?? '').trim()
+          if (question.required && val === '') {
+            return false
+          }
+        }
+        return true
+      }
+
+      if (stepIndex === nextStepsStep) {
+        return (
+          Boolean(autorizacaoDevolutiva) &&
+          Boolean(formatoInteresse) &&
+          Boolean(responsavelDocumentos.trim())
+        )
+      }
+
+      if (stepIndex === docsStep) {
+        // Documentação é opcional conforme enunciado e UI
+        return true
+      }
+
+      if (stepIndex === cadastroStep) {
+        return (
+          Boolean(cadastro.nomeCompleto.trim()) &&
+          Boolean(cadastro.empresa.trim()) &&
+          isValidEmail(cadastro.email) &&
+          cadastro.whatsapp.replace(/\D/g, '').length >= 10
+        )
+      }
+
+      return false
+    },
+    [
+      sections,
+      answers,
+      nextStepsStep,
+      docsStep,
+      cadastroStep,
+      autorizacaoDevolutiva,
+      formatoInteresse,
+      responsavelDocumentos,
+      cadastro,
+    ],
+  )
+
   function validateCurrentStep(): string[] {
     const errors: string[] = []
 
@@ -245,16 +304,26 @@ export default function Questionnaire() {
     }
 
     const isCnpjField = question.id.endsWith('_cnpj') || question.id === 'cnpj'
+    const isDateField =
+      question.id.endsWith('_data') ||
+      question.id === 'data' ||
+      /data/i.test(question.label) ||
+      question.placeholder?.toLowerCase().includes('dd/mm')
 
     return (
       <Input
         id={question.id}
         value={value}
         onChange={(event) => {
-          const val = isCnpjField ? maskCNPJ(event.target.value) : event.target.value
+          let val = event.target.value
+          if (isCnpjField) {
+            val = maskCNPJ(val)
+          } else if (isDateField) {
+            val = maskDate(val)
+          }
           setAnswer(question.id, val)
         }}
-        placeholder={question.placeholder}
+        placeholder={isDateField ? 'DD/MM/AAAA' : question.placeholder}
       />
     )
   }
@@ -312,18 +381,43 @@ export default function Questionnaire() {
                 <p>{group.help}</p>
               </div>
             </div>
-            <label className="wizard-file-dropzone">
+            <div
+              className="wizard-file-dropzone"
+              onClick={() => {
+                const el = document.getElementById(
+                  `file-input-${group.key}`,
+                ) as HTMLInputElement | null
+                el?.click()
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  const el = document.getElementById(
+                    `file-input-${group.key}`,
+                  ) as HTMLInputElement | null
+                  el?.click()
+                }
+              }}
+            >
               <FileUp aria-hidden="true" />
               <span>Clique para anexar arquivos</span>
               <input
+                id={`file-input-${group.key}`}
                 type="file"
                 multiple
+                className="hidden"
+                style={{ display: 'none' }}
+                onClick={(e) => e.stopPropagation()}
                 onChange={(event) => {
-                  addFiles(group.key, event.target.files)
+                  if (event.target.files && event.target.files.length > 0) {
+                    addFiles(group.key, event.target.files)
+                  }
                   event.target.value = ''
                 }}
               />
-            </label>
+            </div>
             {files[group.key].length > 0 && (
               <ul className="wizard-file-list">
                 {files[group.key].map((file, index) => (
@@ -650,37 +744,48 @@ export default function Questionnaire() {
               <span>ETAPAS</span>
             </div>
             <ol>
-              {stepTitles.map((title, index) => (
-                <li
-                  key={title}
-                  className={`${index === step ? 'is-current' : index < step ? 'is-done' : ''} is-clickable`}
-                  onClick={() => {
-                    setStepErrors([])
-                    setStep(index)
-                    scrollToTop()
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
+              {stepTitles.map((title, index) => {
+                const complete = isStepComplete(index)
+                // Ajuste 1: só pode abrir etapas respondidas anteriores ou a etapa atual
+                const canNavigate = index === step || (index < step && complete)
+
+                return (
+                  <li
+                    key={title}
+                    className={`${index === step ? 'is-current' : complete ? 'is-done' : ''} ${
+                      canNavigate ? 'is-clickable' : 'is-disabled'
+                    }`}
+                    onClick={() => {
+                      if (!canNavigate) return
                       setStepErrors([])
                       setStep(index)
                       scrollToTop()
-                    }
-                  }}
-                  aria-label={`Ir para a etapa ${index + 1}: ${title}`}
-                >
-                  <span className="wizard-progress-number">
-                    {index < step ? (
-                      <Check aria-hidden="true" />
-                    ) : (
-                      String(index + 1).padStart(2, '0')
-                    )}
-                  </span>
-                  <span>{title}</span>
-                </li>
-              ))}
+                    }}
+                    role="button"
+                    tabIndex={canNavigate ? 0 : -1}
+                    aria-disabled={!canNavigate}
+                    onKeyDown={(e) => {
+                      if (!canNavigate) return
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setStepErrors([])
+                        setStep(index)
+                        scrollToTop()
+                      }
+                    }}
+                    aria-label={`Etapa ${index + 1}: ${title}${!canNavigate ? ' (bloqueada)' : ''}`}
+                  >
+                    <span className="wizard-progress-number">
+                      {complete && index !== step ? (
+                        <Check aria-hidden="true" />
+                      ) : (
+                        String(index + 1).padStart(2, '0')
+                      )}
+                    </span>
+                    <span>{title}</span>
+                  </li>
+                )
+              })}
             </ol>
             <div className="wizard-progress-bar">
               <div
