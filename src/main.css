@@ -20,6 +20,28 @@
   --energy-orange: #ff9900;
   --font-heading: 'Inter', sans-serif;
   --font-body: 'Roboto', sans-serif;
+
+  /* Shadcn CSS variables (HSL) */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 20%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 20%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 20%;
+  --primary: 210 100% 40%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 210 100% 40%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 210 100% 40%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 210 100% 40%;
+  --radius: 0.5rem;
 }
 
 * {
@@ -3188,6 +3210,18 @@ footer[id],
   color: #64748b;
   font-size: 0.78rem;
   line-height: 1.3;
+}
+
+.wizard-progress li.is-clickable {
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    color 150ms ease;
+}
+
+.wizard-progress li.is-clickable:hover {
+  background: rgba(0, 102, 204, 0.05);
+  color: var(--strategic-blue);
 }
 
 .wizard-progress li.is-current {

@@ -22,7 +22,6 @@ import { findSector } from '@/data/sectors'
 import { engagementFormats } from '@/data/questionnaire'
 import type { Question } from '@/data/questionnaire'
 import { getQuestionnaireSections } from '@/data/questionnaireSectors'
-import { revenueRanges } from '@/data/questionnaireBase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -51,8 +50,6 @@ interface CadastroData {
   empresa: string
   email: string
   whatsapp: string
-  faturamento: string
-  cnpj: string
 }
 
 const emptyCadastro: CadastroData = {
@@ -60,8 +57,6 @@ const emptyCadastro: CadastroData = {
   empresa: '',
   email: '',
   whatsapp: '',
-  faturamento: '',
-  cnpj: '',
 }
 
 // 9 seções de perguntas + Próximos Passos + Documentação + Cadastro = 12 etapas
@@ -87,11 +82,6 @@ function maskPhone(value: string): string {
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
-
-function isValidCNPJ(cnpj: string): boolean {
-  const digits = cnpj.replace(/\D/g, '')
-  return digits.length === 14
 }
 
 function yesNoOptions(
@@ -199,11 +189,9 @@ export default function Questionnaire() {
     if (step === cadastroStep) {
       if (!cadastro.nomeCompleto.trim()) errors.push('Informe o nome completo.')
       if (!cadastro.empresa.trim()) errors.push('Informe a empresa.')
-      if (!isValidEmail(cadastro.email)) errors.push('Informe um e-mail válido.')
+      if (!isValidEmail(cadastro.email)) errors.push('Informe um e-mail corporativo válido.')
       if (cadastro.whatsapp.replace(/\D/g, '').length < 10)
         errors.push('Informe um WhatsApp válido com DDD.')
-      if (!cadastro.faturamento) errors.push('Selecione a faixa de faturamento.')
-      if (!isValidCNPJ(cadastro.cnpj)) errors.push('Informe um CNPJ válido (14 dígitos).')
       return errors
     }
 
@@ -281,7 +269,7 @@ export default function Questionnaire() {
       {
         key: 'documentacaoAdicional',
         title: 'Documentação adicional (opcional, mas muito importante)',
-        help: 'Relatórios gerenciais, apresentações institucionais, indicadores específicos e demais arquivos que auxiliem a análise (PDF, XLS, DOC, JPG, PNG).',
+        help: 'Balanço Patrimonial (últimos 2 exercícios), DRE, Fluxo de Caixa, relatórios gerenciais, apresentações institucionais, indicadores específicos e demais arquivos que auxiliem a análise (PDF, XLS, DOC, JPG, PNG).',
       },
     ]
 
@@ -438,35 +426,6 @@ export default function Questionnaire() {
               placeholder="(00) 00000-0000"
             />
           </div>
-          <div className="wizard-field">
-            <Label htmlFor="cadastro-faturamento">Faturamento anual *</Label>
-            <Select
-              value={cadastro.faturamento}
-              onValueChange={(next) => setCadastro((prev) => ({ ...prev, faturamento: next }))}
-            >
-              <SelectTrigger id="cadastro-faturamento">
-                <SelectValue placeholder="Selecione a faixa de faturamento" />
-              </SelectTrigger>
-              <SelectContent>
-                {revenueRanges.map((range) => (
-                  <SelectItem key={range} value={range}>
-                    {range}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="wizard-field">
-            <Label htmlFor="cadastro-cnpj">CNPJ *</Label>
-            <Input
-              id="cadastro-cnpj"
-              value={cadastro.cnpj}
-              onChange={(event) =>
-                setCadastro((prev) => ({ ...prev, cnpj: maskCNPJ(event.target.value) }))
-              }
-              placeholder="00.000.000/0000-00"
-            />
-          </div>
         </div>
         {isLast && (
           <div className="wizard-submit-note">
@@ -487,29 +446,42 @@ export default function Questionnaire() {
     setSubmitError('')
 
     try {
-      const payload: Record<string, unknown> = {
-        setor: sector.name,
-        setor_id: sector.id,
-        cadastro: JSON.stringify(cadastro),
-        respostas: JSON.stringify(answers),
-        autorizacao_devolutiva: autorizacaoDevolutiva,
-        formato_interesse: formatoInteresse,
-        responsavel_documentos: responsavelDocumentos,
-        status: 'novo',
+      // Herdar CNPJ e Faturamento coletados nas etapas iniciais
+      const inheritedCnpj = answers.cnpj || answers.trade_cnpj || answers.fac_cnpj || ''
+      const inheritedFaturamento =
+        answers.faturamentoAnual ||
+        answers.trade_faturamentoAnual ||
+        answers.fac_faturamentoAnual ||
+        ''
+
+      const consolidatedCadastro = {
+        ...cadastro,
+        cnpj: inheritedCnpj,
+        faturamento: inheritedFaturamento,
       }
 
-      const created = await pb.collection('leads').create(payload)
+      // Preparar FormData único para create atômico com arquivos
+      const formData = new FormData()
+      formData.append('setor', sector.name)
+      formData.append('setor_id', sector.id)
+      formData.append('cadastro', JSON.stringify(consolidatedCadastro))
+      formData.append('respostas', JSON.stringify(answers))
+      if (autorizacaoDevolutiva) formData.append('autorizacao_devolutiva', autorizacaoDevolutiva)
+      if (formatoInteresse) formData.append('formato_interesse', formatoInteresse)
+      if (responsavelDocumentos) formData.append('responsavel_documentos', responsavelDocumentos)
+      formData.append('status', 'novo')
 
-      const uploads = [
-        ...files.contratoSocial.map((file) => ({ file, field: 'contrato_social' })),
-        ...files.certificacoes.map((file) => ({ file, field: 'certificacoes' })),
-        ...files.documentacaoAdicional.map((file) => ({ file, field: 'documentacao_adicional' })),
-      ]
-      if (uploads.length > 0) {
-        const formData = new FormData()
-        for (const upload of uploads) formData.append(upload.field, upload.file)
-        await pb.collection('leads').update(created.id, formData)
+      for (const file of files.contratoSocial) {
+        formData.append('contrato_social', file)
       }
+      for (const file of files.certificacoes) {
+        formData.append('certificacoes', file)
+      }
+      for (const file of files.documentacaoAdicional) {
+        formData.append('documentacao_adicional', file)
+      }
+
+      const created = await pb.collection('leads').create(formData)
 
       setSubmittedId(created.id)
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -584,7 +556,23 @@ export default function Questionnaire() {
               {stepTitles.map((title, index) => (
                 <li
                   key={title}
-                  className={index === step ? 'is-current' : index < step ? 'is-done' : ''}
+                  className={`${index === step ? 'is-current' : index < step ? 'is-done' : ''} is-clickable`}
+                  onClick={() => {
+                    setStepErrors([])
+                    setStep(index)
+                    scrollToTop()
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setStepErrors([])
+                      setStep(index)
+                      scrollToTop()
+                    }
+                  }}
+                  aria-label={`Ir para a etapa ${index + 1}: ${title}`}
                 >
                   <span className="wizard-progress-number">
                     {index < step ? (
@@ -609,11 +597,29 @@ export default function Questionnaire() {
           </aside>
 
           <div className="wizard-panel" ref={formTopRef}>
+            {/* Caixa Institucional VETOR MASTER */}
+            <div className="mb-6 p-5 rounded-xl border border-[#0066CC] bg-[#EAF3FD] text-[#333333] space-y-3">
+              <p className="text-sm sm:text-[15px] font-medium leading-relaxed">
+                Este documento é a base para o nosso trabalho. Diferente de formulários comuns, este
+                é um <strong>Dossiê Estratégico</strong>. Quanto mais precisas e transparentes forem
+                suas respostas, mais cirúrgico será o plano de ação gerado pelo nosso sistema de
+                Inteligência Estratégica
+              </p>
+              <p className="text-sm sm:text-[15px] font-medium leading-relaxed text-[#004f9f]">
+                Não oferecemos teorias de gaveta. O Dossiê de Planejamento Estratégico é um raio-x
+                cirúrgico da sua operação atual. Baseado nas suas respostas, você receberá um mapa
+                claro apontando os gargalos que estão travando seu crescimento e as alavancas
+                imediatas para proteger seu caixa e otimizar sua gestão.
+              </p>
+            </div>
+
             <header className="wizard-panel-header">
               <span className="wizard-panel-eyebrow">
                 ETAPA {String(step + 1).padStart(2, '0')} / {String(TOTAL_STEPS).padStart(2, '0')}
               </span>
-              <h2>{stepTitles[step]}</h2>
+              <h2>
+                Setor de {sector.name} — {stepTitles[step]}
+              </h2>
               {currentSection && <p>{currentSection.subtitle}</p>}
               {step === nextStepsStep && (
                 <p>
