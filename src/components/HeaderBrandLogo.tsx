@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react'
 import faviconSymbol from '@/assets/logo-5-favicon-vetor-master-14jul26-4a4e9.png'
-import WordmarkSvg from '@/components/WordmarkSvg'
 
 interface HeaderBrandLogoProps {
   className?: string
@@ -12,11 +11,10 @@ interface HeaderBrandLogoProps {
  *
  * Composição aprovada:
  * - Símbolo hexagonal favicon (~44px desktop / ~34px mobile)
- * - Wordmark 100% vetorizado VETOR MASTER a partir da arte original:
- *   - Detalhes tipográficos preservados (corte/estilo exclusivo do A e do R)
- *   - "VETOR" em azul (#0066CC) e "MASTER" em verde (#22B14C)
- *   - SEM espaço entre as palavras (unidas harmonicamente como wordmark único)
- *   - Substitui o texto em fonte Inter 900 anterior
+ * - Wordmark em tipografia Inter 900:
+ *   - "VETOR" no azul #0066CC
+ *   - Espaço entre as duas palavras
+ *   - "MASTER" no verde #22B14C
  */
 export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLogoProps) {
   return (
@@ -33,9 +31,15 @@ export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLo
         />
       </div>
 
-      {/* Wordmark VETOR MASTER Vetorizado Original — Sem espaço entre as palavras */}
+      {/* Wordmark VETOR MASTER tipográfico Inter 900 com espaço entre as palavras */}
       <div className="header-wordmark-container flex items-center" aria-label="VETOR MASTER">
-        <WordmarkSvg className="header-wordmark-vector" />
+        <span className="header-wordmark font-black tracking-tight" translate="no">
+          <span className="wordmark-vetor">VETOR</span>
+          <span className="wordmark-space" aria-hidden="true">
+            {' '}
+          </span>
+          <span className="wordmark-master">MASTER</span>
+        </span>
       </div>
     </div>
   )

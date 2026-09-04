@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Roboto:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -319,21 +319,19 @@ footer[id],
   transform-origin: center center;
 }
 
-/* Wordmark vetorizado VETOR MASTER no cabeçalho */
+/* Wordmark tipográfico VETOR MASTER no cabeçalho (Inter 900) */
 .header-wordmark-container {
   display: flex;
   align-items: center;
   height: 44px;
 }
 
-.header-wordmark-vector {
-  height: 22px;
-  width: auto;
-  display: block;
-}
-
 .header-wordmark {
-  font-size: 1.35rem;
+  display: inline-flex;
+  align-items: baseline;
+  font-family: 'Inter', var(--font-heading);
+  font-size: 1.42rem;
+  font-weight: 900;
   line-height: 1;
   letter-spacing: -0.035em;
   font-feature-settings:
@@ -342,17 +340,18 @@ footer[id],
 }
 
 .wordmark-vetor {
-  color: var(--strategic-blue);
+  color: #0066cc;
   font-weight: 900;
   letter-spacing: -0.03em;
 }
 
 .wordmark-space {
-  font-size: 0.45rem;
+  display: inline-block;
+  width: 0.28em;
 }
 
 .wordmark-master {
-  color: var(--growth-green);
+  color: #22b14c;
   font-weight: 900;
   letter-spacing: -0.03em;
 }
@@ -2871,13 +2870,8 @@ footer[id],
     height: 34px;
   }
 
-  .header-wordmark-vector {
-    height: 18px;
-    width: auto;
-  }
-
   .header-wordmark {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
   .header-logo-svg {
