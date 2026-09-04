@@ -146,7 +146,7 @@ export function LeadsPage() {
   // Enquanto estiver validando token inicial do authStore contra o servidor
   if (isValidating) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center pt-[180px] max-md:pt-[150px]">
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center pt-[144px] max-md:pt-[118px]">
         <Loader2 className="w-8 h-8 text-[#0066CC] animate-spin mb-4" />
         <h2 className="text-lg font-semibold text-gray-800">Validando credenciais...</h2>
         <p className="text-sm text-gray-500 mt-1">
@@ -162,7 +162,7 @@ export function LeadsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] pb-16 pt-[180px] max-md:pt-[150px]">
+    <div className="min-h-screen bg-[#F5F7FA] pb-16 pt-[144px] max-md:pt-[118px]">
       <div className="site-container max-w-7xl mx-auto px-4 sm:px-6">
         {/* Barra de Topo do Painel */}
         <header className="bg-white rounded-2xl border border-gray-200/80 p-5 mb-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">

@@ -119,7 +119,7 @@ section[id],
 div[id],
 footer[id],
 [id] {
-  scroll-margin-top: 152px;
+  scroll-margin-top: 116px;
 }
 
 /* Headings */
@@ -248,8 +248,8 @@ footer[id],
   top: 0;
   right: 0;
   left: 0;
-  /* Altura compactada para 152px no desktop com 6px de respiro vertical para a logo de 140px */
-  height: 152px;
+  /* Altura compactada para 116px no desktop com 8px de respiro vertical para a logo de 100px */
+  height: 116px;
   border-bottom: 1px solid rgba(0, 102, 204, 0.09);
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
@@ -288,18 +288,18 @@ footer[id],
 .header-logo-wrap {
   display: flex;
   align-items: center;
-  height: 140px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  height: 100px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   box-sizing: content-box;
   max-width: 420px;
 }
 
-/* Logo 5e (1536x864, proporção 16:9): exatamente 140px de altura mantida.
-   A largura acompanha via width:auto (~249px), sem estourar o menu. */
+/* Logo 5e (1536x864, proporção 16:9): exatamente 100px de altura aprovada pela cliente.
+   A largura acompanha via width:auto (~178px), mantendo excelente proporção e respiro. */
 .header-logo-img,
 .header-logo-svg {
-  height: 140px;
+  height: 100px;
   width: auto;
   max-width: 400px;
   object-fit: contain;
@@ -442,8 +442,8 @@ footer[id],
 .hero-section {
   position: relative;
   overflow: hidden;
-  /* Header fixo tem ~152px de altura. Compensamos os 152px + 14px de respiro estético inicial */
-  padding: 166px 0 44px;
+  /* Header fixo tem ~116px de altura. Compensamos os 116px + 14px de respiro estético inicial */
+  padding: 130px 0 44px;
   scroll-margin-top: 0px;
   background:
     radial-gradient(circle at 86% 18%, rgba(34, 177, 76, 0.07), transparent 32%),
@@ -2475,7 +2475,7 @@ footer[id],
    FOOTER (Logo 5 Oficial Stacked em destaque no rodapé)
    ===================================================================== */
 .site-footer {
-  scroll-margin-top: 152px;
+  scroll-margin-top: 116px;
   padding: 56px 0 0;
   background: var(--dark);
   color: rgba(255, 255, 255, 0.7);
@@ -2667,7 +2667,7 @@ footer[id],
   }
 
   .hero-section {
-    padding: 170px 0 40px;
+    padding: 134px 0 40px;
   }
 
   .hero-grid {
@@ -2761,7 +2761,7 @@ footer[id],
   div[id],
   footer[id],
   [id] {
-    scroll-margin-top: 124px;
+    scroll-margin-top: 92px;
   }
 
   .hero-section#inicio,
@@ -2786,22 +2786,22 @@ footer[id],
   }
 
   .site-header {
-    height: 124px;
+    height: 92px;
   }
 
   .header-logo-wrap {
-    height: 112px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    height: 76px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     box-sizing: content-box;
-    max-width: 240px;
+    max-width: 220px;
   }
 
-  /* Logo 5e no mobile: 112px = 2x os 56px originais (~199px de largura,
-     cabe ao lado do menu hambúrguer a partir de 320px) */
+  /* Logo 5e no mobile: 76px (~135px de largura, proporção perfeita
+     e respiro amplo ao lado do menu hambúrguer a partir de 320px) */
   .header-logo-svg {
-    height: 112px;
-    max-width: 220px;
+    height: 76px;
+    max-width: 200px;
   }
 
   .footer-logo-wrap {
@@ -2814,7 +2814,7 @@ footer[id],
   }
 
   .hero-section {
-    padding: 134px 0 36px;
+    padding: 106px 0 36px;
   }
 
   .hero-overline {
@@ -2946,7 +2946,7 @@ footer[id],
    PÁGINA "PARA SEU SETOR" (rota própria /setores)
    ===================================================================== */
 .sectors-page-hero {
-  padding: 196px 0 44px;
+  padding: 160px 0 44px;
   background:
     radial-gradient(circle at 88% 12%, rgba(34, 177, 76, 0.07), transparent 30%),
     linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
@@ -3098,7 +3098,7 @@ footer[id],
    QUESTIONÁRIO ESTRATÉGICO (rota /questionario/:sectorId)
    ===================================================================== */
 .wizard-hero {
-  padding: 196px 0 36px;
+  padding: 160px 0 36px;
   background:
     radial-gradient(circle at 90% 10%, rgba(34, 177, 76, 0.06), transparent 28%),
     linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
@@ -3647,7 +3647,7 @@ footer[id],
   flex-direction: column;
   align-items: center;
   min-height: 70vh;
-  padding: 216px 24px 80px;
+  padding: 180px 24px 80px;
   background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
   text-align: center;
 }
@@ -3716,7 +3716,7 @@ footer[id],
   .sectors-page-hero,
   .wizard-hero,
   .wizard-success {
-    padding-top: 176px;
+    padding-top: 140px;
   }
 
   .sectors-page-grid {
@@ -3751,7 +3751,7 @@ footer[id],
 
   .sectors-page-hero,
   .wizard-hero {
-    padding-top: 148px;
+    padding-top: 116px;
   }
 
   .wizard-hero-topline {
@@ -3760,7 +3760,7 @@ footer[id],
   }
 
   .wizard-success {
-    padding-top: 148px;
+    padding-top: 116px;
   }
 
   .wizard-nav {
