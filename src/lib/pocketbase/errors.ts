@@ -4,39 +4,7 @@ export type FieldErrors = Record<string, string>
 
 export function isAuthError(error: unknown): boolean {
   if (error instanceof ClientResponseError) {
-    if (error.status === 401 || error.status === 403) return true
-    if (error.status === 400) {
-      const msg = (error.message || '').toLowerCase()
-      const respMsg = (error.response?.message || '').toLowerCase()
-      if (
-        msg.includes('auth') ||
-        msg.includes('token') ||
-        msg.includes('record not found') ||
-        respMsg.includes('auth') ||
-        respMsg.includes('token') ||
-        respMsg.includes('failed to authenticate') ||
-        respMsg.includes('something went wrong while processing your request')
-      ) {
-        return true
-      }
-    }
-    return false
-  }
-  if (error && typeof error === 'object') {
-    const status =
-      (error as { status?: unknown; statusCode?: unknown }).status ??
-      (error as { statusCode?: unknown }).statusCode
-    if (status === 401 || status === 403) return true
-    const msg = String((error as { message?: unknown }).message || '').toLowerCase()
-    if (
-      msg.includes('unauthorized') ||
-      msg.includes('forbidden') ||
-      msg.includes('invalid token') ||
-      msg.includes('token expired') ||
-      msg.includes('failed to authenticate')
-    ) {
-      return true
-    }
+    return error.status === 401 || error.status === 403
   }
   return false
 }
@@ -54,24 +22,63 @@ export function extractFieldErrors(error: unknown): FieldErrors {
       typeof (detail as { message: unknown }).message === 'string'
     ) {
       errors[field] = (detail as { message: string }).message
-    } else if (typeof detail === 'string') {
-      errors[field] = detail
     }
   }
   return errors
 }
 
 export function getErrorMessage(error: unknown): string {
+  if (!error) return 'Ocorreu um erro inesperado ao processar a solicitação.'
+
   if (!(error instanceof ClientResponseError)) {
-    return error instanceof Error ? error.message : 'Ocorreu um erro inesperado.'
+    if (error instanceof Error) {
+      if (error.message.toLowerCase().includes('something went wrong')) {
+        return 'Falha ao conectar com o servidor. Verifique sua conexão e tente novamente.'
+      }
+      return error.message
+    }
+    return 'Ocorreu um erro inesperado ao processar a solicitação.'
   }
+
+  // Se for erro do PocketBase (ClientResponseError)
   const fieldErrors = extractFieldErrors(error)
-  const entries = Object.entries(fieldErrors)
-  if (entries.length > 0) {
-    return entries.map(([field, msg]) => `${field}: ${msg}`).join(' | ')
+  const fieldEntries = Object.entries(fieldErrors)
+
+  if (fieldEntries.length > 0) {
+    const fieldTranslations: Record<string, string> = {
+      contrato_social: 'Contrato Social',
+      certificacoes: 'Comprovantes de Certificações',
+      documentacao_adicional: 'Documentação Adicional',
+      setor: 'Setor',
+      setor_id: 'Identificador do Setor',
+      cadastro: 'Dados de Cadastro',
+      respostas: 'Respostas do Questionário',
+      autorizacao_devolutiva: 'Autorização de Devolutiva',
+      formato_interesse: 'Formato de Interesse',
+      responsavel_documentos: 'Responsável pelos Documentos',
+      status: 'Status',
+    }
+
+    const messages = fieldEntries.map(([field, msg]) => {
+      const translated = fieldTranslations[field] || field
+      return `${translated}: ${msg}`
+    })
+    return `Não foi possível enviar: ${messages.join(' · ')}`
   }
-  if (error.response?.message) {
-    return error.response.message
+
+  const rawMsg = (error.message || '').trim()
+  if (!rawMsg || rawMsg.toLowerCase().includes('something went wrong')) {
+    if (error.status === 400) {
+      return 'Dados incompletos ou arquivo em formato/tamanho não suportado (máx. 100 MB por arquivo). Verifique os campos e tente novamente.'
+    }
+    if (error.status === 413) {
+      return 'Os arquivos anexados excederam o limite permitido (máximo de 100 MB por arquivo).'
+    }
+    if (error.status === 0) {
+      return 'Falha de comunicação de rede ao enviar os dados e arquivos. Verifique sua conexão e tente novamente.'
+    }
+    return `Falha no processamento (código ${error.status || 'desconhecido'}). Por favor, tente novamente.`
   }
-  return error.message || 'Ocorreu um erro inesperado ao salvar os dados.'
+
+  return rawMsg
 }

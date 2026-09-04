@@ -22,6 +22,7 @@ import { findSector } from '@/data/sectors'
 import { engagementFormats } from '@/data/questionnaire'
 import type { Question } from '@/data/questionnaire'
 import { getQuestionnaireSections } from '@/data/questionnaireSectors'
+import { getChosenPlan, saveStoredLead } from '@/lib/leadSession'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -73,11 +74,19 @@ function maskCNPJ(value: string): string {
 }
 
 function maskPhone(value: string): string {
-  return value
-    .replace(/\D/g, '')
-    .slice(0, 11)
-    .replace(/(\d{2})(\d)/, '($1) $2')
-    .replace(/(\d{5})(\d)/, '$1-$2')
+  const digits = value.replace(/\D/g, '').slice(0, 11)
+  if (digits.length <= 2) {
+    return digits.length > 0 ? `(${digits}` : ''
+  }
+  if (digits.length <= 6) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+  }
+  if (digits.length <= 10) {
+    // Formato telefone fixo (XX) XXXX-XXXX (10 dígitos)
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+  }
+  // Formato celular móvel (XX) 9XXXX-XXXX (11 dígitos)
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`
 }
 
 function maskDate(value: string): string {
@@ -179,7 +188,7 @@ export default function Questionnaire() {
       )
       return {
         ...prev,
-        [group]: [...existing, ...uniqueIncoming].slice(0, 10),
+        [group]: [...existing, ...uniqueIncoming].slice(0, 15),
       }
     })
   }
@@ -220,7 +229,7 @@ export default function Questionnaire() {
           Boolean(cadastro.nomeCompleto.trim()) &&
           Boolean(cadastro.empresa.trim()) &&
           isValidEmail(cadastro.email) &&
-          cadastro.whatsapp.replace(/\D/g, '').length >= 10
+          cadastro.whatsapp.replace(/\D/g, '').length === 11
         )
       }
 
@@ -264,8 +273,10 @@ export default function Questionnaire() {
       if (!cadastro.nomeCompleto.trim()) errors.push('Informe o nome completo.')
       if (!cadastro.empresa.trim()) errors.push('Informe a empresa.')
       if (!isValidEmail(cadastro.email)) errors.push('Informe um e-mail corporativo válido.')
-      if (cadastro.whatsapp.replace(/\D/g, '').length < 10)
-        errors.push('Informe um WhatsApp válido com DDD.')
+      const phoneDigits = cadastro.whatsapp.replace(/\D/g, '')
+      if (phoneDigits.length !== 11) {
+        errors.push('Informe um celular/WhatsApp com DDD válido de 11 dígitos: (XX) 9XXXX-XXXX.')
+      }
       return errors
     }
 
@@ -328,6 +339,14 @@ export default function Questionnaire() {
       question.id === 'data' ||
       /data/i.test(question.label) ||
       question.placeholder?.toLowerCase().includes('dd/mm')
+    const isPhoneField =
+      question.id.endsWith('_celular') ||
+      question.id.endsWith('_telefone') ||
+      question.id.endsWith('_whatsapp') ||
+      question.id === 'celular' ||
+      question.id === 'telefone' ||
+      question.id === 'whatsapp' ||
+      /celular|whatsapp|telefone/i.test(question.label)
 
     return (
       <Input
@@ -339,10 +358,14 @@ export default function Questionnaire() {
             val = maskCNPJ(val)
           } else if (isDateField) {
             val = maskDate(val)
+          } else if (isPhoneField) {
+            val = maskPhone(val)
           }
           setAnswer(question.id, val)
         }}
-        placeholder={isDateField ? 'DD/MM/AAAA' : question.placeholder}
+        placeholder={
+          isDateField ? 'DD/MM/AAAA' : isPhoneField ? '(00) 90000-0000' : question.placeholder
+        }
       />
     )
   }
@@ -391,6 +414,20 @@ export default function Questionnaire() {
 
     return (
       <div className="wizard-files">
+        {/* Banner claro e destacado com limites permitidos */}
+        <div className="p-4 rounded-xl border border-blue-200 bg-[#EAF3FD] text-[#004f9f] space-y-1.5 shadow-sm">
+          <div className="flex items-center gap-2 font-bold text-sm text-[#0066CC]">
+            <Paperclip className="w-4 h-4 text-[#0066CC]" />
+            <span>Limites e Formatos Suportados de Arquivos</span>
+          </div>
+          <p className="text-xs sm:text-[13px] text-gray-700 leading-relaxed">
+            • <strong>Tamanho máximo permitido:</strong> até <strong>100 MB por arquivo</strong>.
+            <br />• <strong>Quantidade máxima:</strong> até <strong>15 arquivos por campo</strong>.
+            <br />• <strong>Formatos aceitos:</strong> PDF, Word (.doc, .docx), Excel (.xls, .xlsx,
+            .csv), Imagens (JPG, PNG, WEBP), Arquivos Compactados (ZIP) e TXT.
+          </p>
+        </div>
+
         {groups.map((group) => (
           <div className="wizard-file-group" key={group.key}>
             <div className="wizard-file-group-head">
@@ -559,14 +596,15 @@ export default function Questionnaire() {
             />
           </div>
           <div className="wizard-field">
-            <Label htmlFor="cadastro-whatsapp">WhatsApp *</Label>
+            <Label htmlFor="cadastro-whatsapp">Celular / WhatsApp (11 dígitos) *</Label>
             <Input
               id="cadastro-whatsapp"
               value={cadastro.whatsapp}
               onChange={(event) =>
                 setCadastro((prev) => ({ ...prev, whatsapp: maskPhone(event.target.value) }))
               }
-              placeholder="(00) 00000-0000"
+              placeholder="(00) 90000-0000"
+              maxLength={15}
             />
           </div>
         </div>
@@ -666,6 +704,9 @@ export default function Questionnaire() {
         answers.cargo ||
         ''
 
+      // Verificar se o visitante escolheu previamente um plano no botão Selecionar Plano
+      const memorizedPlan = getChosenPlan()
+
       const consolidatedCadastro = {
         ...cadastro,
         empresa: cadastro.empresa || inheritedRazaoSocial,
@@ -673,6 +714,7 @@ export default function Questionnaire() {
         cargo: inheritedCargo,
         cnpj: inheritedCnpj,
         faturamento: inheritedFaturamento,
+        planoEscolhido: memorizedPlan || undefined,
       }
 
       // Preparar FormData único para create atômico com arquivos
@@ -681,7 +723,7 @@ export default function Questionnaire() {
       formData.append('setor_id', sector.id)
       formData.append('cadastro', JSON.stringify(consolidatedCadastro))
       formData.append('respostas', JSON.stringify(answers))
-      // Normalizar autorizacao_devolutiva para o formato completo esperado pelo banco ("Sim, autorizo" ou "Não autorizo")
+      // Normalizar autorizacao_devolutiva para o formato aceito pelo schema
       let normalizedAutorizacao = autorizacaoDevolutiva
       if (autorizacaoDevolutiva === 'Sim') {
         normalizedAutorizacao = 'Sim, autorizo'
@@ -695,22 +737,43 @@ export default function Questionnaire() {
       if (responsavelDocumentos) formData.append('responsavel_documentos', responsavelDocumentos)
       formData.append('status', 'novo')
 
+      // Anexar apenas instâncias válidas de File com nome e tamanho > 0
       for (const file of files.contratoSocial) {
-        formData.append('contrato_social', file)
+        if (file instanceof File && file.size > 0) {
+          formData.append('contrato_social', file)
+        }
       }
       for (const file of files.certificacoes) {
-        formData.append('certificacoes', file)
+        if (file instanceof File && file.size > 0) {
+          formData.append('certificacoes', file)
+        }
       }
       for (const file of files.documentacaoAdicional) {
-        formData.append('documentacao_adicional', file)
+        if (file instanceof File && file.size > 0) {
+          formData.append('documentacao_adicional', file)
+        }
       }
 
       const created = await pb.collection('leads').create(formData)
 
+      // Salvar estado da submissão no leadSession para habilitar o Cenário B em "Selecionar Plano"
+      saveStoredLead({
+        leadId: created.id,
+        empresa: consolidatedCadastro.empresa,
+        nomeCompleto: consolidatedCadastro.nomeCompleto,
+        email: consolidatedCadastro.email,
+        setor: sector.name,
+        submittedAt: new Date().toISOString(),
+        planoEscolhido: memorizedPlan || undefined,
+        statusDevolutiva: 'aguardando',
+      })
+
       setSubmittedId(created.id)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error) {
-      setSubmitError(getErrorMessage(error))
+      console.error('Erro na submissão do questionário:', error)
+      const errorMsg = getErrorMessage(error)
+      setSubmitError(errorMsg)
     } finally {
       setSubmitting(false)
     }
@@ -779,13 +842,11 @@ export default function Questionnaire() {
             <ol>
               {stepTitles.map((title, index) => {
                 const complete = isStepComplete(index)
-                // Regra de navegação:
-                // 1. Etapa atual sempre navegável (index === step)
-                // 2. Qualquer etapa que já foi 100% preenchida (complete) é livremente navegável a qualquer momento (voltar ou revisitar)
-                // 3. Etapas anteriores ao ponto mais avançado que já foram completas permanecem acessíveis
-                // 4. Etapas futuras que NÃO estão preenchidas continuam bloqueadas (preserva regra da 0.0.25)
-                const canNavigate =
-                  index === step || complete || (index <= highestReachedStep && complete)
+                // Regra de navegação solicitada pelo usuário:
+                // 1. O usuário precisa poder IR E VOLTAR para qualquer etapa já iniciada (index <= highestReachedStep), inclusive parcialmente preenchida.
+                // 2. Etapas futuras ainda não alcançadas (index > highestReachedStep) permanecem bloqueadas até as anteriores serem alcançadas/preenchidas.
+                // 3. A barra lateral é totalmente clicável para as etapas acessíveis.
+                const canNavigate = index <= highestReachedStep
 
                 return (
                   <li
@@ -797,7 +858,6 @@ export default function Questionnaire() {
                       if (!canNavigate) return
                       setStepErrors([])
                       setStep(index)
-                      setHighestReachedStep((curr) => Math.max(curr, index))
                       scrollToTop()
                     }}
                     role="button"
@@ -809,7 +869,6 @@ export default function Questionnaire() {
                         e.preventDefault()
                         setStepErrors([])
                         setStep(index)
-                        setHighestReachedStep((curr) => Math.max(curr, index))
                         scrollToTop()
                       }
                     }}

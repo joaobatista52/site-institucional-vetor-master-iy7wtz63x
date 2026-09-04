@@ -37,6 +37,7 @@ import {
 
 import BrandLogo from '@/components/BrandLogo'
 import { SectorModal } from '@/components/SectorModal'
+import { PlanSelectionModal, type PlanData } from '@/components/PlanSelectionModal'
 import founderPhoto from '@/assets/foto-jbp-linkedin-copia-1-d051a.png'
 import prisaoFundadorImg from '@/assets/prisao-do-fundador-1-27ago26-0a050.png'
 import {
@@ -417,6 +418,8 @@ function HeroPattern() {
 export default function Index() {
   const [selectedSectorId, setSelectedSectorId] = useState<string>('saude')
   const [sectorModalOpen, setSectorModalOpen] = useState(false)
+  const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanData | null>(null)
+  const [planModalOpen, setPlanModalOpen] = useState(false)
 
   const activeSector = allSectors.find((s) => s.id === selectedSectorId) || allSectors[0]
 
@@ -1062,16 +1065,18 @@ export default function Index() {
                   </p>
                   <div className="solution-action">
                     <Button
+                      type="button"
                       className={
                         solution.featured
                           ? 'conversion-button w-full'
                           : 'solution-button-outline w-full'
                       }
-                      asChild
+                      onClick={() => {
+                        setSelectedPlanForModal(solution)
+                        setPlanModalOpen(true)
+                      }}
                     >
-                      <a href={whatsappLink} target="_blank" rel="noreferrer">
-                        Selecionar plano <ArrowRight aria-hidden="true" />
-                      </a>
+                      Selecionar plano <ArrowRight aria-hidden="true" />
                     </Button>
                   </div>
                 </article>
@@ -1213,6 +1218,13 @@ export default function Index() {
         onOpenChange={setSectorModalOpen}
         title="Comece seu diagnóstico agora"
         description="Escolha o segmento da sua empresa para direcionarmos o Questionário Estratégico com foco nos gargalos e alavancas da sua operação."
+      />
+
+      <PlanSelectionModal
+        open={planModalOpen}
+        onOpenChange={setPlanModalOpen}
+        plan={selectedPlanForModal}
+        onProceedToQuestionnaire={() => setSectorModalOpen(true)}
       />
     </>
   )

@@ -339,7 +339,9 @@ footer[id],
 
 .wordmark-vetor {
   color: #0066cc;
-  font-weight: 400;
+  font-weight: 700;
+  -webkit-text-stroke: 0.35px #0066cc;
+  text-shadow: 0 0 0.4px #0066cc;
 }
 
 .wordmark-space {
@@ -349,7 +351,9 @@ footer[id],
 
 .wordmark-master {
   color: #22b14c;
-  font-weight: 400;
+  font-weight: 700;
+  -webkit-text-stroke: 0.35px #22b14c;
+  text-shadow: 0 0 0.4px #22b14c;
 }
 
 /* Compatibilidade caso header-logo-svg/img seja invocado */

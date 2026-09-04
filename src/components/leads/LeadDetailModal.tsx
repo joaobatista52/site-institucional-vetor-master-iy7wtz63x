@@ -289,7 +289,7 @@ export function LeadDetailModal({
             </div>
 
             {/* Condições de Devolutiva e Interesse */}
-            <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-slate-50 p-3 rounded-lg">
+            <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs bg-slate-50 p-3 rounded-lg">
               <div>
                 <span className="text-gray-500 block">Autorização Devolutiva:</span>
                 <span className="font-semibold text-gray-800">
@@ -300,6 +300,12 @@ export function LeadDetailModal({
                 <span className="text-gray-500 block">Formato de Interesse:</span>
                 <span className="font-semibold text-gray-800">
                   {lead.formato_interesse || 'Não preenchido'}
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-500 block">Plano Selecionado:</span>
+                <span className="font-semibold text-[#0066CC]">
+                  {cadastro.planoEscolhido || 'Não selecionado'}
                 </span>
               </div>
               <div>

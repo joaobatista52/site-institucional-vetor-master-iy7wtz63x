@@ -9,6 +9,7 @@ export interface LeadCadastro {
   cnpj?: string
   faturamento?: string
   cargo?: string
+  planoEscolhido?: string
   [key: string]: unknown
 }
 
