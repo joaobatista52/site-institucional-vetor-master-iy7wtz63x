@@ -6,6 +6,7 @@ import {
   getFileUrl,
   updateLeadStatus,
 } from '@/services/leads'
+import { isAuthError } from '@/lib/pocketbase/errors'
 import { getQuestionnaireSections } from '@/data/questionnaireSectors'
 import { findSector } from '@/data/sectors'
 import {
@@ -47,6 +48,7 @@ interface LeadDetailModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onStatusUpdated?: (updatedLead: LeadRecord) => void
+  onAuthError?: () => void
 }
 
 const statusOptions: { value: LeadStatus; label: string; color: string }[] = [
@@ -74,9 +76,11 @@ export function LeadDetailModal({
   open,
   onOpenChange,
   onStatusUpdated,
+  onAuthError,
 }: LeadDetailModalProps) {
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({})
+  const [statusError, setStatusError] = useState<string | null>(null)
 
   if (!lead) return null
 
@@ -98,10 +102,18 @@ export function LeadDetailModal({
   const handleStatusChange = async (newStatus: LeadStatus) => {
     try {
       setUpdatingStatus(true)
+      setStatusError(null)
       const updated = await updateLeadStatus(lead.id, newStatus)
       if (onStatusUpdated) onStatusUpdated(updated)
     } catch (err) {
       console.error('Falha ao atualizar status', err)
+      if (isAuthError(err)) {
+        if (onAuthError) {
+          onAuthError()
+          return
+        }
+      }
+      setStatusError('Erro ao atualizar status. Verifique sua permissão.')
     } finally {
       setUpdatingStatus(false)
     }
@@ -193,6 +205,11 @@ export function LeadDetailModal({
 
         {/* Corpo com abas de informação */}
         <div className="p-6 space-y-6">
+          {statusError && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">
+              {statusError}
+            </div>
+          )}
           {/* 1. Card de Informações Cadastrais */}
           <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <h3 className="text-sm font-bold text-[#0066CC] uppercase tracking-wider mb-4 flex items-center gap-2">

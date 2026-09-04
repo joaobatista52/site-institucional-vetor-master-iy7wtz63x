@@ -5,6 +5,7 @@ import type { LeadRecord, LeadStatus } from '@/services/leads'
 import { fetchLeads, parseLeadCadastro } from '@/services/leads'
 import { useAuth } from '@/services/auth'
 import { useRealtime } from '@/hooks/use-realtime'
+import { isAuthError, getErrorMessage } from '@/lib/pocketbase/errors'
 import { leadSectors } from '@/data/sectors'
 import LeadsLogin from '@/components/leads/LeadsLogin'
 import LeadDetailModal from '@/components/leads/LeadDetailModal'
@@ -53,7 +54,7 @@ const statusBadges: Record<string, { label: string; className: string }> = {
 }
 
 export function LeadsPage() {
-  const { user, isValid, logout } = useAuth()
+  const { user, isValid, isValidating, logout } = useAuth()
   const [leads, setLeads] = useState<LeadRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -77,21 +78,24 @@ export function LeadsPage() {
       setLeads(data.items)
     } catch (err: unknown) {
       console.error('Erro ao carregar leads:', err)
-      const message =
-        err && typeof err === 'object' && 'message' in err
-          ? String(err.message)
-          : 'Erro ao carregar a lista de leads.'
+      if (isAuthError(err)) {
+        // Sessão inválida/expirada detectada durante a consulta
+        logout()
+        setLeads([])
+        return
+      }
+      const message = getErrorMessage(err) || 'Erro ao carregar a lista de leads.'
       setError(message)
     } finally {
       setLoading(false)
     }
-  }, [isValid])
+  }, [isValid, logout])
 
   useEffect(() => {
-    if (isValid) {
+    if (isValid && !isValidating) {
       loadLeads()
     }
-  }, [isValid, loadLeads])
+  }, [isValid, isValidating, loadLeads])
 
   // Inscrição em tempo real para novos leads e atualizações
   useRealtime<LeadRecord>(
@@ -139,7 +143,20 @@ export function LeadsPage() {
     })
   }, [leads, searchTerm, selectedSector, selectedStatus])
 
-  // Se não estiver logado, exibe tela de login
+  // Enquanto estiver validando token inicial do authStore contra o servidor
+  if (isValidating) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+        <Loader2 className="w-8 h-8 text-[#0066CC] animate-spin mb-4" />
+        <h2 className="text-lg font-semibold text-gray-800">Validando credenciais...</h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Verificando sua sessão com o servidor do VETOR MASTER.
+        </p>
+      </div>
+    )
+  }
+
+  // Se não estiver logado ou token for inválido, exibe tela de login imediatamente
   if (!isValid) {
     return <LeadsLogin onSuccess={() => loadLeads()} />
   }
@@ -473,6 +490,11 @@ export function LeadsPage() {
           lead={selectedLead}
           open={modalOpen}
           onOpenChange={setModalOpen}
+          onAuthError={() => {
+            setModalOpen(false)
+            setSelectedLead(null)
+            logout()
+          }}
           onStatusUpdated={(updated) => {
             setLeads((prev) => prev.map((l) => (l.id === updated.id ? updated : l)))
             setSelectedLead(updated)

@@ -38,7 +38,16 @@ export function useRealtime<TRecord extends RecordModel = RecordModel>(
           unsubscribeFn = fn
         }
       })
-      .catch(() => {})
+      .catch((err) => {
+        if (
+          err &&
+          typeof err === 'object' &&
+          'status' in err &&
+          (err.status === 401 || err.status === 403)
+        ) {
+          pb.authStore.clear()
+        }
+      })
 
     return () => {
       cancelled = true
