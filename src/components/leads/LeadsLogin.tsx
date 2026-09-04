@@ -33,7 +33,7 @@ export function LeadsLogin({ onSuccess }: LeadsLoginProps) {
   }
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-[120px] max-md:pt-[96px]">
+    <div className="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-[92px] max-md:pt-[76px]">
       <Card className="w-full max-w-md shadow-xl border-[#0066CC]/20 bg-white">
         <CardHeader className="text-center space-y-2 pb-6">
           <div className="mx-auto w-12 h-12 rounded-full bg-[#EAF3FD] flex items-center justify-center text-[#0066CC]">

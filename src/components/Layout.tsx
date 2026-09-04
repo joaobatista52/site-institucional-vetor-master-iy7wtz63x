@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Mail, Menu, MessageCircle } from 'lucide-react'
 
 import BrandLogoComponent from '@/components/BrandLogo'
+import HeaderBrandLogo from '@/components/HeaderBrandLogo'
 import { SectorModal } from '@/components/SectorModal'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,8 +29,8 @@ const whatsappLink =
 function HeaderLogo() {
   return (
     <Link className="brand-logo header-logo-wrap" to="/" aria-label="VETOR MASTER — Início">
-      {/* Logo 5e (Variante horizontal no maior tamanho possível) */}
-      <BrandLogoComponent variant="logo5e" className="header-logo-svg" />
+      {/* Novo cabeçalho: Símbolo favicon (~44px) + Wordmark VETOR MASTER */}
+      <HeaderBrandLogo />
     </Link>
   )
 }
