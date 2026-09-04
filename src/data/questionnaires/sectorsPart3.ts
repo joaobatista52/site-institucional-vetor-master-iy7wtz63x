@@ -204,7 +204,7 @@ export const agronegocioSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre produção, comercial e financeiro.',
     questions: [
       {
@@ -680,7 +680,7 @@ export const tecnologiaSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre produto, engenharia, comercial e CS.',
     questions: [
       {

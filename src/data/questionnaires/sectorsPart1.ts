@@ -214,7 +214,7 @@ export const saudeSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre direção e ponta assistencial.',
     questions: [
       {
@@ -695,7 +695,7 @@ export const servicosSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre direção e equipe técnica/consultores.',
     questions: [
       {

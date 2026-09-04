@@ -244,7 +244,7 @@ export const comercioInternacionalSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre comercial, fiscal e logística.',
     questions: [
       {
@@ -765,7 +765,7 @@ export const facilitiesSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre comercial, operação e financeiro.',
     questions: [
       {

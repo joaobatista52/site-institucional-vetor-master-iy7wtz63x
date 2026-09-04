@@ -207,7 +207,7 @@ export const educacaoSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre pedagógico, comercial e financeiro.',
     questions: [
       {
@@ -669,7 +669,7 @@ export const academiasSections: QuestionSection[] = [
   {
     id: 'secao4',
     stepNumber: 5,
-    title: 'SEÇÃO 4 — PILAR 3: ABISMO ESTRATÉGIA vs. EXECUÇÃO',
+    title: 'SEÇÃO 4 — PILAR 3: ABISMO ENTRE ESTRATÉGIA vs EXECUÇÃO',
     subtitle: 'Alinhamento entre comercial, operação e financeiro.',
     questions: [
       {

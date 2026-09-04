@@ -15,26 +15,24 @@ export function extractFieldErrors(error: unknown): FieldErrors {
       typeof (detail as { message: unknown }).message === 'string'
     ) {
       errors[field] = (detail as { message: string }).message
+    } else if (typeof detail === 'string') {
+      errors[field] = detail
     }
   }
   return errors
 }
 
-export function isAuthError(error: unknown): boolean {
-  if (error instanceof ClientResponseError) {
-    return error.status === 401 || error.status === 403
-  }
-  if (error && typeof error === 'object' && 'status' in error) {
-    const status = (error as { status: unknown }).status
-    return status === 401 || status === 403
-  }
-  return false
-}
-
 export function getErrorMessage(error: unknown): string {
   if (!(error instanceof ClientResponseError)) {
-    return error instanceof Error ? error.message : 'An unexpected error occurred.'
+    return error instanceof Error ? error.message : 'Ocorreu um erro inesperado.'
   }
-  const msgs = Object.values(extractFieldErrors(error))
-  return msgs.length > 0 ? msgs.join(' ') : error.message || 'An unexpected error occurred.'
+  const fieldErrors = extractFieldErrors(error)
+  const entries = Object.entries(fieldErrors)
+  if (entries.length > 0) {
+    return entries.map(([field, msg]) => `${field}: ${msg}`).join(' | ')
+  }
+  if (error.response?.message) {
+    return error.response.message
+  }
+  return error.message || 'Ocorreu um erro inesperado ao salvar os dados.'
 }
