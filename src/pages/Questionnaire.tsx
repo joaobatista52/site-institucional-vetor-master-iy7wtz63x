@@ -120,6 +120,7 @@ export default function Questionnaire() {
   const [autorizacaoDevolutiva, setAutorizacaoDevolutiva] = useState<string>('')
   const [formatoInteresse, setFormatoInteresse] = useState<string>('')
   const [responsavelDocumentos, setResponsavelDocumentos] = useState<string>('')
+  const [highestReachedStep, setHighestReachedStep] = useState<number>(0)
   const [stepErrors, setStepErrors] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -161,12 +162,26 @@ export default function Questionnaire() {
     setAnswers((prev) => ({ ...prev, [id]: value }))
   }
 
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
   function addFiles(group: FileGroup, incoming: FileList | null) {
     if (!incoming || incoming.length === 0) return
-    setFiles((prev) => ({
-      ...prev,
-      [group]: [...prev[group], ...Array.from(incoming)].slice(0, 10),
-    }))
+    const newFiles = Array.from(incoming)
+    setFiles((prev) => {
+      // Evitar duplicatas exatas pelo nome + tamanho
+      const existing = prev[group]
+      const uniqueIncoming = newFiles.filter(
+        (nf) => !existing.some((ef) => ef.name === nf.name && ef.size === nf.size),
+      )
+      return {
+        ...prev,
+        [group]: [...existing, ...uniqueIncoming].slice(0, 10),
+      }
+    })
   }
 
   function removeFile(group: FileGroup, index: number) {
@@ -262,7 +277,11 @@ export default function Questionnaire() {
     setStepErrors(errors)
     if (errors.length > 0) return
     setStepErrors([])
-    setStep((prev) => Math.min(prev + 1, TOTAL_STEPS - 1))
+    setStep((prev) => {
+      const nextStep = Math.min(prev + 1, TOTAL_STEPS - 1)
+      setHighestReachedStep((curr) => Math.max(curr, nextStep))
+      return nextStep
+    })
   }
 
   function handleBack() {
@@ -381,35 +400,17 @@ export default function Questionnaire() {
                 <p>{group.help}</p>
               </div>
             </div>
-            <div
-              className="wizard-file-dropzone"
-              onClick={() => {
-                const el = document.getElementById(
-                  `file-input-${group.key}`,
-                ) as HTMLInputElement | null
-                el?.click()
-              }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  const el = document.getElementById(
-                    `file-input-${group.key}`,
-                  ) as HTMLInputElement | null
-                  el?.click()
-                }
-              }}
+            <label
+              htmlFor={`file-input-${group.key}`}
+              className="wizard-file-dropzone cursor-pointer"
             >
               <FileUp aria-hidden="true" />
-              <span>Clique para anexar arquivos</span>
+              <span>Clique para selecionar ou anexar arquivos</span>
               <input
                 id={`file-input-${group.key}`}
                 type="file"
                 multiple
-                className="hidden"
-                style={{ display: 'none' }}
-                onClick={(e) => e.stopPropagation()}
+                className="sr-only"
                 onChange={(event) => {
                   if (event.target.files && event.target.files.length > 0) {
                     addFiles(group.key, event.target.files)
@@ -417,22 +418,45 @@ export default function Questionnaire() {
                   event.target.value = ''
                 }}
               />
-            </div>
-            {files[group.key].length > 0 && (
-              <ul className="wizard-file-list">
-                {files[group.key].map((file, index) => (
-                  <li key={`${file.name}-${index}`}>
-                    <span>{file.name}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeFile(group.key, index)}
-                      aria-label={`Remover ${file.name}`}
-                    >
-                      <Trash2 aria-hidden="true" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            </label>
+            {files[group.key].length > 0 ? (
+              <div className="mt-3">
+                <div className="flex items-center justify-between text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-200 mb-2">
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    {files[group.key].length} arquivo(s) pronto(s) para envio:
+                  </span>
+                </div>
+                <ul className="wizard-file-list">
+                  {files[group.key].map((file, index) => (
+                    <li key={`${file.name}-${file.size}-${index}`}>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Paperclip className="w-4 h-4 text-[#0066CC] shrink-0" />
+                        <span className="truncate font-medium">{file.name}</span>
+                        <span className="text-xs text-gray-500 shrink-0">
+                          ({formatFileSize(file.size)})
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          removeFile(group.key, index)
+                        }}
+                        aria-label={`Remover ${file.name}`}
+                        title="Remover arquivo"
+                      >
+                        <Trash2 aria-hidden="true" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground mt-2 italic">
+                Nenhum arquivo anexado ainda neste grupo.
+              </p>
             )}
           </div>
         ))}
@@ -657,7 +681,16 @@ export default function Questionnaire() {
       formData.append('setor_id', sector.id)
       formData.append('cadastro', JSON.stringify(consolidatedCadastro))
       formData.append('respostas', JSON.stringify(answers))
-      if (autorizacaoDevolutiva) formData.append('autorizacao_devolutiva', autorizacaoDevolutiva)
+      // Normalizar autorizacao_devolutiva para o formato completo esperado pelo banco ("Sim, autorizo" ou "Não autorizo")
+      let normalizedAutorizacao = autorizacaoDevolutiva
+      if (autorizacaoDevolutiva === 'Sim') {
+        normalizedAutorizacao = 'Sim, autorizo'
+      } else if (autorizacaoDevolutiva === 'Não') {
+        normalizedAutorizacao = 'Não autorizo'
+      }
+      if (normalizedAutorizacao) {
+        formData.append('autorizacao_devolutiva', normalizedAutorizacao)
+      }
       if (formatoInteresse) formData.append('formato_interesse', formatoInteresse)
       if (responsavelDocumentos) formData.append('responsavel_documentos', responsavelDocumentos)
       formData.append('status', 'novo')
@@ -746,8 +779,13 @@ export default function Questionnaire() {
             <ol>
               {stepTitles.map((title, index) => {
                 const complete = isStepComplete(index)
-                // Ajuste 1: só pode abrir etapas respondidas anteriores ou a etapa atual
-                const canNavigate = index === step || (index < step && complete)
+                // Regra de navegação:
+                // 1. Etapa atual sempre navegável (index === step)
+                // 2. Qualquer etapa que já foi 100% preenchida (complete) é livremente navegável a qualquer momento (voltar ou revisitar)
+                // 3. Etapas anteriores ao ponto mais avançado que já foram completas permanecem acessíveis
+                // 4. Etapas futuras que NÃO estão preenchidas continuam bloqueadas (preserva regra da 0.0.25)
+                const canNavigate =
+                  index === step || complete || (index <= highestReachedStep && complete)
 
                 return (
                   <li
@@ -759,6 +797,7 @@ export default function Questionnaire() {
                       if (!canNavigate) return
                       setStepErrors([])
                       setStep(index)
+                      setHighestReachedStep((curr) => Math.max(curr, index))
                       scrollToTop()
                     }}
                     role="button"
@@ -770,6 +809,7 @@ export default function Questionnaire() {
                         e.preventDefault()
                         setStepErrors([])
                         setStep(index)
+                        setHighestReachedStep((curr) => Math.max(curr, index))
                         scrollToTop()
                       }
                     }}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T16:22:37.584Z",
+  "generatedAt": "2026-09-04T17:55:02.699Z",
   "collections": [
     {
       "name": "users",
@@ -102,7 +102,7 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["Sim, autorizo", "Não autorizo"]
+          "selectValues": ["Sim, autorizo", "Não autorizo", "Sim", "Não"]
         },
         {
           "name": "formato_interesse",
