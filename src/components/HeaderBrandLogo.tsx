@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import faviconSymbol from '@/assets/logo-5-favicon-vetor-master-14jul26-4a4e9.png'
+import WordmarkSvg from '@/components/WordmarkSvg'
 
 interface HeaderBrandLogoProps {
   className?: string
@@ -7,14 +8,15 @@ interface HeaderBrandLogoProps {
 }
 
 /**
- * HeaderBrandLogo — Novo cabeçalho fino VETOR MASTER
+ * HeaderBrandLogo — Cabeçalho fixo VETOR MASTER
  *
  * Composição aprovada:
- * - Símbolo hexagonal favicon (~44px desktop / ~32-36px mobile) com corte de respiro branco
- * - Wordmark vetorizado VETOR MASTER com detalhes característicos preservados:
- *   - "VETOR" em azul estratégico (#0066CC) com o traço dinâmico/diagonal da perna direita do R
- *   - "MASTER" em verde (#22B14C) com a barra transversal do A elevada/moderna e perna do R estilizada
- *   - Tipografia Inter Bold (900/800) em conformidade com o guia de marca
+ * - Símbolo hexagonal favicon (~44px desktop / ~34px mobile)
+ * - Wordmark 100% vetorizado VETOR MASTER a partir da arte original:
+ *   - Detalhes tipográficos preservados (corte/estilo exclusivo do A e do R)
+ *   - "VETOR" em azul (#0066CC) e "MASTER" em verde (#22B14C)
+ *   - SEM espaço entre as palavras (unidas harmonicamente como wordmark único)
+ *   - Substitui o texto em fonte Inter 900 anterior
  */
 export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLogoProps) {
   return (
@@ -31,17 +33,9 @@ export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLo
         />
       </div>
 
-      {/* Wordmark VETOR MASTER Vetorizado */}
-      <div className="header-wordmark flex items-baseline tracking-tight" aria-label="VETOR MASTER">
-        <span className="wordmark-vetor font-heading font-black tracking-[-0.035em] text-[#0066CC]">
-          VETOR
-        </span>
-        <span className="wordmark-space font-heading font-black text-transparent select-none">
-          {' '}
-        </span>
-        <span className="wordmark-master font-heading font-black tracking-[-0.035em] text-[#22B14C]">
-          MASTER
-        </span>
+      {/* Wordmark VETOR MASTER Vetorizado Original — Sem espaço entre as palavras */}
+      <div className="header-wordmark-container flex items-center" aria-label="VETOR MASTER">
+        <WordmarkSvg className="header-wordmark-vector" />
       </div>
     </div>
   )

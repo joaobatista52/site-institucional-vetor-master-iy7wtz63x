@@ -319,6 +319,19 @@ footer[id],
   transform-origin: center center;
 }
 
+/* Wordmark vetorizado VETOR MASTER no cabeçalho */
+.header-wordmark-container {
+  display: flex;
+  align-items: center;
+  height: 44px;
+}
+
+.header-wordmark-vector {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
 .header-wordmark {
   font-size: 1.35rem;
   line-height: 1;
@@ -2852,6 +2865,15 @@ footer[id],
   .header-symbol-crop {
     width: 34px;
     height: 34px;
+  }
+
+  .header-wordmark-container {
+    height: 34px;
+  }
+
+  .header-wordmark-vector {
+    height: 18px;
+    width: auto;
   }
 
   .header-wordmark {
