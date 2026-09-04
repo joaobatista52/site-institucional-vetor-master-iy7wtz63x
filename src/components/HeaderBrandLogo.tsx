@@ -11,9 +11,9 @@ interface HeaderBrandLogoProps {
  *
  * Composição aprovada:
  * - Símbolo hexagonal favicon (~44px desktop / ~34px mobile)
- * - Wordmark em tipografia Inter 900:
+ * - Wordmark em tipografia Michroma (peso regular 400, fonte oficial):
  *   - "VETOR" no azul #0066CC
- *   - Espaço entre as duas palavras
+ *   - Espaço entre as duas palavras mantido (.wordmark-space)
  *   - "MASTER" no verde #22B14C
  */
 export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLogoProps) {
@@ -31,9 +31,9 @@ export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLo
         />
       </div>
 
-      {/* Wordmark VETOR MASTER tipográfico Inter 900 com espaço entre as palavras */}
+      {/* Wordmark VETOR MASTER tipográfico Michroma (regular 400) com espaço entre as palavras */}
       <div className="header-wordmark-container flex items-center" aria-label="VETOR MASTER">
-        <span className="header-wordmark font-black tracking-tight" translate="no">
+        <span className="header-wordmark" translate="no">
           <span className="wordmark-vetor">VETOR</span>
           <span className="wordmark-space" aria-hidden="true">
             {' '}

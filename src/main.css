@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Michroma&family=Roboto:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -319,7 +319,7 @@ footer[id],
   transform-origin: center center;
 }
 
-/* Wordmark tipográfico VETOR MASTER no cabeçalho (Inter 900) */
+/* Wordmark tipográfico VETOR MASTER no cabeçalho (Michroma regular 400) */
 .header-wordmark-container {
   display: flex;
   align-items: center;
@@ -329,31 +329,27 @@ footer[id],
 .header-wordmark {
   display: inline-flex;
   align-items: baseline;
-  font-family: 'Inter', var(--font-heading);
-  font-size: 1.42rem;
-  font-weight: 900;
+  font-family: 'Michroma', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.035em;
-  font-feature-settings:
-    'cv05' 1,
-    'cv11' 1;
+  letter-spacing: 0.02em;
+  text-rendering: optimizeLegibility;
 }
 
 .wordmark-vetor {
   color: #0066cc;
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  font-weight: 400;
 }
 
 .wordmark-space {
   display: inline-block;
-  width: 0.28em;
+  width: 0.32em;
 }
 
 .wordmark-master {
   color: #22b14c;
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  font-weight: 400;
 }
 
 /* Compatibilidade caso header-logo-svg/img seja invocado */
@@ -2871,7 +2867,8 @@ footer[id],
   }
 
   .header-wordmark {
-    font-size: 1.15rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.015em;
   }
 
   .header-logo-svg {
