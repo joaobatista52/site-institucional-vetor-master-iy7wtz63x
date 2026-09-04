@@ -23,6 +23,11 @@ import { engagementFormats } from '@/data/questionnaire'
 import type { Question } from '@/data/questionnaire'
 import { getQuestionnaireSections } from '@/data/questionnaireSectors'
 import { getChosenPlan, saveStoredLead } from '@/lib/leadSession'
+import {
+  clearQuestionnaireDraft,
+  loadQuestionnaireDraft,
+  saveQuestionnaireDraft,
+} from '@/lib/questionnaireDraft'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -147,7 +152,10 @@ export default function Questionnaire() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [submittedId, setSubmittedId] = useState<string | null>(null)
+  const [draftBannerVisible, setDraftBannerVisible] = useState(false)
+  const [draftSavedTime, setDraftSavedTime] = useState<string | null>(null)
   const formTopRef = useRef<HTMLDivElement>(null)
+  const isRestoredRef = useRef(false)
 
   useEffect(() => {
     if (!sector) navigate('/setores', { replace: true })
@@ -160,6 +168,119 @@ export default function Questionnaire() {
   const nextStepsStep = sections.length
   const docsStep = sections.length + 1
   const cadastroStep = sections.length + 2
+
+  // Restaurar rascunho salvo ao carregar o questionário do setor
+  useEffect(() => {
+    if (!sectorId) return
+    isRestoredRef.current = false
+    const draft = loadQuestionnaireDraft(sectorId)
+    if (draft) {
+      const hasContent =
+        Object.keys(draft.answers).length > 0 ||
+        Boolean(draft.cadastro.nomeCompleto) ||
+        Boolean(draft.cadastro.empresa) ||
+        Boolean(draft.cadastro.email) ||
+        Boolean(draft.cadastro.whatsapp) ||
+        Boolean(draft.autorizacaoDevolutiva) ||
+        Boolean(draft.formatoInteresse) ||
+        Boolean(draft.responsavelDocumentos) ||
+        draft.step > 0
+
+      if (hasContent) {
+        setStep(Math.min(draft.step, TOTAL_STEPS - 1))
+        setHighestReachedStep(Math.min(draft.highestReachedStep, TOTAL_STEPS - 1))
+        setAnswers(draft.answers || {})
+        setCadastro(draft.cadastro || emptyCadastro)
+        setAutorizacaoDevolutiva(draft.autorizacaoDevolutiva || '')
+        setFormatoInteresse(draft.formatoInteresse || '')
+        setResponsavelDocumentos(draft.responsavelDocumentos || '')
+        setDraftBannerVisible(true)
+        if (draft.savedAt) {
+          try {
+            const date = new Date(draft.savedAt)
+            setDraftSavedTime(
+              date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            )
+          } catch {
+            setDraftSavedTime(null)
+          }
+        }
+      }
+    } else {
+      setStep(0)
+      setHighestReachedStep(0)
+      setAnswers({})
+      setCadastro(emptyCadastro)
+      setAutorizacaoDevolutiva('')
+      setFormatoInteresse('')
+      setResponsavelDocumentos('')
+      setDraftBannerVisible(false)
+      setDraftSavedTime(null)
+    }
+    // Marcar como restaurado para liberar o auto-save subsequente
+    setTimeout(() => {
+      isRestoredRef.current = true
+    }, 50)
+  }, [sectorId])
+
+  // Salvar automaticamente a cada alteração após restauração inicial
+  useEffect(() => {
+    if (!sectorId || submittedId || !isRestoredRef.current) return
+
+    const hasAnyData =
+      Object.keys(answers).length > 0 ||
+      Boolean(cadastro.nomeCompleto) ||
+      Boolean(cadastro.empresa) ||
+      Boolean(cadastro.email) ||
+      Boolean(cadastro.whatsapp) ||
+      Boolean(autorizacaoDevolutiva) ||
+      Boolean(formatoInteresse) ||
+      Boolean(responsavelDocumentos) ||
+      step > 0
+
+    if (!hasAnyData) return
+
+    saveQuestionnaireDraft({
+      sectorId,
+      step,
+      highestReachedStep,
+      answers,
+      cadastro,
+      autorizacaoDevolutiva,
+      formatoInteresse,
+      responsavelDocumentos,
+    })
+  }, [
+    sectorId,
+    step,
+    highestReachedStep,
+    answers,
+    cadastro,
+    autorizacaoDevolutiva,
+    formatoInteresse,
+    responsavelDocumentos,
+    submittedId,
+  ])
+
+  function handleDiscardDraft() {
+    if (!sectorId) return
+    clearQuestionnaireDraft(sectorId)
+    setAnswers({})
+    setCadastro(emptyCadastro)
+    setAutorizacaoDevolutiva('')
+    setFormatoInteresse('')
+    setResponsavelDocumentos('')
+    setFiles({
+      contratoSocial: [],
+      certificacoes: [],
+      documentacaoAdicional: [],
+    })
+    setStep(0)
+    setHighestReachedStep(0)
+    setStepErrors([])
+    setDraftBannerVisible(false)
+    setDraftSavedTime(null)
+  }
 
   const totalQuestions = useMemo(
     () => sections.reduce((count, section) => count + section.questions.length, 0),
@@ -441,8 +562,17 @@ export default function Questionnaire() {
           </p>
         </div>
 
+        {draftBannerVisible && (
+          <p className="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+            <strong>Atenção:</strong> Por motivos de segurança e limite de dados do navegador, os
+            arquivos anexados não são salvos em rascunho local. Caso tenha adicionado anexos em uma
+            sessão anterior e reiniciado o navegador, certifique-se de selecioná-los abaixo.
+          </p>
+        )}
+
         {groups.map((group) => (
           <div className="wizard-file-group" key={group.key}>
+            {' '}
             <div className="wizard-file-group-head">
               <Paperclip aria-hidden="true" />
               <div>
@@ -795,6 +925,10 @@ export default function Questionnaire() {
 
       const created = await pb.collection('leads').create(formData)
 
+      // Limpar o rascunho do setor após envio bem-sucedido
+      clearQuestionnaireDraft(sector.id)
+      setDraftBannerVisible(false)
+
       // Salvar estado da submissão no leadSession para habilitar o Cenário B em "Selecionar Plano"
       saveStoredLead({
         leadId: created.id,
@@ -937,6 +1071,45 @@ export default function Questionnaire() {
           </aside>
 
           <div className="wizard-panel" ref={formTopRef}>
+            {/* Aviso discreto de rascunho restaurado com opção de reiniciar */}
+            {draftBannerVisible && (
+              <div className="mb-6 p-4 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm animate-in fade-in duration-300">
+                <div className="flex items-start sm:items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5 sm:mt-0" />
+                  <div className="text-xs sm:text-sm leading-relaxed">
+                    <span className="font-semibold text-emerald-950">
+                      Rascunho recuperado com sucesso.
+                    </span>{' '}
+                    Restauramos o preenchimento salvo anteriormente neste navegador
+                    {draftSavedTime ? ` (às ${draftSavedTime})` : ''}.
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleDiscardDraft}
+                    className="h-8 text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200"
+                    title="Apagar respostas salvas e reiniciar questionário"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 mr-1" />
+                    Começar do zero
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setDraftBannerVisible(false)}
+                    className="h-8 text-xs text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100/60"
+                    title="Fechar aviso"
+                  >
+                    Entendido
+                  </Button>
+                </div>
+              </div>
+            )}
+
             {/* Caixa Institucional VETOR MASTER */}
             <div className="mb-6 p-5 rounded-xl border border-[#0066CC] bg-[#EAF3FD] text-[#333333] space-y-3">
               <div className="p-3.5 rounded-lg border-2 border-[#0066CC] bg-white flex items-center gap-3 shadow-sm">
