@@ -369,6 +369,12 @@ export function LeadsPage() {
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
               {filteredLeads.map((lead) => {
                 const cadastro = parseLeadCadastro(lead)
+                const respostas =
+                  typeof lead.respostas === 'object' && lead.respostas
+                    ? (lead.respostas as Record<string, unknown>)
+                    : {}
+                const planoPretendido =
+                  cadastro.planoEscolhido || (respostas.plano_escolhido as string) || ''
                 const statusMeta = statusBadges[lead.status || 'novo'] || statusBadges.novo
                 const formattedDate = lead.created
                   ? new Date(lead.created).toLocaleDateString('pt-BR', {
@@ -414,6 +420,9 @@ export function LeadsPage() {
                           className="bg-[#0066CC]/5 text-[#0066CC] border-[#0066CC]/20 text-[11px] font-semibold"
                         >
                           {lead.setor || 'Setor'}
+                        </Badge>
+                        <Badge className="bg-[#0066CC] text-white border-transparent text-[11px] font-medium hover:bg-[#0055b3]">
+                          Plano Pretendido: {planoPretendido || 'Não especificado'}
                         </Badge>
                         <Badge
                           variant="outline"

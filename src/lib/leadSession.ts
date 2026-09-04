@@ -11,6 +11,7 @@ export interface StoredQuestionnaireLead {
 
 const STORAGE_KEY = 'vetormaster_submitted_lead'
 const CHOSEN_PLAN_KEY = 'vetormaster_chosen_plan'
+const SESSION_CHOSEN_PLAN_KEY = 'vetor_chosen_plan'
 
 export function getStoredLead(): StoredQuestionnaireLead | null {
   try {
@@ -32,7 +33,11 @@ export function saveStoredLead(lead: StoredQuestionnaireLead): void {
 
 export function getChosenPlan(): string | null {
   try {
-    return localStorage.getItem(CHOSEN_PLAN_KEY) || null
+    return (
+      sessionStorage.getItem(SESSION_CHOSEN_PLAN_KEY) ||
+      localStorage.getItem(CHOSEN_PLAN_KEY) ||
+      null
+    )
   } catch {
     return null
   }
@@ -40,6 +45,7 @@ export function getChosenPlan(): string | null {
 
 export function saveChosenPlan(planName: string): void {
   try {
+    sessionStorage.setItem(SESSION_CHOSEN_PLAN_KEY, planName)
     localStorage.setItem(CHOSEN_PLAN_KEY, planName)
     // Se já houver lead salvo, atualizar nele também
     const lead = getStoredLead()
@@ -48,6 +54,6 @@ export function saveChosenPlan(planName: string): void {
       saveStoredLead(lead)
     }
   } catch {
-    // localStorage unavailable
+    // storage unavailable
   }
 }

@@ -118,6 +118,19 @@ export default function Questionnaire() {
   const { sectorId } = useParams()
   const navigate = useNavigate()
   const sector = findSector(sectorId)
+
+  // Capturar e persistir plano escolhido via URL (?plano=...) se presente
+  useEffect(() => {
+    try {
+      const searchParams = new URLSearchParams(window.location.search)
+      const urlPlan = searchParams.get('plano')
+      if (urlPlan && urlPlan.trim()) {
+        sessionStorage.setItem('vetor_chosen_plan', urlPlan.trim())
+      }
+    } catch {
+      // Ignorar indisponibilidade de sessionStorage
+    }
+  }, [])
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [cadastro, setCadastro] = useState<CadastroData>(emptyCadastro)
@@ -707,6 +720,32 @@ export default function Questionnaire() {
       // Verificar se o visitante escolheu previamente um plano no botão Selecionar Plano
       const memorizedPlan = getChosenPlan()
 
+      // Ponto 4: Consolidar "Outro" nas respostas
+      // Quando answers[qId] === 'outro' (case-insensitive) e existir answers[`${qId}_outro`] ou variante como SegmentoOutro,
+      // consolidar como `Outro: ${texto}` no campo principal.
+      const consolidatedAnswers: Record<string, string> = { ...answers }
+
+      // Adicionar plano_escolhido em respostas para garantir redundância (Ponto 1)
+      if (memorizedPlan) {
+        consolidatedAnswers.plano_escolhido = memorizedPlan
+      }
+
+      // Consolidar perguntas com "Outro"
+      for (const [qId, val] of Object.entries(answers)) {
+        if (typeof val === 'string' && val.trim().toLowerCase() === 'outro') {
+          // Procurar campos complementares: qId_outro, qIdOutro, ou `${qId}Outro`
+          const outroText =
+            answers[`${qId}_outro`]?.trim() ||
+            answers[`${qId}Outro`]?.trim() ||
+            (qId.endsWith('_segmento')
+              ? answers[`${qId}Outro`]?.trim() || answers[`${qId}_outro`]?.trim()
+              : '')
+          if (outroText) {
+            consolidatedAnswers[qId] = `Outro: ${outroText}`
+          }
+        }
+      }
+
       const consolidatedCadastro = {
         ...cadastro,
         empresa: cadastro.empresa || inheritedRazaoSocial,
@@ -722,7 +761,7 @@ export default function Questionnaire() {
       formData.append('setor', sector.name)
       formData.append('setor_id', sector.id)
       formData.append('cadastro', JSON.stringify(consolidatedCadastro))
-      formData.append('respostas', JSON.stringify(answers))
+      formData.append('respostas', JSON.stringify(consolidatedAnswers))
       // Normalizar autorizacao_devolutiva para o formato aceito pelo schema
       let normalizedAutorizacao = autorizacaoDevolutiva
       if (autorizacaoDevolutiva === 'Sim') {
@@ -900,6 +939,13 @@ export default function Questionnaire() {
           <div className="wizard-panel" ref={formTopRef}>
             {/* Caixa Institucional VETOR MASTER */}
             <div className="mb-6 p-5 rounded-xl border border-[#0066CC] bg-[#EAF3FD] text-[#333333] space-y-3">
+              <div className="p-3.5 rounded-lg border-2 border-[#0066CC] bg-white flex items-center gap-3 shadow-sm">
+                <AlertTriangle className="w-5 h-5 text-[#0066CC] shrink-0" />
+                <span className="text-xs sm:text-sm font-bold text-[#0066CC] uppercase tracking-wide">
+                  TODAS AS PERGUNTAS DEVEM SER RESPONDIDAS PARA A ELABORAÇÃO COMPLETA DO DOSSIÊ
+                  ESTRATÉGICO.
+                </span>
+              </div>
               <p className="text-sm sm:text-[15px] font-medium leading-relaxed">
                 Este documento é a base para o nosso trabalho. Diferente de formulários comuns, este
                 é um <strong>Dossiê Estratégico</strong>. Quanto mais precisas e transparentes forem
@@ -955,10 +1001,7 @@ export default function Questionnaire() {
               <div className="wizard-questions">
                 {currentSection.questions.map((question) => (
                   <div className="wizard-question" key={question.id}>
-                    <Label htmlFor={question.id}>
-                      {question.label}
-                      {question.required ? <span className="wizard-required"> *</span> : null}
-                    </Label>
+                    <Label htmlFor={question.id}>{question.label}</Label>
                     {renderQuestionInput(question)}
                     {question.helpText ? (
                       <span className="wizard-help">{question.helpText}</span>

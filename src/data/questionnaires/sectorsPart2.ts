@@ -505,6 +505,22 @@ export const varejoSections: QuestionSection[] = [
           { value: 'Outro', label: 'Outro' },
         ],
       },
+      {
+        id: 'varejo_1_ecommerce_integrado',
+        label: 'A operação possui canal complementar de Comércio Eletrônico / E-commerce?',
+        type: 'select',
+        required: false,
+        options: [
+          {
+            value: 'Sim (operação omnichannel / vendas online complementares)',
+            label: 'Sim (operação omnichannel / vendas online complementares)',
+          },
+          {
+            value: 'Não (apenas operação física / tradicional)',
+            label: 'Não (apenas operação física / tradicional)',
+          },
+        ],
+      },
       { id: 'varejo_segmentoOutro', label: 'Outro (especifique):', type: 'text' },
       { id: 'varejo_respondente', label: 'Respondente:', type: 'text', required: true },
       { id: 'varejo_cargo', label: 'Cargo:', type: 'text', required: true },

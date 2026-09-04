@@ -161,6 +161,12 @@ export function LeadDetailModal({
                 >
                   {lead.setor || sectorInfo?.name || 'Setor não especificado'}
                 </Badge>
+                <Badge className="bg-[#0066CC] text-white border-transparent font-medium hover:bg-[#0055b3]">
+                  Plano:{' '}
+                  {cadastro.planoEscolhido ||
+                    (respostas.plano_escolhido as string) ||
+                    'Não especificado'}
+                </Badge>
                 <span className="text-xs text-gray-500 flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5" />
                   Recebido em {createdDate}
@@ -168,7 +174,7 @@ export function LeadDetailModal({
               </div>
               <DialogTitle className="text-2xl font-bold text-[#333333] flex items-center gap-2">
                 <span>{cadastro.empresa || 'Empresa não informada'}</span>
-              </DialogTitle>
+              </DialogTitle>{' '}
               <DialogDescription className="text-sm text-gray-600 mt-0.5">
                 Contato principal:{' '}
                 <strong className="text-gray-900">
@@ -305,7 +311,9 @@ export function LeadDetailModal({
               <div>
                 <span className="text-gray-500 block">Plano Selecionado:</span>
                 <span className="font-semibold text-[#0066CC]">
-                  {cadastro.planoEscolhido || 'Não selecionado'}
+                  {cadastro.planoEscolhido ||
+                    (respostas.plano_escolhido as string) ||
+                    'Não especificado'}
                 </span>
               </div>
               <div>
@@ -512,7 +520,52 @@ export function LeadDetailModal({
                     {!isCollapsed && (
                       <div className="px-5 pb-5 pt-2 border-t border-gray-100 divide-y divide-gray-100">
                         {section.questions.map((question) => {
-                          const val = respostas[question.id]
+                          let val = respostas[question.id]
+
+                          // Ponto 4: Tratamento de "Outro"
+                          // Procurar especificação se existir campo complementar
+                          const outroText =
+                            (respostas[`${question.id}_outro`] as string) ||
+                            (respostas[`${question.id}Outro`] as string) ||
+                            (question.id.endsWith('_segmento')
+                              ? (respostas[`${question.id}Outro`] as string) ||
+                                (respostas[`${question.id}_outro`] as string)
+                              : '')
+
+                          const isValEmpty = val === undefined || val === '' || val === null
+                          const isValOutro =
+                            typeof val === 'string' && val.trim().toLowerCase() === 'outro'
+
+                          // Se valor for vazio mas existe outroText
+                          if (isValEmpty && outroText && outroText.trim()) {
+                            val = `Outro: ${outroText.trim()}`
+                          } else if (isValOutro) {
+                            if (outroText && outroText.trim()) {
+                              val = `Outro: ${outroText.trim()}`
+                            } else {
+                              val = 'Outro (não detalhado)'
+                            }
+                          }
+
+                          // Ponto 2: Varejo - "e-commerce" agregável
+                          // No dossiê, quando segmento != ecommerce e resposta = Sim, exibir "«segmento escolhido» + E-commerce complementar"
+                          if (question.id === 'varejo_segmento') {
+                            const ecomIntegrated = respostas['varejo_1_ecommerce_integrado'] as
+                              | string
+                              | undefined
+                            const isYesEcom =
+                              ecomIntegrated &&
+                              (ecomIntegrated.toLowerCase().startsWith('sim') ||
+                                ecomIntegrated.includes('omnichannel'))
+                            const segmentStr = typeof val === 'string' ? val : ''
+                            const isNotEcommerce =
+                              segmentStr && !segmentStr.toLowerCase().includes('e-commerce')
+
+                            if (isNotEcommerce && isYesEcom) {
+                              val = `${segmentStr} + E-commerce complementar`
+                            }
+                          }
+
                           const hasAnswer = val !== undefined && val !== '' && val !== null
 
                           return (
