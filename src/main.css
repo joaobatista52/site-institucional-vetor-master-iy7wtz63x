@@ -119,7 +119,7 @@ section[id],
 div[id],
 footer[id],
 [id] {
-  scroll-margin-top: 156px;
+  scroll-margin-top: 152px;
 }
 
 /* Headings */
@@ -248,8 +248,8 @@ footer[id],
   top: 0;
   right: 0;
   left: 0;
-  /* Altura ampliada para acomodar a Logo 5e (cabeçalho) com o dobro do tamanho */
-  height: 156px;
+  /* Altura compactada para 152px no desktop com 6px de respiro vertical para a logo de 140px */
+  height: 152px;
   border-bottom: 1px solid rgba(0, 102, 204, 0.09);
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
@@ -288,11 +288,14 @@ footer[id],
 .header-logo-wrap {
   display: flex;
   align-items: center;
-  height: 144px;
+  height: 140px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  box-sizing: content-box;
   max-width: 420px;
 }
 
-/* Logo 5e (1536x864, proporção 16:9): height 140px = 2x os 68px originais.
+/* Logo 5e (1536x864, proporção 16:9): exatamente 140px de altura mantida.
    A largura acompanha via width:auto (~249px), sem estourar o menu. */
 .header-logo-img,
 .header-logo-svg {
@@ -439,8 +442,8 @@ footer[id],
 .hero-section {
   position: relative;
   overflow: hidden;
-  /* Header fixo tem 156px de altura. Compensamos os 156px + 14px de respiro estético inicial */
-  padding: 170px 0 44px;
+  /* Header fixo tem ~152px de altura. Compensamos os 152px + 14px de respiro estético inicial */
+  padding: 166px 0 44px;
   scroll-margin-top: 0px;
   background:
     radial-gradient(circle at 86% 18%, rgba(34, 177, 76, 0.07), transparent 32%),
@@ -2472,7 +2475,7 @@ footer[id],
    FOOTER (Logo 5 Oficial Stacked em destaque no rodapé)
    ===================================================================== */
 .site-footer {
-  scroll-margin-top: 156px;
+  scroll-margin-top: 152px;
   padding: 56px 0 0;
   background: var(--dark);
   color: rgba(255, 255, 255, 0.7);
@@ -2787,7 +2790,10 @@ footer[id],
   }
 
   .header-logo-wrap {
-    height: 116px;
+    height: 112px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    box-sizing: content-box;
     max-width: 240px;
   }
 
@@ -2940,7 +2946,7 @@ footer[id],
    PÁGINA "PARA SEU SETOR" (rota própria /setores)
    ===================================================================== */
 .sectors-page-hero {
-  padding: 200px 0 44px;
+  padding: 196px 0 44px;
   background:
     radial-gradient(circle at 88% 12%, rgba(34, 177, 76, 0.07), transparent 30%),
     linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
@@ -3092,7 +3098,7 @@ footer[id],
    QUESTIONÁRIO ESTRATÉGICO (rota /questionario/:sectorId)
    ===================================================================== */
 .wizard-hero {
-  padding: 200px 0 36px;
+  padding: 196px 0 36px;
   background:
     radial-gradient(circle at 90% 10%, rgba(34, 177, 76, 0.06), transparent 28%),
     linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
@@ -3170,7 +3176,7 @@ footer[id],
 
 .wizard-progress {
   position: sticky;
-  top: 176px;
+  top: 172px;
   padding: 22px 20px;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
@@ -3641,7 +3647,7 @@ footer[id],
   flex-direction: column;
   align-items: center;
   min-height: 70vh;
-  padding: 220px 24px 80px;
+  padding: 216px 24px 80px;
   background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
   text-align: center;
 }
