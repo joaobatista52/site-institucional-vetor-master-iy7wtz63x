@@ -968,6 +968,11 @@ export default function Questionnaire() {
           <Clock3 aria-hidden="true" />
           <span>{RETURN_MESSAGE}</span>
         </div>
+        {cadastro.email && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Enviamos uma confirmação automática para <strong>{cadastro.email}</strong>.
+          </p>
+        )}
         <div className="wizard-success-actions">
           <Button className="conversion-button" asChild>
             <Link to="/">Voltar à página inicial</Link>
