@@ -36,6 +36,7 @@ import {
 } from 'lucide-react'
 
 import BrandLogo from '@/components/BrandLogo'
+import { VetorMasterEscapePanel } from '@/components/VetorMasterPrisonEscapePanel'
 import { SectorModal } from '@/components/SectorModal'
 import { PlanSelectionModal, type PlanData } from '@/components/PlanSelectionModal'
 import founderPhoto from '@/assets/foto-jbp-linkedin-copia-1-d051a.png'
@@ -773,6 +774,9 @@ export default function Index() {
               </div>
             </div>
           </div>
+
+          {/* PAINEL VISUAL VETOR MASTER — INSTRUMENTO DE TRANSIÇÃO DA PRISÃO DO FUNDADOR */}
+          <VetorMasterEscapePanel onStartDiagnosis={() => setSectorModalOpen(true)} />
         </div>
       </section>
 
