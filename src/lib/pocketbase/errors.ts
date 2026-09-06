@@ -24,23 +24,13 @@ export function isAuthError(error: unknown): boolean {
   if (error instanceof ClientResponseError) {
     return error.status === 401 || error.status === 403
   }
-  if (error && typeof error === 'object' && 'status' in error) {
-    const status = (error as { status: unknown }).status
-    return status === 401 || status === 403
-  }
   return false
 }
 
 export function getErrorMessage(error: unknown): string {
   if (!(error instanceof ClientResponseError)) {
-    return error instanceof Error ? error.message : 'Ocorreu um erro inesperado.'
+    return error instanceof Error ? error.message : 'An unexpected error occurred.'
   }
   const msgs = Object.values(extractFieldErrors(error))
-  if (msgs.length > 0) {
-    return msgs.join(' ')
-  }
-  if (error.response?.message && typeof error.response.message === 'string') {
-    return error.response.message
-  }
-  return error.message || 'Ocorreu um erro inesperado.'
+  return msgs.length > 0 ? msgs.join(' ') : error.message || 'An unexpected error occurred.'
 }

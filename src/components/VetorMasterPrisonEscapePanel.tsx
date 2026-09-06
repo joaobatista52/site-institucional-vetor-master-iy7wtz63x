@@ -150,7 +150,7 @@ export function VetorMasterEscapePanel({ onStartDiagnosis }: VetorMasterEscapePa
                 <span className="diagram-sla-badge">MOTOR DETERMINÍSTICO</span>
               </div>
 
-              <svg viewBox="0 0 540 120" className="escape-svg-grid" role="img" aria-hidden="true">
+              <svg viewBox="0 0 540 126" className="escape-svg-grid" role="img" aria-hidden="true">
                 <defs>
                   <linearGradient id="escapeLineGrad1" x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0%" stopColor="#0066CC" stopOpacity="0.8" />
@@ -280,23 +280,26 @@ export function VetorMasterEscapePanel({ onStartDiagnosis }: VetorMasterEscapePa
 
                 {/* Vetor Direcional de Rompimento: Saída da Prisão da Operação -> Cabeça na Estratégia */}
                 <path
-                  d="M270 86 L270 102 L390 102"
+                  d="M270 86 L270 104 L436 104"
                   stroke="url(#escapeCoreGrad)"
                   strokeWidth="2"
                   fill="none"
                 />
-                {/* Seta final verde de Rompimento */}
-                <polygon points="392,98 404,102 392,106" fill="#22B14C" />
+                {/* Seta final verde de Rompimento antes do nó */}
+                <polygon points="432,100 444,104 432,108" fill="#22B14C" />
 
                 {/* Nó de Saída Efetiva */}
-                <circle cx="440" cy="102" r="6" fill="#22B14C" stroke="#FFFFFF" strokeWidth="2" />
+                <circle cx="460" cy="104" r="6" fill="#22B14C" stroke="#FFFFFF" strokeWidth="2" />
+                {/* Rótulo de Rompimento centralizado abaixo do nó, 100% contido no viewBox */}
                 <text
-                  x="452"
-                  y="105"
+                  x="460"
+                  y="120"
+                  textAnchor="middle"
                   fill="#15803D"
-                  fontSize="8.5"
+                  fontSize="8"
                   fontWeight="800"
                   fontFamily="sans-serif"
+                  letterSpacing="0.04em"
                 >
                   ROMPIMENTO EXECUTIVO
                 </text>
