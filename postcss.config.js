@@ -82,7 +82,7 @@ function findBoundingBox(pixels, width, height, bpp) {
   let minX = width, maxX = 0, minY = height, maxY = 0
   const isWhite = (r, g, b, a) => {
     if (bpp === 4 && a < 20) return true
-    return r > 240 && g > 240 && b > 240
+    return r >= 253 && g >= 253 && b >= 253
   }
 
   for (let y = 0; y < height; y++) {
@@ -120,12 +120,27 @@ for (const t of targets) {
     const bpp = (parsed.colorType === 6 ? 4 : 3)
     const pixels = unfilterScanlines(decompressed, parsed.width, parsed.height, bpp)
     const bbox = findBoundingBox(pixels, parsed.width, parsed.height, bpp)
-    result[t] = { width: parsed.width, height: parsed.height, bpp, interlace: parsed.interlace, ...bbox }
+    // Sample some pixel RGB values
+    const corners = {
+      tl: [pixels[0], pixels[1], pixels[2]],
+      tr: [pixels[(parsed.width - 1) * bpp], pixels[(parsed.width - 1) * bpp + 1], pixels[(parsed.width - 1) * bpp + 2]],
+      center: [
+        pixels[(Math.floor(parsed.height / 2) * parsed.width + Math.floor(parsed.width / 2)) * bpp],
+        pixels[(Math.floor(parsed.height / 2) * parsed.width + Math.floor(parsed.width / 2)) * bpp + 1],
+        pixels[(Math.floor(parsed.height / 2) * parsed.width + Math.floor(parsed.width / 2)) * bpp + 2]
+      ]
+    }
+    // Also let's inspect the bounding box scanlines: are pixels near minX, maxX, minY, maxY truly content?
+    const borderSamples = {
+      atMinY: pixels.subarray((bbox.minY * parsed.width + bbox.minX) * bpp, (bbox.minY * parsed.width + bbox.minX + 5) * bpp),
+      atMaxY: pixels.subarray((bbox.maxY * parsed.width + bbox.minX) * bpp, (bbox.maxY * parsed.width + bbox.minX + 5) * bpp),
+    }
+    result[t] = { width: parsed.width, height: parsed.height, bpp, interlace: parsed.interlace, corners, ...bbox, borderSamples }
   } catch (e) {
     result[t] = { error: e.message }
   }
 }
-fs.writeFileSync(path.resolve(process.cwd(), 'src/png_dimensions.json'), JSON.stringify(result, null, 2))
+fs.writeFileSync(path.resolve(process.cwd(), 'src/png_bbox.json'), JSON.stringify(result, null, 2))
 
 export default {
   plugins: {
