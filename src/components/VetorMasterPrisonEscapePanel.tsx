@@ -84,9 +84,8 @@ export function VetorMasterEscapePanel({ onStartDiagnosis }: VetorMasterEscapePa
             <div className="escape-metrics-header">
               <div className="metrics-header-left">
                 <Gauge aria-hidden="true" />
-                <span>PARÂMETROS DE EXECUÇÃO E RIGOR</span>
+                <span>PARÂMETROS DE EXECUÇÃO E RIGOR DETERMINÍSTICO</span>
               </div>
-              <span className="metrics-header-code">SLA-VETOR-2026</span>
             </div>
 
             {/* As 3 métricas reais exigidas */}

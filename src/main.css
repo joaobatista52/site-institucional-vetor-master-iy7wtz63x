@@ -1548,14 +1548,21 @@ footer[id],
 .escape-panel-brand-header {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
 .escape-panel-logo {
-  height: 38px;
+  height: 46px;
   width: auto;
   align-self: flex-start;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .escape-panel-logo {
+    height: 38px;
+  }
 }
 
 .escape-panel-sub-brand {
@@ -1640,7 +1647,6 @@ footer[id],
 .escape-metrics-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 14px;
   padding-bottom: 10px;
   border-bottom: 1px dashed #cbd5e1;
@@ -1655,18 +1661,13 @@ footer[id],
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
+  width: 100%;
 }
 
 .metrics-header-left svg {
   width: 16px;
   height: 16px;
-}
-
-.metrics-header-code {
-  font-family: 'Michroma', sans-serif;
-  font-size: 0.64rem;
-  letter-spacing: 0.1em;
-  color: #64748b;
+  flex-shrink: 0;
 }
 
 .escape-metrics-grid {
