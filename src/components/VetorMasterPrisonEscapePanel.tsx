@@ -339,8 +339,8 @@ export function VetorMasterEscapePanel({ onStartDiagnosis }: VetorMasterEscapePa
                 <div className="flow-step highlight">
                   <span className="step-num text-[#22B14C]">&#10003;</span>
                   <div className="step-content">
-                    <strong className="text-[#22B14C]">Cabeça fora da operação</strong>
-                    <span>Autonomia, clareza e caixa protegido</span>
+                    <strong className="text-[#22B14C]">Livre da Prisão do Fundador</strong>
+                    <span>No comando do negócio, sem ser refém da operação</span>
                   </div>
                 </div>
               </div>
