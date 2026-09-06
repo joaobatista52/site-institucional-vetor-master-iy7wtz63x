@@ -137,43 +137,209 @@ export function VetorMasterEscapePanel({ onStartDiagnosis }: VetorMasterEscapePa
               </div>
             </div>
 
-            {/* Visual esquemático abstrato (nós hexagonais / vetor de rompimento) */}
-            <div className="escape-network-diagram" aria-hidden="true">
-              <svg viewBox="0 0 540 88" className="escape-svg-grid">
+            {/* Diagrama Esquemático Executivo — Vetor de Rompimento da Prisão do Fundador */}
+            <div
+              className="escape-network-diagram"
+              aria-label="Diagrama da Esteira Estratégica de Rompimento"
+            >
+              <div className="escape-diagram-header">
+                <div className="escape-diagram-title">
+                  <span className="diagram-pulse-dot" />
+                  <span>CONEXÃO DAS 3 MÉTRICAS DO MÉTODO AO CONSOLE ESTRATÉGICO</span>
+                </div>
+                <span className="diagram-sla-badge">MOTOR DETERMINÍSTICO</span>
+              </div>
+
+              <svg viewBox="0 0 540 120" className="escape-svg-grid" role="img" aria-hidden="true">
                 <defs>
-                  <linearGradient id="vetorEscapeGradient" x1="0" y1="0" x2="1" y2="0">
+                  <linearGradient id="escapeLineGrad1" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#0066CC" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#0066CC" stopOpacity="0.25" />
+                  </linearGradient>
+                  <linearGradient id="escapeLineGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#22B14C" stopOpacity="0.85" />
+                    <stop offset="100%" stopColor="#22B14C" stopOpacity="0.3" />
+                  </linearGradient>
+                  <linearGradient id="escapeLineGrad3" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#0066CC" stopOpacity="0.85" />
+                    <stop offset="50%" stopColor="#1E40AF" stopOpacity="0.6" />
+                    <stop offset="100%" stopColor="#22B14C" stopOpacity="0.3" />
+                  </linearGradient>
+                  <linearGradient id="escapeCoreGrad" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stopColor="#0066CC" />
                     <stop offset="100%" stopColor="#22B14C" />
                   </linearGradient>
                 </defs>
-                {/* Linhas de conexão executivas */}
-                <path
-                  d="M20 44 L110 44 L160 20 L270 20 L320 60 L420 60 L460 44 L520 44"
-                  stroke="#cbd5e1"
-                  strokeWidth="1.5"
+
+                {/* Linha de barramento horizontal superior (alinhada aos 3 cards de métricas) */}
+                <line
+                  x1="90"
+                  y1="12"
+                  x2="450"
+                  y2="12"
+                  stroke="#E2E8F0"
+                  strokeWidth="2"
                   strokeDasharray="4 4"
+                />
+
+                {/* Feixes convergentes dos 3 cards de métricas em direção ao Hub Central */}
+                {/* Feixe da Métrica 1: Diagnóstico em 72h (x=90) */}
+                <path
+                  d="M90 12 L90 32 Q90 56 180 62 L225 64"
+                  stroke="#0066CC"
+                  strokeWidth="2"
+                  strokeDasharray="6 4"
                   fill="none"
                 />
+                {/* Feixe da Métrica 2: Retorno em até 5 dias (x=270, centro) */}
+                <path d="M270 12 L270 48" stroke="#22B14C" strokeWidth="2.5" fill="none" />
+                {/* Feixe da Métrica 3: Acurácia 95%+ (x=450) */}
                 <path
-                  d="M20 44 L110 44 L160 20 L270 20 L320 20 L400 20 L520 20"
-                  stroke="url(#vetorEscapeGradient)"
+                  d="M450 12 L450 32 Q450 56 360 62 L315 64"
+                  stroke="url(#escapeCoreGrad)"
+                  strokeWidth="2"
+                  strokeDasharray="6 4"
+                  fill="none"
+                />
+
+                {/* Nós de ancoragem superiores (correspondentes a cada card de métrica) */}
+                {/* Nó Card 1 (72h) */}
+                <circle cx="90" cy="12" r="5" fill="#0066CC" stroke="#FFFFFF" strokeWidth="2" />
+                <text
+                  x="90"
+                  y="26"
+                  textAnchor="middle"
+                  fill="#0066CC"
+                  fontSize="8"
+                  fontWeight="800"
+                  fontFamily="sans-serif"
+                >
+                  72h
+                </text>
+
+                {/* Nó Card 2 (5 dias) */}
+                <circle cx="270" cy="12" r="6" fill="#22B14C" stroke="#FFFFFF" strokeWidth="2" />
+                <text
+                  x="270"
+                  y="26"
+                  textAnchor="middle"
+                  fill="#22B14C"
+                  fontSize="8"
+                  fontWeight="800"
+                  fontFamily="sans-serif"
+                >
+                  5 DIAS
+                </text>
+
+                {/* Nó Card 3 (95%+) */}
+                <circle cx="450" cy="12" r="5" fill="#0066CC" stroke="#FFFFFF" strokeWidth="2" />
+                <text
+                  x="450"
+                  y="26"
+                  textAnchor="middle"
+                  fill="#0066CC"
+                  fontSize="8"
+                  fontWeight="800"
+                  fontFamily="sans-serif"
+                >
+                  95%+
+                </text>
+
+                {/* Console Central — O Núcleo do Rompimento da Prisão do Fundador */}
+                <rect
+                  x="180"
+                  y="52"
+                  width="180"
+                  height="34"
+                  rx="8"
+                  fill="#F8FAFC"
+                  stroke="#0066CC"
+                  strokeWidth="1.5"
+                />
+                <circle cx="200" cy="69" r="4" fill="#22B14C" />
+                <text
+                  x="212"
+                  y="66"
+                  fill="#0F172A"
+                  fontSize="9"
+                  fontWeight="800"
+                  fontFamily="sans-serif"
+                >
+                  CONSOLE ESTRATÉGICO
+                </text>
+                <text
+                  x="212"
+                  y="78"
+                  fill="#64748B"
+                  fontSize="8"
+                  fontWeight="600"
+                  fontFamily="sans-serif"
+                >
+                  Inteligência C-Level Determinística
+                </text>
+
+                {/* Vetor Direcional de Rompimento: Saída da Prisão da Operação -> Cabeça na Estratégia */}
+                <path
+                  d="M270 86 L270 102 L390 102"
+                  stroke="url(#escapeCoreGrad)"
                   strokeWidth="2"
                   fill="none"
                 />
-                {/* Nós */}
-                <circle cx="20" cy="44" r="4" fill="#0066CC" />
-                <circle cx="110" cy="44" r="5" fill="#0066CC" />
-                <circle cx="160" cy="20" r="5" fill="#0066CC" />
-                <circle cx="270" cy="20" r="6" fill="#0066CC" stroke="#ffffff" strokeWidth="2" />
-                <circle cx="320" cy="60" r="4" fill="#94a3b8" />
-                <circle cx="420" cy="60" r="4" fill="#94a3b8" />
-                <circle cx="460" cy="44" r="5" fill="#22B14C" />
-                <circle cx="520" cy="20" r="7" fill="#22B14C" stroke="#ffffff" strokeWidth="2" />
+                {/* Seta final verde de Rompimento */}
+                <polygon points="392,98 404,102 392,106" fill="#22B14C" />
+
+                {/* Nó de Saída Efetiva */}
+                <circle cx="440" cy="102" r="6" fill="#22B14C" stroke="#FFFFFF" strokeWidth="2" />
+                <text
+                  x="452"
+                  y="105"
+                  fill="#15803D"
+                  fontSize="8.5"
+                  fontWeight="800"
+                  fontFamily="sans-serif"
+                >
+                  ROMPIMENTO EXECUTIVO
+                </text>
               </svg>
-              <div className="escape-diagram-labels">
-                <span className="diagram-step">01. Coleta de Gargalos</span>
-                <span className="diagram-step">02. Motor Determinístico (72h)</span>
-                <span className="diagram-step highlight">03. Rompimento da Prisão</span>
+
+              <div className="escape-diagram-footer-flow">
+                <div className="flow-step">
+                  <span className="step-num text-[#0066CC]">01</span>
+                  <div className="step-content">
+                    <strong className="text-[#0F172A]">Diagnóstico em 72h</strong>
+                    <span>Varredura profunda dos gargalos</span>
+                  </div>
+                </div>
+
+                <div className="flow-arrow">&rarr;</div>
+
+                <div className="flow-step">
+                  <span className="step-num text-[#22B14C]">02</span>
+                  <div className="step-content">
+                    <strong className="text-[#0F172A]">Devolutiva em até 5 dias</strong>
+                    <span>45 min com executivo C-Level</span>
+                  </div>
+                </div>
+
+                <div className="flow-arrow">&rarr;</div>
+
+                <div className="flow-step">
+                  <span className="step-num text-[#0066CC]">03</span>
+                  <div className="step-content">
+                    <strong className="text-[#0F172A]">Acurácia 95%+</strong>
+                    <span>100% determinístico e auditável</span>
+                  </div>
+                </div>
+
+                <div className="flow-arrow">&rarr;</div>
+
+                <div className="flow-step highlight">
+                  <span className="step-num text-[#22B14C]">&#10003;</span>
+                  <div className="step-content">
+                    <strong className="text-[#22B14C]">Cabeça fora da operação</strong>
+                    <span>Autonomia, clareza e caixa protegido</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -33,8 +33,14 @@ export function isAuthError(error: unknown): boolean {
 
 export function getErrorMessage(error: unknown): string {
   if (!(error instanceof ClientResponseError)) {
-    return error instanceof Error ? error.message : 'An unexpected error occurred.'
+    return error instanceof Error ? error.message : 'Ocorreu um erro inesperado.'
   }
   const msgs = Object.values(extractFieldErrors(error))
-  return msgs.length > 0 ? msgs.join(' ') : error.message || 'An unexpected error occurred.'
+  if (msgs.length > 0) {
+    return msgs.join(' ')
+  }
+  if (error.response?.message && typeof error.response.message === 'string') {
+    return error.response.message
+  }
+  return error.message || 'Ocorreu um erro inesperado.'
 }

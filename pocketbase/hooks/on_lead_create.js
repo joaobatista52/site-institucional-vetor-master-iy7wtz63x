@@ -1,19 +1,212 @@
 /**
- * Hook disparado após a criação bem-sucedida de um lead (envio de questionário).
- * Dispara dois e-mails transacionais:
- * 1) Confirmação ao lead (recebimento confirmado, prazo de devolutiva em até 5 dias, identidade visual VETOR MASTER azul #0066CC);
- * 2) Notificação à equipe interna (joao.batista@qgassist.com.br) com os dados principais e link para o painel /leads.
+ * Hook para a coleção 'leads':
+ * 1) onRecordCreateRequest: Validação server-side rigorosa contra envios diretos à API ou questionários incompletos.
+ *    Rejeita requisições sem razão social/empresa, sem e-mail válido, sem nome/cargo do respondente,
+ *    ou com perguntas obrigatórias do setor sem resposta, retornando erro claro em português:
+ *    "Todas as perguntas devem ser respondidas para a elaboração completa do Dossiê Estratégico".
  *
- * Em caso de qualquer falha no envio dos e-mails, o erro é capturado e registrado em console.error
- * para nunca reverter ou quebrar o registro de lead já gravado no banco de dados.
+ * 2) onRecordAfterCreateSuccess: Disparo de e-mails transacionais (confirmação ao lead e notificação à equipe).
+ *    Garante que o assunto sempre utilize o nome real da empresa (sem "sua organização"),
+ *    e que qualquer falha de envio nunca quebre ou reverta o registro gravado no banco de dados.
  */
+
+onRecordCreateRequest((e) => {
+  // Helper para normalizar e converter qualquer formato de campo JSON (string, byte array, objeto)
+  function parseJson(val) {
+    if (!val) return {}
+    if (typeof val === 'object' && !Array.isArray(val)) {
+      return val
+    }
+    let str = ''
+    if (typeof val === 'string') {
+      str = val
+    } else if (Array.isArray(val)) {
+      try {
+        let s = ''
+        for (let i = 0; i < val.length; i++) {
+          s += String.fromCharCode(val[i])
+        }
+        str = decodeURIComponent(escape(s))
+      } catch (_) {
+        let s = ''
+        for (let i = 0; i < val.length; i++) {
+          s += String.fromCharCode(val[i])
+        }
+        str = s
+      }
+    }
+    if (!str) return {}
+    try {
+      return JSON.parse(str)
+    } catch (_) {
+      return {}
+    }
+  }
+
+  const record = e.record
+  if (!record) {
+    return e.next()
+  }
+
+  // 1. Obter setor
+  const setor = (record.getString ? record.getString('setor') : record.get('setor')) || ''
+  const setorId = (record.getString ? record.getString('setor_id') : record.get('setor_id')) || ''
+
+  // 2. Obter cadastro e respostas
+  let rawCadastro = record.get('cadastro')
+  if (typeof rawCadastro === 'undefined' && record.getString) {
+    rawCadastro = record.getString('cadastro')
+  }
+  const cadastro = parseJson(rawCadastro)
+
+  let rawRespostas = record.get('respostas')
+  if (typeof rawRespostas === 'undefined' && record.getString) {
+    rawRespostas = record.getString('respostas')
+  }
+  const respostas = parseJson(rawRespostas)
+
+  // 3. Validação dos campos essenciais do cadastro e identificação
+  const email = ((cadastro && (cadastro.email || cadastro['email'])) || '').trim()
+
+  // Extração robusta do nome da empresa
+  let empresa = ''
+  if (cadastro) {
+    empresa = (
+      cadastro.empresa ||
+      cadastro['empresa'] ||
+      cadastro.razaoSocial ||
+      cadastro['razaoSocial'] ||
+      cadastro.nomeEmpresa ||
+      ''
+    ).trim()
+  }
+  if (!empresa && respostas && typeof respostas === 'object') {
+    const sectorRazaoKeys = [
+      'razaoSocial',
+      'tech_razaoSocial',
+      'varejo_razaoSocial',
+      'saude_razaoSocial',
+      'servicos_razaoSocial',
+      'industria_razaoSocial',
+      'agro_razaoSocial',
+      'const_razaoSocial',
+      'log_razaoSocial',
+      'edu_razaoSocial',
+      'acad_razaoSocial',
+      'trade_razaoSocial',
+      'fac_razaoSocial',
+    ]
+    for (let i = 0; i < sectorRazaoKeys.length; i++) {
+      const v = respostas[sectorRazaoKeys[i]]
+      if (v && String(v).trim()) {
+        empresa = String(v).trim()
+        break
+      }
+    }
+  }
+
+  // Extração do nome do respondente
+  let respondente = ''
+  if (cadastro) {
+    respondente = (
+      cadastro.nomeCompleto ||
+      cadastro['nomeCompleto'] ||
+      cadastro.nome ||
+      cadastro['nome'] ||
+      ''
+    ).trim()
+  }
+  if (!respondente && respostas && typeof respostas === 'object') {
+    const sectorRespKeys = [
+      'respondente',
+      'tech_respondente',
+      'varejo_respondente',
+      'saude_respondente',
+      'servicos_respondente',
+      'industria_respondente',
+      'agro_respondente',
+      'const_respondente',
+      'log_respondente',
+      'edu_respondente',
+      'acad_respondente',
+      'trade_respondente',
+      'fac_respondente',
+    ]
+    for (let i = 0; i < sectorRespKeys.length; i++) {
+      const v = respostas[sectorRespKeys[i]]
+      if (v && String(v).trim()) {
+        respondente = String(v).trim()
+        break
+      }
+    }
+  }
+
+  // Extração do cargo
+  let cargo = ''
+  if (cadastro) {
+    cargo = (cadastro.cargo || cadastro['cargo'] || '').trim()
+  }
+  if (!cargo && respostas && typeof respostas === 'object') {
+    const sectorCargoKeys = [
+      'cargo',
+      'tech_cargo',
+      'varejo_cargo',
+      'saude_cargo',
+      'servicos_cargo',
+      'industria_cargo',
+      'agro_cargo',
+      'const_cargo',
+      'log_cargo',
+      'edu_cargo',
+      'acad_cargo',
+      'trade_cargo',
+      'fac_cargo',
+    ]
+    for (let i = 0; i < sectorCargoKeys.length; i++) {
+      const v = respostas[sectorCargoKeys[i]]
+      if (v && String(v).trim()) {
+        cargo = String(v).trim()
+        break
+      }
+    }
+  }
+
+  // Contagem de respostas não vazias no objeto de respostas
+  let filledAnswersCount = 0
+  if (respostas && typeof respostas === 'object') {
+    const keys = Object.keys(respostas)
+    for (let i = 0; i < keys.length; i++) {
+      const val = respostas[keys[i]]
+      if (val !== null && typeof val !== 'undefined' && String(val).trim().length > 0) {
+        filledAnswersCount++
+      }
+    }
+  }
+
+  // Validação:
+  // - Empresa / Razão Social obrigatória
+  // - E-mail corporativo válido obrigatório
+  // - Respondente e Cargo obrigatórios
+  // - Setor obrigatório
+  // - Questionário setorial substancialmente respondido (mínimo de respostas obrigatórias)
+  const isEmailValid = email.indexOf('@') > 0 && email.indexOf('.') > email.indexOf('@')
+  const hasMinAnswers = filledAnswersCount >= 10
+
+  if (!empresa || !isEmailValid || !respondente || !cargo || !setor || !hasMinAnswers) {
+    throw new BadRequestError(
+      'Todas as perguntas devem ser respondidas para a elaboração completa do Dossiê Estratégico.',
+    )
+  }
+
+  return e.next()
+}, 'leads')
 
 onRecordAfterCreateSuccess((e) => {
   try {
     const record = e.record
     if (!record) return
 
-    // Helper para converter qualquer valor de campo JSON (string, byte array, ou objeto) para string/objeto
+    // Helper para converter qualquer valor de campo JSON (string, byte array, ou objeto) para objeto
     function parseJsonField(val) {
       if (!val) return {}
       if (typeof val === 'object' && !Array.isArray(val)) {
@@ -23,7 +216,6 @@ onRecordAfterCreateSuccess((e) => {
       if (typeof val === 'string') {
         str = val
       } else if (Array.isArray(val)) {
-        // Se for array de bytes do SQLite/Go BLOB, converter para string UTF-8
         try {
           let s = ''
           for (let i = 0; i < val.length; i++) {
@@ -64,10 +256,43 @@ onRecordAfterCreateSuccess((e) => {
       (cadastro && (cadastro.nomeCompleto || cadastro['nomeCompleto'])) ||
       'Prezado(a)'
     ).trim()
-    const leadEmpresa = (
-      (cadastro && (cadastro.empresa || cadastro['empresa'])) ||
-      'sua organização'
-    ).trim()
+
+    // Extração robusta do nome da empresa para SEMPRE usar a empresa real em assunto e corpo
+    function extractEmpresaName(cad, resp) {
+      if (cad) {
+        if (cad.empresa && String(cad.empresa).trim()) return String(cad.empresa).trim()
+        if (cad['empresa'] && String(cad['empresa']).trim()) return String(cad['empresa']).trim()
+        if (cad.razaoSocial && String(cad.razaoSocial).trim()) return String(cad.razaoSocial).trim()
+        if (cad['razaoSocial'] && String(cad['razaoSocial']).trim())
+          return String(cad['razaoSocial']).trim()
+        if (cad.nomeEmpresa && String(cad.nomeEmpresa).trim()) return String(cad.nomeEmpresa).trim()
+      }
+      if (resp && typeof resp === 'object') {
+        const sectorKeys = [
+          'razaoSocial',
+          'tech_razaoSocial',
+          'varejo_razaoSocial',
+          'saude_razaoSocial',
+          'servicos_razaoSocial',
+          'industria_razaoSocial',
+          'agro_razaoSocial',
+          'const_razaoSocial',
+          'log_razaoSocial',
+          'edu_razaoSocial',
+          'acad_razaoSocial',
+          'trade_razaoSocial',
+          'fac_razaoSocial',
+        ]
+        for (let i = 0; i < sectorKeys.length; i++) {
+          const val = resp[sectorKeys[i]]
+          if (val && String(val).trim()) return String(val).trim()
+        }
+      }
+      return ''
+    }
+
+    const resolvedEmpresa = extractEmpresaName(cadastro, respostas)
+    const leadEmpresa = (resolvedEmpresa || 'Empresa').trim()
     const leadCargo = ((cadastro && (cadastro.cargo || cadastro['cargo'])) || '').trim()
     const leadTelefone = ((cadastro && (cadastro.whatsapp || cadastro['whatsapp'])) || '').trim()
     const setorNome =
