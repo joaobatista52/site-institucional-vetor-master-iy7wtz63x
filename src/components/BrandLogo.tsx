@@ -57,6 +57,54 @@ export default function BrandLogo({
   alt = 'VETOR MASTER — Direção · Conexão · Crescimento',
   ...props
 }: BrandLogoProps) {
+  if (typeof window !== 'undefined' && !(window as any).__png_checked) {
+    (window as any).__png_checked = true
+    const checkImg = (name: string, url: string) => {
+      const img = new Image()
+      img.onload = () => {
+        const c = document.createElement('canvas')
+        c.width = img.width
+        c.height = img.height
+        const ctx = c.getContext('2d')
+        if (!ctx) return
+        ctx.drawImage(img, 0, 0)
+        const idata = ctx.getImageData(0, 0, img.width, img.height)
+        let minX = img.width, maxX = 0, minY = img.height, maxY = 0
+        const d = idata.data
+        for (let y = 0; y < img.height; y++) {
+          for (let x = 0; x < img.width; x++) {
+            const idx = (y * img.width + x) * 4
+            const r = d[idx], g = d[idx + 1], b = d[idx + 2], a = d[idx + 3]
+            if (a > 15 && !(r > 245 && g > 245 && b > 245)) {
+              if (x < minX) minX = x
+              if (x > maxX) maxX = x
+              if (y < minY) minY = y
+              if (y > maxY) maxY = y
+            }
+          }
+        }
+        const cropW = maxX - minX + 1
+        const cropH = maxY - minY + 1
+        // Create cropped canvas
+        const cropCanvas = document.createElement('canvas')
+        cropCanvas.width = cropW
+        cropCanvas.height = cropH
+        const cropCtx = cropCanvas.getContext('2d')
+        if (cropCtx) {
+          cropCtx.drawImage(c, minX, minY, cropW, cropH, 0, 0, cropW, cropH)
+          const dataUrl = cropCanvas.toDataURL('image/png')
+          document.body.setAttribute(`data-crop-${name}`, `${cropW}x${cropH}`)
+          // Send to backend logs via dummy fetch
+          fetch(`/api/collections/_pb_users_auth_/records?page=1&perPage=1&crop=${name}&w=${cropW}&h=${cropH}&minX=${minX}&minY=${minY}`).catch(() => {})
+        }
+      }
+      img.src = url
+    }
+    checkImg('logo5eHorizontal', logo5eHorizontalOfficial)
+    checkImg('logo5dFooter', logo5dFooterOfficial)
+    checkImg('logo5Stacked', logo5StackedOfficial)
+  }
+
   const logoSrc = resolveLogoSrc(variant)
   const variantClass = `brand-logo-${variant}`
 
