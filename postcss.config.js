@@ -142,23 +142,6 @@ for (const t of targets) {
 }
 fs.writeFileSync(path.resolve(process.cwd(), 'src/png_bbox.json'), JSON.stringify(result, null, 2))
 
-// Helper to analyze the SVG paths
-try {
-  const svgFile = path.resolve(process.cwd(), 'src/assets/vetor-master-logo.svg')
-  if (fs.existsSync(svgFile)) {
-    const content = fs.readFileSync(svgFile, 'utf8')
-    const matches = [...content.matchAll(/<path\s+fill="([^"]+)"\s+d="([^"]+)"/g)]
-    const analysis = matches.map(m => {
-      const fill = m[1]
-      const d = m[2]
-      return { fill, dStart: d.slice(0, 100), dLen: d.length }
-    })
-    fs.writeFileSync(path.resolve(process.cwd(), 'src/svg_paths_analysis.json'), JSON.stringify(analysis, null, 2))
-  }
-} catch (err) {
-  // ignore
-}
-
 export default {
   plugins: {
     tailwindcss: {},
