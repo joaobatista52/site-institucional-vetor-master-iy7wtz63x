@@ -19,7 +19,14 @@ import vetorMaster2ReverseSvg from '@/assets/vetor-master2-reverse.svg'
  * 3. Logo 5d / Fallback PNGs mantidos para compatibilidade.
  */
 
-export type LogoVariant = 'logo5' | 'logo5e' | 'logo5d' | 'stacked' | 'horizontal' | 'svg' | 'svg-reverse'
+export type LogoVariant =
+  | 'logo5'
+  | 'logo5e'
+  | 'logo5d'
+  | 'stacked'
+  | 'horizontal'
+  | 'svg'
+  | 'svg-reverse'
 
 export interface BrandLogoProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   variant?: LogoVariant

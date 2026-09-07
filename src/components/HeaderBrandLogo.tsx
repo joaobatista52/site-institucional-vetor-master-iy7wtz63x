@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+// HeaderBrandLogo — logotipo vetorial oficial
 import vetorMasterSvg from '@/assets/vetor-master2.svg'
 
 interface HeaderBrandLogoProps {
