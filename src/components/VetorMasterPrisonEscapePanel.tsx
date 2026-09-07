@@ -9,7 +9,7 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react'
-import BrandLogo from '@/components/BrandLogo'
+import vetorMasterSvg from '@/assets/vetor-master.svg'
 import { Button } from '@/components/ui/button'
 
 interface VetorMasterEscapePanelProps {
@@ -41,7 +41,13 @@ export function VetorMasterEscapePanel({ onStartDiagnosis }: VetorMasterEscapePa
           {/* Lado esquerdo: Marca oficial, síntese do instrumento e texto curto de apoio */}
           <div className="escape-panel-left">
             <div className="escape-panel-brand-header">
-              <BrandLogo variant="logo5e" className="escape-panel-logo" />
+              <img
+                src={vetorMasterSvg}
+                alt="VETOR MASTER — Direção · Conexão · Crescimento"
+                loading="eager"
+                decoding="async"
+                className="escape-panel-logo"
+              />
               <span className="escape-panel-sub-brand">
                 METODOLOGIA DE ROMPIMENTO DA SOBRECARGA
               </span>

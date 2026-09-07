@@ -4,6 +4,7 @@ import { ArrowUpRight, Mail, Menu, MessageCircle } from 'lucide-react'
 
 import BrandLogoComponent from '@/components/BrandLogo'
 import HeaderBrandLogo from '@/components/HeaderBrandLogo'
+import vetorMasterSvg from '@/assets/vetor-master.svg'
 import { SectorModal } from '@/components/SectorModal'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,7 +30,7 @@ const whatsappLink =
 function HeaderLogo() {
   return (
     <Link className="brand-logo header-logo-wrap" to="/" aria-label="VETOR MASTER — Início">
-      {/* Novo cabeçalho: Símbolo favicon (~44px) + Wordmark VETOR MASTER */}
+      {/* Cabeçalho fixo: Logomarca vetorial oficial */}
       <HeaderBrandLogo />
     </Link>
   )
@@ -38,8 +39,13 @@ function HeaderLogo() {
 function FooterLogo() {
   return (
     <Link className="brand-logo footer-logo-wrap" to="/" aria-label="VETOR MASTER — Início">
-      {/* Logo 5d (Variante com vetor + nome + tríade Direção/Conexão/Crescimento no maior tamanho possível) */}
-      <BrandLogoComponent variant="logo5d" className="footer-logo-svg" />
+      <img
+        src={vetorMasterSvg}
+        alt="VETOR MASTER — Direção · Conexão · Crescimento"
+        loading="eager"
+        decoding="async"
+        className="footer-logo-svg"
+      />
     </Link>
   )
 }

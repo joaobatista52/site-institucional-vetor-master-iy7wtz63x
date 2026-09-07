@@ -58,7 +58,6 @@ export default function BrandLogo({
   ...props
 }: BrandLogoProps) {
   const logoSrc = resolveLogoSrc(variant)
-  const variantClass = `brand-logo-${variant}`
 
   return (
     <img
@@ -66,7 +65,7 @@ export default function BrandLogo({
       alt={alt}
       loading="eager"
       decoding="async"
-      className={`brand-logo-img ${variantClass} ${light ? 'brand-logo-light' : ''} ${className}`}
+      className={`brand-logo-img ${light ? 'brand-logo-light' : ''} ${className}`}
       style={style}
       {...props}
     />

@@ -298,62 +298,17 @@ footer[id],
   max-width: 420px;
 }
 
-/* Unidade de marca do novo cabeçalho: Símbolo Favicon (~44px) + Wordmark VETOR MASTER */
-.header-brand-unit {
-  gap: 12px;
-}
-
-.header-symbol-crop {
-  width: 44px;
-  height: 44px;
-  border-radius: 4px;
-}
-
-/* O PNG original do favicon tem bordas brancas amplas.
-   O scale(1.34) preenche a área de 44px exatamente com o desenho do hexágono/seta */
-.header-symbol-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: scale(1.34);
-  transform-origin: center center;
-}
-
-/* Wordmark tipográfico VETOR MASTER no cabeçalho (Michroma regular 400) */
-.header-wordmark-container {
+/* Logomarca no cabeçalho fixo (SVG vetorial) */
+.header-brand-logo-wrap {
   display: flex;
   align-items: center;
-  height: 44px;
 }
 
-.header-wordmark {
-  display: inline-flex;
-  align-items: baseline;
-  font-family: 'Michroma', sans-serif;
-  font-size: 1.125rem;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  text-rendering: optimizeLegibility;
-}
-
-.wordmark-vetor {
-  color: #0066cc;
-  font-weight: 700;
-  -webkit-text-stroke: 0.35px #0066cc;
-  text-shadow: 0 0 0.4px #0066cc;
-}
-
-.wordmark-space {
-  display: inline-block;
-  width: 0.32em;
-}
-
-.wordmark-master {
-  color: #22b14c;
-  font-weight: 700;
-  -webkit-text-stroke: 0.35px #22b14c;
-  text-shadow: 0 0 0.4px #22b14c;
+.header-brand-logo-img {
+  height: 46px;
+  width: auto;
+  max-width: 400px;
+  object-fit: contain;
 }
 
 /* Compatibilidade caso header-logo-svg/img seja invocado */
@@ -1553,7 +1508,7 @@ footer[id],
 }
 
 .escape-panel-logo {
-  height: 46px;
+  height: 64px;
   width: auto;
   align-self: flex-start;
   object-fit: contain;
@@ -1561,7 +1516,7 @@ footer[id],
 
 @media (max-width: 640px) {
   .escape-panel-logo {
-    height: 38px;
+    height: 46px;
   }
 }
 
@@ -3380,22 +3335,9 @@ footer[id],
     max-width: 240px;
   }
 
-  .header-brand-unit {
-    gap: 9px;
-  }
-
-  .header-symbol-crop {
-    width: 34px;
-    height: 34px;
-  }
-
-  .header-wordmark-container {
-    height: 34px;
-  }
-
-  .header-wordmark {
-    font-size: 0.88rem;
-    letter-spacing: 0.015em;
+  .header-brand-logo-img {
+    height: 38px;
+    max-width: 220px;
   }
 
   .header-logo-svg {

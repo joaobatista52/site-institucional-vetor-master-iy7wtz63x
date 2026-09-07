@@ -15,7 +15,10 @@ interface HeaderBrandLogoProps {
  */
 export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLogoProps) {
   return (
-    <div className={`header-brand-logo-wrap flex items-center select-none ${className}`} style={style}>
+    <div
+      className={`header-brand-logo-wrap flex items-center select-none ${className}`}
+      style={style}
+    >
       <img
         src={vetorMasterSvg}
         alt="VETOR MASTER — Direção · Conexão · Crescimento"
