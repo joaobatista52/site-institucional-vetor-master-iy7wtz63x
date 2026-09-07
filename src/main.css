@@ -298,14 +298,14 @@ footer[id],
   max-width: 420px;
 }
 
-/* Logomarca no cabeçalho fixo (SVG vetorial) */
+/* Logomarca no cabeçalho fixo (SVG vetorial oficial vetor-master2.svg) */
 .header-brand-logo-wrap {
   display: flex;
   align-items: center;
 }
 
 .header-brand-logo-img {
-  height: 46px;
+  height: 50px;
   width: auto;
   max-width: 400px;
   object-fit: contain;
@@ -314,7 +314,7 @@ footer[id],
 /* Compatibilidade caso header-logo-svg/img seja invocado */
 .header-logo-img,
 .header-logo-svg {
-  height: 44px;
+  height: 50px;
   width: auto;
   max-width: 400px;
   object-fit: contain;
@@ -323,33 +323,26 @@ footer[id],
 .footer-logo-wrap {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 22px 28px;
-  border-radius: 16px;
-  background: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.45),
-    0 2px 10px rgba(0, 0, 0, 0.25);
+  justify-content: flex-start;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   width: fit-content;
   max-width: 100%;
-  transition:
-    transform 220ms ease,
-    box-shadow 220ms ease;
+  transition: transform 220ms ease;
 }
 
 .footer-logo-wrap:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 20px 45px rgba(0, 0, 0, 0.55),
-    0 4px 14px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 .footer-logo-img,
 .footer-logo-svg {
-  height: 120px;
+  height: 150px;
   width: auto;
-  max-width: 320px;
+  max-width: 100%;
   object-fit: contain;
 }
 
@@ -1508,7 +1501,7 @@ footer[id],
 }
 
 .escape-panel-logo {
-  height: 64px;
+  height: 80px;
   width: auto;
   align-self: flex-start;
   object-fit: contain;
@@ -1516,7 +1509,7 @@ footer[id],
 
 @media (max-width: 640px) {
   .escape-panel-logo {
-    height: 46px;
+    height: 56px;
   }
 }
 
@@ -3336,22 +3329,22 @@ footer[id],
   }
 
   .header-brand-logo-img {
-    height: 38px;
+    height: 40px;
     max-width: 220px;
   }
 
   .header-logo-svg {
-    height: 34px;
+    height: 40px;
     max-width: 180px;
   }
 
   .footer-logo-wrap {
-    padding: 16px 20px;
+    padding: 0;
   }
 
   .footer-logo-svg {
-    height: 96px;
-    max-width: 260px;
+    height: 110px;
+    max-width: 100%;
   }
 
   .hero-section {

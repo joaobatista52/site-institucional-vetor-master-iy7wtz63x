@@ -2,6 +2,8 @@ import type { CSSProperties, ImgHTMLAttributes } from 'react'
 import logo5StackedOfficial from '@/assets/logo-5-vetor-master-06jul26-6e3d7.png'
 import logo5eHorizontalOfficial from '@/assets/logo-5e-vetor-master-14jul26-7f7d4.png'
 import logo5dFooterOfficial from '@/assets/logo-5e-vetor-master-14jul26-6e983.png'
+import vetorMaster2Svg from '@/assets/vetor-master2.svg'
+import vetorMaster2ReverseSvg from '@/assets/vetor-master2-reverse.svg'
 
 /**
  * LOGOMARCAS OFICIAIS VETOR MASTER — Hierarquia Oficial:
@@ -10,16 +12,14 @@ import logo5dFooterOfficial from '@/assets/logo-5e-vetor-master-14jul26-6e983.pn
  *    Arquivo oficial: logo-5-vetor-master-06jul26-6e3d7.png
  *    Usada em: Infográfico / Painel do Hero (ponto focal em destaque máximo) e Preloader.
  *
- * 2. Logo 5e (Variante Horizontal / Wide - Vetor ao LADO do nome):
- *    Arquivo oficial: logo-5e-vetor-master-14jul26-7f7d4.png
- *    Usada em: Cabeçalho (Header) no maior tamanho possível e Painel da Prisão do Fundador.
+ * 2. Logo 5e / SVG Vetorial Oficial:
+ *    Arquivo oficial: vetor-master2.svg / vetor-master2-reverse.svg
+ *    Usada em: Cabeçalho (Header), Painel da Prisão do Fundador e Rodapé (versão reversa para fundo escuro).
  *
- * 3. Logo 5d (Variante Completa com Tríade Direção/Conexão/Crescimento):
- *    Arquivo oficial: logo-5e-vetor-master-14jul26-6e983.png (Logo 5d)
- *    Usada em: Rodapé (Footer) no maior tamanho possível.
+ * 3. Logo 5d / Fallback PNGs mantidos para compatibilidade.
  */
 
-export type LogoVariant = 'logo5' | 'logo5e' | 'logo5d' | 'stacked' | 'horizontal'
+export type LogoVariant = 'logo5' | 'logo5e' | 'logo5d' | 'stacked' | 'horizontal' | 'svg' | 'svg-reverse'
 
 export interface BrandLogoProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   variant?: LogoVariant
@@ -29,13 +29,17 @@ export interface BrandLogoProps extends Omit<ImgHTMLAttributes<HTMLImageElement>
   alt?: string
 }
 
-function resolveLogoSrc(variant: LogoVariant): string {
+function resolveLogoSrc(variant: LogoVariant, light?: boolean): string {
   switch (variant) {
+    case 'svg':
+      return light ? vetorMaster2ReverseSvg : vetorMaster2Svg
+    case 'svg-reverse':
+      return vetorMaster2ReverseSvg
     case 'logo5e':
     case 'horizontal':
-      return logo5eHorizontalOfficial
+      return light ? vetorMaster2ReverseSvg : logo5eHorizontalOfficial
     case 'logo5d':
-      return logo5dFooterOfficial
+      return light ? vetorMaster2ReverseSvg : logo5dFooterOfficial
     case 'logo5':
     case 'stacked':
     default:
@@ -57,7 +61,7 @@ export default function BrandLogo({
   alt = 'VETOR MASTER — Direção · Conexão · Crescimento',
   ...props
 }: BrandLogoProps) {
-  const logoSrc = resolveLogoSrc(variant)
+  const logoSrc = resolveLogoSrc(variant, light)
 
   return (
     <img

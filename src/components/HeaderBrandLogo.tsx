@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import vetorMasterSvg from '@/assets/vetor-master.svg'
+import vetorMasterSvg from '@/assets/vetor-master2.svg'
 
 interface HeaderBrandLogoProps {
   className?: string
@@ -9,9 +9,9 @@ interface HeaderBrandLogoProps {
 /**
  * HeaderBrandLogo — Cabeçalho fixo VETOR MASTER
  *
- * Logomarca vetorial oficial a partir de vetor-master.svg:
+ * Logomarca vetorial oficial a partir de vetor-master2.svg:
  * Nós hexagonais, seta de crescimento, wordmark "VETOR MASTER" e tagline "DIREÇÃO · CONEXÃO · CRESCIMENTO"
- * Alturas de leitura imediata: ~46px no desktop / 38px no mobile, sem scale hacks.
+ * Alturas de leitura generosa: até ~50px no desktop / proporcional no mobile, sem scale hacks.
  */
 export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLogoProps) {
   return (

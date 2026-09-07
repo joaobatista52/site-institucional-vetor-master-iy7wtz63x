@@ -9,7 +9,7 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react'
-import vetorMasterSvg from '@/assets/vetor-master.svg'
+import vetorMasterSvg from '@/assets/vetor-master2.svg'
 import { Button } from '@/components/ui/button'
 
 interface VetorMasterEscapePanelProps {

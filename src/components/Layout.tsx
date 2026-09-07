@@ -4,7 +4,7 @@ import { ArrowUpRight, Mail, Menu, MessageCircle } from 'lucide-react'
 
 import BrandLogoComponent from '@/components/BrandLogo'
 import HeaderBrandLogo from '@/components/HeaderBrandLogo'
-import vetorMasterSvg from '@/assets/vetor-master.svg'
+import vetorMasterReverseSvg from '@/assets/vetor-master2-reverse.svg'
 import { SectorModal } from '@/components/SectorModal'
 import { Button } from '@/components/ui/button'
 import {
@@ -40,7 +40,7 @@ function FooterLogo() {
   return (
     <Link className="brand-logo footer-logo-wrap" to="/" aria-label="VETOR MASTER — Início">
       <img
-        src={vetorMasterSvg}
+        src={vetorMasterReverseSvg}
         alt="VETOR MASTER — Direção · Conexão · Crescimento"
         loading="eager"
         decoding="async"
