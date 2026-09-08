@@ -44,7 +44,7 @@ function resolveLogoSrc(variant: LogoVariant, light?: boolean): string {
       return vetorMaster2ReverseSvg
     case 'logo5e':
     case 'horizontal':
-      return light ? vetorMaster2ReverseSvg : logo5eHorizontalOfficial
+      return light ? vetorMaster2ReverseSvg : vetorMaster2Svg
     case 'logo5d':
       return light ? vetorMaster2ReverseSvg : logo5dFooterOfficial
     case 'logo5':
