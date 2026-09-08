@@ -39,9 +39,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { toast } from '@/hooks/use-toast'
 
 const RETURN_MESSAGE =
   'Retorno da equipe em até 5 dias para agendar sua Sessão de Devolutiva de 45 minutos'
+
+// Limites tolerantes para anexos (alinhados com PocketBase leads)
+const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024 // 100 MB por arquivo
+const MAX_FILES_PER_GROUP = 15
+
+// Extensões comumente suportadas para anexos institucionais e executivos
+const ALLOWED_EXTENSIONS = new Set([
+  'pdf',
+  'doc',
+  'docx',
+  'xls',
+  'xlsx',
+  'csv',
+  'ppt',
+  'pptx',
+  'txt',
+  'rtf',
+  'odt',
+  'ods',
+  'odp',
+  'jpg',
+  'jpeg',
+  'png',
+  'webp',
+  'gif',
+  'bmp',
+  'tiff',
+  'svg',
+  'zip',
+  'rar',
+  '7z',
+])
+
+function getFileExtension(filename: string): string {
+  if (!filename || typeof filename !== 'string') return ''
+  const parts = filename.split('.')
+  return parts.length > 1 ? parts.pop()!.toLowerCase().trim() : ''
+}
 
 type FileGroup = 'contratoSocial' | 'certificacoes' | 'documentacaoAdicional'
 
@@ -313,18 +352,71 @@ export default function Questionnaire() {
 
   function addFiles(group: FileGroup, incoming: FileList | null) {
     if (!incoming || incoming.length === 0) return
-    const newFiles = Array.from(incoming)
-    setFiles((prev) => {
-      // Evitar duplicatas exatas pelo nome + tamanho
-      const existing = prev[group]
-      const uniqueIncoming = newFiles.filter(
-        (nf) => !existing.some((ef) => ef.name === nf.name && ef.size === nf.size),
-      )
-      return {
-        ...prev,
-        [group]: [...existing, ...uniqueIncoming].slice(0, 15),
+    const rawFiles = Array.from(incoming)
+    const validFiles: File[] = []
+    const rejectedMessages: string[] = []
+
+    for (const file of rawFiles) {
+      if (!file || !(file instanceof File)) {
+        continue
       }
-    })
+
+      // Validação de arquivo corrompido / vazio
+      if (file.size <= 0) {
+        rejectedMessages.push(`"${file.name}": arquivo vazio (0 bytes).`)
+        continue
+      }
+
+      // Validação de tamanho máximo
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        rejectedMessages.push(
+          `"${file.name}": tamanho de ${formatFileSize(file.size)} excede o limite máximo permitido de 100 MB.`,
+        )
+        continue
+      }
+
+      // Validação tolerante de tipo/extensão
+      const ext = getFileExtension(file.name)
+      if (ext && !ALLOWED_EXTENSIONS.has(ext)) {
+        rejectedMessages.push(
+          `"${file.name}": extensão ".${ext}" não suportada. Formatos aceitos: PDF, DOC/DOCX, XLS/XLSX, CSV, Imagens e ZIP.`,
+        )
+        continue
+      }
+
+      validFiles.push(file)
+    }
+
+    if (rejectedMessages.length > 0) {
+      const summary = rejectedMessages.slice(0, 3).join(' ')
+      setStepErrors((prev) => [...prev, summary])
+      toast({
+        variant: 'destructive',
+        title: 'Aviso nos arquivos selecionados',
+        description: summary,
+      })
+    }
+
+    if (validFiles.length > 0) {
+      setFiles((prev) => {
+        const existing = prev[group]
+        const uniqueIncoming = validFiles.filter(
+          (nf) => !existing.some((ef) => ef.name === nf.name && ef.size === nf.size),
+        )
+        const combined = [...existing, ...uniqueIncoming]
+        if (combined.length > MAX_FILES_PER_GROUP) {
+          toast({
+            variant: 'destructive',
+            title: 'Limite de arquivos atingido',
+            description: `Permitido no máximo ${MAX_FILES_PER_GROUP} arquivos por campo. Apenas os ${MAX_FILES_PER_GROUP} primeiros foram mantidos.`,
+          })
+        }
+        return {
+          ...prev,
+          [group]: combined.slice(0, MAX_FILES_PER_GROUP),
+        }
+      })
+    }
   }
 
   function removeFile(group: FileGroup, index: number) {
@@ -762,100 +854,106 @@ export default function Questionnaire() {
   }
 
   async function handleSubmit() {
-    const errors = validateCurrentStep()
-    setStepErrors(errors)
-    if (errors.length > 0 || !sector) return
-
-    setSubmitting(true)
-    setSubmitError('')
-
     try {
-      // Herdar CNPJ e Faturamento coletados nas etapas iniciais de qualquer um dos 12 setores
+      const errors = validateCurrentStep()
+      setStepErrors(errors)
+      if (errors.length > 0 || !sector) return
+
+      setSubmitting(true)
+      setSubmitError('')
+
+      // 1. Herdar CNPJ e Faturamento coletados nas etapas iniciais de qualquer um dos 12 setores
       const inheritedCnpj =
-        answers.saude_cnpj ||
-        answers.servicos_cnpj ||
-        answers.industria_cnpj ||
-        answers.varejo_cnpj ||
-        answers.agro_cnpj ||
-        answers.tech_cnpj ||
-        answers.const_cnpj ||
-        answers.log_cnpj ||
-        answers.edu_cnpj ||
-        answers.acad_cnpj ||
-        answers.trade_cnpj ||
-        answers.fac_cnpj ||
-        answers.cnpj ||
+        (typeof answers.saude_cnpj === 'string' && answers.saude_cnpj) ||
+        (typeof answers.servicos_cnpj === 'string' && answers.servicos_cnpj) ||
+        (typeof answers.industria_cnpj === 'string' && answers.industria_cnpj) ||
+        (typeof answers.varejo_cnpj === 'string' && answers.varejo_cnpj) ||
+        (typeof answers.agro_cnpj === 'string' && answers.agro_cnpj) ||
+        (typeof answers.tech_cnpj === 'string' && answers.tech_cnpj) ||
+        (typeof answers.const_cnpj === 'string' && answers.const_cnpj) ||
+        (typeof answers.log_cnpj === 'string' && answers.log_cnpj) ||
+        (typeof answers.edu_cnpj === 'string' && answers.edu_cnpj) ||
+        (typeof answers.acad_cnpj === 'string' && answers.acad_cnpj) ||
+        (typeof answers.trade_cnpj === 'string' && answers.trade_cnpj) ||
+        (typeof answers.fac_cnpj === 'string' && answers.fac_cnpj) ||
+        (typeof answers.cnpj === 'string' && answers.cnpj) ||
         ''
       const inheritedFaturamento =
-        answers.saude_1_1 ||
-        answers.servicos_1_1 ||
-        answers.industria_1_1 ||
-        answers.varejo_1_1 ||
-        answers.agro_1_1 ||
-        answers.tech_1_1 ||
-        answers.const_1_1 ||
-        answers.log_1_1 ||
-        answers.edu_1_1 ||
-        answers.acad_1_1 ||
-        answers.trade_1_1 ||
-        answers.fac_1_1 ||
-        answers.faturamentoAnual ||
+        (typeof answers.saude_1_1 === 'string' && answers.saude_1_1) ||
+        (typeof answers.servicos_1_1 === 'string' && answers.servicos_1_1) ||
+        (typeof answers.industria_1_1 === 'string' && answers.industria_1_1) ||
+        (typeof answers.varejo_1_1 === 'string' && answers.varejo_1_1) ||
+        (typeof answers.agro_1_1 === 'string' && answers.agro_1_1) ||
+        (typeof answers.tech_1_1 === 'string' && answers.tech_1_1) ||
+        (typeof answers.const_1_1 === 'string' && answers.const_1_1) ||
+        (typeof answers.log_1_1 === 'string' && answers.log_1_1) ||
+        (typeof answers.edu_1_1 === 'string' && answers.edu_1_1) ||
+        (typeof answers.acad_1_1 === 'string' && answers.acad_1_1) ||
+        (typeof answers.trade_1_1 === 'string' && answers.trade_1_1) ||
+        (typeof answers.fac_1_1 === 'string' && answers.fac_1_1) ||
+        (typeof answers.faturamentoAnual === 'string' && answers.faturamentoAnual) ||
         ''
       const inheritedRazaoSocial =
-        answers.saude_razaoSocial ||
-        answers.servicos_razaoSocial ||
-        answers.industria_razaoSocial ||
-        answers.varejo_razaoSocial ||
-        answers.agro_razaoSocial ||
-        answers.tech_razaoSocial ||
-        answers.const_razaoSocial ||
-        answers.log_razaoSocial ||
-        answers.edu_razaoSocial ||
-        answers.acad_razaoSocial ||
-        answers.trade_razaoSocial ||
-        answers.fac_razaoSocial ||
-        answers.razaoSocial ||
+        (typeof answers.saude_razaoSocial === 'string' && answers.saude_razaoSocial) ||
+        (typeof answers.servicos_razaoSocial === 'string' && answers.servicos_razaoSocial) ||
+        (typeof answers.industria_razaoSocial === 'string' && answers.industria_razaoSocial) ||
+        (typeof answers.varejo_razaoSocial === 'string' && answers.varejo_razaoSocial) ||
+        (typeof answers.agro_razaoSocial === 'string' && answers.agro_razaoSocial) ||
+        (typeof answers.tech_razaoSocial === 'string' && answers.tech_razaoSocial) ||
+        (typeof answers.const_razaoSocial === 'string' && answers.const_razaoSocial) ||
+        (typeof answers.log_razaoSocial === 'string' && answers.log_razaoSocial) ||
+        (typeof answers.edu_razaoSocial === 'string' && answers.edu_razaoSocial) ||
+        (typeof answers.acad_razaoSocial === 'string' && answers.acad_razaoSocial) ||
+        (typeof answers.trade_razaoSocial === 'string' && answers.trade_razaoSocial) ||
+        (typeof answers.fac_razaoSocial === 'string' && answers.fac_razaoSocial) ||
+        (typeof answers.razaoSocial === 'string' && answers.razaoSocial) ||
         ''
       const inheritedRespondente =
-        answers.saude_respondente ||
-        answers.servicos_respondente ||
-        answers.industria_respondente ||
-        answers.varejo_respondente ||
-        answers.agro_respondente ||
-        answers.tech_respondente ||
-        answers.const_respondente ||
-        answers.log_respondente ||
-        answers.edu_respondente ||
-        answers.acad_respondente ||
-        answers.trade_respondente ||
-        answers.fac_respondente ||
-        answers.respondente ||
+        (typeof answers.saude_respondente === 'string' && answers.saude_respondente) ||
+        (typeof answers.servicos_respondente === 'string' && answers.servicos_respondente) ||
+        (typeof answers.industria_respondente === 'string' && answers.industria_respondente) ||
+        (typeof answers.varejo_respondente === 'string' && answers.varejo_respondente) ||
+        (typeof answers.agro_respondente === 'string' && answers.agro_respondente) ||
+        (typeof answers.tech_respondente === 'string' && answers.tech_respondente) ||
+        (typeof answers.const_respondente === 'string' && answers.const_respondente) ||
+        (typeof answers.log_respondente === 'string' && answers.log_respondente) ||
+        (typeof answers.edu_respondente === 'string' && answers.edu_respondente) ||
+        (typeof answers.acad_respondente === 'string' && answers.acad_respondente) ||
+        (typeof answers.trade_respondente === 'string' && answers.trade_respondente) ||
+        (typeof answers.fac_respondente === 'string' && answers.fac_respondente) ||
+        (typeof answers.respondente === 'string' && answers.respondente) ||
         ''
       const inheritedCargo =
-        answers.saude_cargo ||
-        answers.servicos_cargo ||
-        answers.industria_cargo ||
-        answers.varejo_cargo ||
-        answers.agro_cargo ||
-        answers.tech_cargo ||
-        answers.const_cargo ||
-        answers.log_cargo ||
-        answers.edu_cargo ||
-        answers.acad_cargo ||
-        answers.trade_cargo ||
-        answers.fac_cargo ||
-        answers.cargo ||
+        (typeof answers.saude_cargo === 'string' && answers.saude_cargo) ||
+        (typeof answers.servicos_cargo === 'string' && answers.servicos_cargo) ||
+        (typeof answers.industria_cargo === 'string' && answers.industria_cargo) ||
+        (typeof answers.varejo_cargo === 'string' && answers.varejo_cargo) ||
+        (typeof answers.agro_cargo === 'string' && answers.agro_cargo) ||
+        (typeof answers.tech_cargo === 'string' && answers.tech_cargo) ||
+        (typeof answers.const_cargo === 'string' && answers.const_cargo) ||
+        (typeof answers.log_cargo === 'string' && answers.log_cargo) ||
+        (typeof answers.edu_cargo === 'string' && answers.edu_cargo) ||
+        (typeof answers.acad_cargo === 'string' && answers.acad_cargo) ||
+        (typeof answers.trade_cargo === 'string' && answers.trade_cargo) ||
+        (typeof answers.fac_cargo === 'string' && answers.fac_cargo) ||
+        (typeof answers.cargo === 'string' && answers.cargo) ||
         ''
 
       // Verificar se o visitante escolheu previamente um plano no botão Selecionar Plano
-      const memorizedPlan = getChosenPlan()
+      let memorizedPlan: string | null = null
+      try {
+        memorizedPlan = getChosenPlan()
+      } catch (err) {
+        console.warn('Não foi possível recuperar o plano escolhido da sessão:', err)
+      }
 
-      // Ponto 4: Consolidar "Outro" nas respostas
-      // Quando answers[qId] === 'outro' (case-insensitive) e existir answers[`${qId}_outro`] ou variante como SegmentoOutro,
-      // consolidar como `Outro: ${texto}` no campo principal.
-      const consolidatedAnswers: Record<string, string> = { ...answers }
+      // 2. Consolidar "Outro" nas respostas de forma segura e tolerante
+      const consolidatedAnswers: Record<string, string> = {}
+      for (const [key, rawVal] of Object.entries(answers)) {
+        if (rawVal === undefined || rawVal === null) continue
+        consolidatedAnswers[key] = String(rawVal)
+      }
 
-      // Adicionar plano_escolhido em respostas para garantir redundância (Ponto 1)
       if (memorizedPlan) {
         consolidatedAnswers.plano_escolhido = memorizedPlan
       }
@@ -863,12 +961,12 @@ export default function Questionnaire() {
       // Consolidar perguntas com "Outro"
       for (const [qId, val] of Object.entries(answers)) {
         if (typeof val === 'string' && val.trim().toLowerCase() === 'outro') {
-          // Procurar campos complementares: qId_outro, qIdOutro, ou `${qId}Outro`
           const outroText =
-            answers[`${qId}_outro`]?.trim() ||
-            answers[`${qId}Outro`]?.trim() ||
+            (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim()) ||
+            (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
             (qId.endsWith('_segmento')
-              ? answers[`${qId}Outro`]?.trim() || answers[`${qId}_outro`]?.trim()
+              ? (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
+                (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim())
               : '')
           if (outroText) {
             consolidatedAnswers[qId] = `Outro: ${outroText}`
@@ -877,21 +975,49 @@ export default function Questionnaire() {
       }
 
       const consolidatedCadastro = {
-        ...cadastro,
-        empresa: cadastro.empresa || inheritedRazaoSocial,
-        nomeCompleto: cadastro.nomeCompleto || inheritedRespondente,
-        cargo: inheritedCargo,
-        cnpj: inheritedCnpj,
-        faturamento: inheritedFaturamento,
+        nomeCompleto: cadastro.nomeCompleto || inheritedRespondente || '',
+        empresa: cadastro.empresa || inheritedRazaoSocial || '',
+        email: cadastro.email || '',
+        whatsapp: cadastro.whatsapp || '',
+        cargo: inheritedCargo || '',
+        cnpj: inheritedCnpj || '',
+        faturamento: inheritedFaturamento || '',
         planoEscolhido: memorizedPlan || undefined,
       }
 
-      // Preparar FormData único para create atômico com arquivos
+      // 3. Validação preventiva e filtragem dos arquivos antes de montar o FormData
+      const sanitizeFileList = (list: File[], groupLabel: string): File[] => {
+        const result: File[] = []
+        for (const file of list) {
+          if (!file || !(file instanceof File)) continue
+          if (file.size <= 0) {
+            console.warn(`Arquivo ignorado (vazio): ${file.name} em ${groupLabel}`)
+            continue
+          }
+          if (file.size > MAX_FILE_SIZE_BYTES) {
+            throw new Error(
+              `O arquivo "${file.name}" tem ${formatFileSize(file.size)}, acima do limite máximo suportado de 100 MB. Remova-o ou selecione uma versão menor para prosseguir.`,
+            )
+          }
+          result.push(file)
+        }
+        return result.slice(0, MAX_FILES_PER_GROUP)
+      }
+
+      const cleanContratoSocial = sanitizeFileList(files.contratoSocial, 'Contrato Social')
+      const cleanCertificacoes = sanitizeFileList(files.certificacoes, 'Certificações')
+      const cleanDocAdicional = sanitizeFileList(
+        files.documentacaoAdicional,
+        'Documentação Adicional',
+      )
+
+      // 4. Preparar FormData único para create atômico com arquivos
       const formData = new FormData()
       formData.append('setor', sector.name)
       formData.append('setor_id', sector.id)
       formData.append('cadastro', JSON.stringify(consolidatedCadastro))
       formData.append('respostas', JSON.stringify(consolidatedAnswers))
+
       // Normalizar autorizacao_devolutiva para o formato aceito pelo schema
       let normalizedAutorizacao = autorizacaoDevolutiva
       if (autorizacaoDevolutiva === 'Sim') {
@@ -906,47 +1032,64 @@ export default function Questionnaire() {
       if (responsavelDocumentos) formData.append('responsavel_documentos', responsavelDocumentos)
       formData.append('status', 'novo')
 
-      // Anexar apenas instâncias válidas de File com nome e tamanho > 0
-      for (const file of files.contratoSocial) {
-        if (file instanceof File && file.size > 0) {
-          formData.append('contrato_social', file)
-        }
+      // Anexar apenas os arquivos sanitizados
+      for (const file of cleanContratoSocial) {
+        formData.append('contrato_social', file)
       }
-      for (const file of files.certificacoes) {
-        if (file instanceof File && file.size > 0) {
-          formData.append('certificacoes', file)
-        }
+      for (const file of cleanCertificacoes) {
+        formData.append('certificacoes', file)
       }
-      for (const file of files.documentacaoAdicional) {
-        if (file instanceof File && file.size > 0) {
-          formData.append('documentacao_adicional', file)
-        }
+      for (const file of cleanDocAdicional) {
+        formData.append('documentacao_adicional', file)
       }
 
       const created = await pb.collection('leads').create(formData)
 
       // Limpar o rascunho do setor após envio bem-sucedido
-      clearQuestionnaireDraft(sector.id)
+      try {
+        clearQuestionnaireDraft(sector.id)
+      } catch (draftErr) {
+        console.warn('Aviso ao limpar rascunho:', draftErr)
+      }
       setDraftBannerVisible(false)
 
       // Salvar estado da submissão no leadSession para habilitar o Cenário B em "Selecionar Plano"
-      saveStoredLead({
-        leadId: created.id,
-        empresa: consolidatedCadastro.empresa,
-        nomeCompleto: consolidatedCadastro.nomeCompleto,
-        email: consolidatedCadastro.email,
-        setor: sector.name,
-        submittedAt: new Date().toISOString(),
-        planoEscolhido: memorizedPlan || undefined,
-        statusDevolutiva: 'aguardando',
+      try {
+        saveStoredLead({
+          leadId: created.id,
+          empresa: consolidatedCadastro.empresa,
+          nomeCompleto: consolidatedCadastro.nomeCompleto,
+          email: consolidatedCadastro.email,
+          setor: sector.name,
+          submittedAt: new Date().toISOString(),
+          planoEscolhido: memorizedPlan || undefined,
+          statusDevolutiva: 'aguardando',
+        })
+      } catch (sessionErr) {
+        console.warn('Aviso ao salvar sessão do lead:', sessionErr)
+      }
+
+      toast({
+        title: 'Questionário enviado com sucesso!',
+        description: 'Recebemos as respostas da sua empresa e os documentos anexados.',
       })
 
       setSubmittedId(created.id)
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro na submissão do questionário:', error)
-      const errorMsg = getErrorMessage(error)
+      const errorMsg =
+        error?.message && !error?.status
+          ? error.message
+          : getErrorMessage(error) ||
+            'Ocorreu um erro ao enviar o questionário. Verifique os campos e tente novamente.'
+
       setSubmitError(errorMsg)
+      toast({
+        variant: 'destructive',
+        title: 'Não foi possível enviar o formulário',
+        description: errorMsg,
+      })
     } finally {
       setSubmitting(false)
     }
@@ -971,6 +1114,17 @@ export default function Questionnaire() {
         {cadastro.email && (
           <p className="text-xs text-muted-foreground mt-2">
             Enviamos uma confirmação automática para <strong>{cadastro.email}</strong>.
+          </p>
+        )}
+        {(files.contratoSocial.length > 0 ||
+          files.certificacoes.length > 0 ||
+          files.documentacaoAdicional.length > 0) && (
+          <p className="text-xs text-emerald-700 bg-emerald-50 py-1.5 px-3 rounded-lg border border-emerald-200 mt-2 inline-block">
+            ✓{' '}
+            {files.contratoSocial.length +
+              files.certificacoes.length +
+              files.documentacaoAdicional.length}{' '}
+            documento(s) anexado(s) e recebido(s) com sucesso.
           </p>
         )}
         <div className="wizard-success-actions">

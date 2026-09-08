@@ -6,6 +6,7 @@ import BrandLogoComponent from '@/components/BrandLogo'
 import HeaderBrandLogo from '@/components/HeaderBrandLogo'
 import vetorMasterReverseSvg from '@/assets/vetor-master2-reverse.svg'
 import { SectorModal } from '@/components/SectorModal'
+import { Toaster } from '@/components/ui/toaster'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -216,6 +217,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Header onOpenSectorModal={() => setSectorModalOpen(true)} />
       <main>{children}</main>
       <Footer />
+      <Toaster />
       <SectorModal
         open={sectorModalOpen}
         onOpenChange={setSectorModalOpen}

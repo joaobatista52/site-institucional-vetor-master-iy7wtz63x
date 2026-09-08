@@ -5,6 +5,7 @@ import Index from './pages/Index'
 import Sectors from './pages/Sectors'
 import Questionnaire from './pages/Questionnaire'
 import Leads from './pages/Leads'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import NotFound from './pages/NotFound'
 
 function ScrollToTop() {
@@ -40,7 +41,14 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/setores" element={<Sectors />} />
           <Route path="/questionario" element={<Navigate to="/setores" replace />} />
-          <Route path="/questionario/:sectorId" element={<Questionnaire />} />
+          <Route
+            path="/questionario/:sectorId"
+            element={
+              <ErrorBoundary fallbackTitle="Aviso no formulário do Questionário Estratégico">
+                <Questionnaire />
+              </ErrorBoundary>
+            }
+          />
           <Route path="/leads" element={<Leads />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
