@@ -10,6 +10,12 @@ import { isAuthError } from '@/lib/pocketbase/errors'
 import { getQuestionnaireSections } from '@/data/questionnaireSectors'
 import { findSector } from '@/data/sectors'
 import {
+  validateLeadForExport,
+  exportDossieAsJson,
+  downloadAllLeadAttachmentsZip,
+  type DossieValidationResult,
+} from '@/services/dossieExport'
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -41,6 +47,11 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronUp,
+  FileJson,
+  Archive,
+  Loader2,
+  AlertTriangle,
+  Check,
 } from 'lucide-react'
 
 interface LeadDetailModalProps {
@@ -81,6 +92,13 @@ export function LeadDetailModal({
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({})
   const [statusError, setStatusError] = useState<string | null>(null)
+
+  // Estados de exportação de dossiê e download em lote
+  const [exportingJson, setExportingJson] = useState(false)
+  const [exportingZip, setExportingZip] = useState(false)
+  const [exportProgressText, setExportProgressText] = useState<string | null>(null)
+  const [exportSuccessMessage, setExportSuccessMessage] = useState<string | null>(null)
+  const [exportErrors, setExportErrors] = useState<string[]>([])
 
   if (!lead) return null
 
@@ -146,6 +164,68 @@ export function LeadDetailModal({
       : []
 
   const totalFiles = contratoFiles.length + certFiles.length + docFiles.length
+
+  // Ação de exportar Dossiê em JSON
+  const handleExportJson = async () => {
+    try {
+      setExportErrors([])
+      setExportSuccessMessage(null)
+
+      // Validação prévia
+      const validation = validateLeadForExport(lead)
+      if (!validation.valid) {
+        setExportErrors(validation.errors)
+        return
+      }
+
+      setExportingJson(true)
+      setExportProgressText('Iniciando geração do dossiê JSON...')
+
+      const result = await exportDossieAsJson(lead, (msg) => {
+        setExportProgressText(msg)
+      })
+
+      setExportSuccessMessage(`Dossiê exportado com sucesso: "${result.filename}"`)
+    } catch (err: unknown) {
+      console.error('Erro na exportação do dossiê:', err)
+      const msg = err instanceof Error ? err.message : 'Falha ao gerar dossiê JSON.'
+      setExportErrors([msg])
+    } finally {
+      setExportingJson(false)
+      setExportProgressText(null)
+    }
+  }
+
+  // Ação de baixar todos os anexos em lote (ZIP)
+  const handleDownloadAllAttachments = async () => {
+    try {
+      setExportErrors([])
+      setExportSuccessMessage(null)
+
+      if (totalFiles === 0) {
+        setExportErrors(['Este lead não possui nenhum documento ou anexo para baixar.'])
+        return
+      }
+
+      setExportingZip(true)
+      setExportProgressText('Iniciando pacote de anexos em lote...')
+
+      const result = await downloadAllLeadAttachmentsZip(lead, (msg) => {
+        setExportProgressText(msg)
+      })
+
+      setExportSuccessMessage(
+        `Todos os ${result.totalFiles} anexos foram compactados e baixados: "${result.zipFilename}"`,
+      )
+    } catch (err: unknown) {
+      console.error('Erro ao baixar anexos em lote:', err)
+      const msg = err instanceof Error ? err.message : 'Falha ao baixar anexos.'
+      setExportErrors([msg])
+    } finally {
+      setExportingZip(false)
+      setExportProgressText(null)
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -216,6 +296,106 @@ export function LeadDetailModal({
               {statusError}
             </div>
           )}
+
+          {/* Barra de Ações Rápidas de Exportação */}
+          <div className="bg-white rounded-xl border border-[#0066CC]/20 p-4 shadow-sm bg-gradient-to-r from-white via-sky-50/30 to-emerald-50/20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <span className="text-xs font-bold text-[#0066CC] uppercase tracking-wider block">
+                  Exportação &amp; Pacote Executivo · Schema V6.7
+                </span>
+                <p className="text-xs text-gray-600 mt-0.5">
+                  Gere o dossiê oficial enriquecido com o dicionário de perguntas e hashes SHA-256
+                  ou baixe os anexos em lote.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                <Button
+                  onClick={handleExportJson}
+                  disabled={exportingJson || exportingZip}
+                  className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs font-semibold h-9 shadow-sm"
+                  title="Gera arquivo JSON conforme especificação Schema V6.7 v1.0"
+                >
+                  {exportingJson ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                      Exportando JSON...
+                    </>
+                  ) : (
+                    <>
+                      <FileJson className="w-3.5 h-3.5 mr-1.5" />
+                      Exportar dossiê (JSON)
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={handleDownloadAllAttachments}
+                  disabled={exportingJson || exportingZip || totalFiles === 0}
+                  className="border-[#22B14C]/40 text-[#22B14C] hover:bg-[#22B14C]/10 text-xs font-semibold h-9 bg-white"
+                  title={
+                    totalFiles === 0
+                      ? 'Nenhum anexo disponível para download'
+                      : `Baixa os ${totalFiles} arquivo(s) em pacote compactado ZIP`
+                  }
+                >
+                  {exportingZip ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                      Baixando lote...
+                    </>
+                  ) : (
+                    <>
+                      <Archive className="w-3.5 h-3.5 mr-1.5" />
+                      Baixar todos os anexos ({totalFiles})
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* Progresso de download/exportação */}
+            {exportProgressText && (
+              <div className="mt-3 pt-3 border-t border-gray-200/60 flex items-center gap-2 text-xs text-[#0066CC] font-medium animate-pulse">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>{exportProgressText}</span>
+              </div>
+            )}
+
+            {/* Sucesso na exportação */}
+            {exportSuccessMessage && (
+              <div className="mt-3 pt-3 border-t border-emerald-200 flex items-center justify-between gap-2 text-xs text-emerald-800 bg-emerald-50/80 p-2.5 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#22B14C] shrink-0" />
+                  <span>{exportSuccessMessage}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setExportSuccessMessage(null)}
+                  className="text-gray-400 hover:text-gray-600 text-xs font-bold px-1"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* Erros / Alertas de validação prévia */}
+            {exportErrors.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-red-200 bg-red-50/90 p-3 rounded-lg text-xs text-red-800 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-red-900 mb-1">
+                  <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                  <span>Atenção na validação prévia da exportação:</span>
+                </div>
+                <ul className="list-disc list-inside space-y-0.5 pl-1">
+                  {exportErrors.map((err, i) => (
+                    <li key={i}>{err}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
           {/* 1. Card de Informações Cadastrais */}
           <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <h3 className="text-sm font-bold text-[#0066CC] uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -331,6 +511,19 @@ export function LeadDetailModal({
               <h3 className="text-sm font-bold text-[#0066CC] uppercase tracking-wider flex items-center gap-2">
                 <Paperclip className="w-4 h-4" /> Anexos e Documentação ({totalFiles})
               </h3>
+
+              {totalFiles > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownloadAllAttachments}
+                  disabled={exportingZip}
+                  className="h-8 text-xs border-emerald-300 text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900"
+                >
+                  <Archive className="w-3.5 h-3.5 mr-1 text-[#22B14C]" />
+                  Baixar todos os anexos ({totalFiles})
+                </Button>
+              )}
             </div>
 
             {totalFiles === 0 ? (
@@ -614,7 +807,40 @@ export function LeadDetailModal({
         </div>
 
         {/* Rodapé da Modal */}
-        <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+        <div className="p-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              size="sm"
+              onClick={handleExportJson}
+              disabled={exportingJson || exportingZip}
+              className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs h-9"
+            >
+              {exportingJson ? (
+                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+              ) : (
+                <FileJson className="w-3.5 h-3.5 mr-1.5" />
+              )}
+              Exportar dossiê (JSON)
+            </Button>
+
+            {totalFiles > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadAllAttachments}
+                disabled={exportingZip || exportingJson}
+                className="text-xs h-9 border-[#22B14C]/50 text-[#22B14C] hover:bg-[#22B14C]/10"
+              >
+                {exportingZip ? (
+                  <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                ) : (
+                  <Archive className="w-3.5 h-3.5 mr-1.5" />
+                )}
+                Baixar todos os anexos ({totalFiles})
+              </Button>
+            )}
+          </div>
+
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Fechar Dossiê
           </Button>
