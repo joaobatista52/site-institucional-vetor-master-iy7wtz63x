@@ -3076,17 +3076,22 @@ footer[id],
 
 .whatsapp-button {
   height: 42px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(34, 177, 76, 0.4);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
+  background: #22b14c;
   color: #fff;
   font-family: var(--font-heading);
   font-size: 0.78rem;
   font-weight: 700;
+  box-shadow: 0 4px 14px rgba(34, 177, 76, 0.35);
+  transition: all 0.2s ease-in-out;
 }
 
 .whatsapp-button:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: #1ca042;
+  border-color: #22b14c;
+  box-shadow: 0 6px 18px rgba(34, 177, 76, 0.5);
+  transform: translateY(-1px);
 }
 
 .whatsapp-button svg {

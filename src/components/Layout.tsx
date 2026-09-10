@@ -25,8 +25,12 @@ const navigation = [
   { label: 'Sobre o Fundador', href: '/#fundador' },
 ]
 
-const whatsappLink =
-  'https://wa.me/?text=Ol%C3%A1%2C%20quero%20come%C3%A7ar%20meu%20Diagn%C3%B3stico%20Estrat%C3%A9gico%20com%20a%20VETOR%20MASTER.'
+export const WHATSAPP_NUMBER = '5511964996966'
+export const WHATSAPP_DEFAULT_MESSAGE =
+  'Olá! Conheci a VETOR MASTER pelo site e gostaria de saber mais sobre os diagnósticos estratégicos.'
+export const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  WHATSAPP_DEFAULT_MESSAGE,
+)}`
 
 function HeaderLogo() {
   return (
@@ -159,7 +163,7 @@ function Footer() {
             <span>contato.comercial@vetormaster.com.br</span>
           </a>
           <Button className="whatsapp-button" asChild>
-            <a href={whatsappLink} target="_blank" rel="noreferrer">
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
               <MessageCircle aria-hidden="true" />
               Fale pelo WhatsApp
               <ArrowUpRight aria-hidden="true" />

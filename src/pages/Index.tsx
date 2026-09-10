@@ -50,8 +50,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-const whatsappLink =
-  'https://wa.me/?text=Ol%C3%A1%2C%20quero%20come%C3%A7ar%20meu%20Diagn%C3%B3stico%20Estrat%C3%A9gico%20com%20a%20VETOR%20MASTER.'
+import { whatsappLink } from '@/components/Layout'
 
 type Icon = ComponentType<{ className?: string; 'aria-hidden'?: boolean | string }>
 

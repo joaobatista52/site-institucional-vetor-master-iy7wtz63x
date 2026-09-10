@@ -29,19 +29,14 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         }
       ],
       "indexes": [
@@ -107,24 +102,14 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": [
-            "Sim, autorizo",
-            "Não autorizo",
-            "Sim",
-            "Não"
-          ]
+          "selectValues": ["Sim, autorizo", "Não autorizo", "Sim", "Não"]
         },
         {
           "name": "formato_interesse",
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": [
-            "MaaS",
-            "Híbrido",
-            "CaaS",
-            "Ainda não sei"
-          ]
+          "selectValues": ["MaaS", "Híbrido", "CaaS", "Ainda não sei"]
         },
         {
           "name": "responsavel_documentos",
@@ -137,37 +122,24 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": [
-            "novo",
-            "em_analise",
-            "devolutiva_agendada",
-            "concluido",
-            "descartado"
-          ]
+          "selectValues": ["novo", "em_analise", "devolutiva_agendada", "concluido", "descartado"]
         },
         {
           "name": "created",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate"
-          ]
+          "autodateTriggers": ["onCreate"]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": [
-            "onCreate",
-            "onUpdate"
-          ]
+          "autodateTriggers": ["onCreate", "onUpdate"]
         }
       ],
-      "indexes": [
-        "CREATE INDEX `idx_leads_setor` ON `leads` (setor)"
-      ]
+      "indexes": ["CREATE INDEX `idx_leads_setor` ON `leads` (setor)"]
     }
   ]
 }
