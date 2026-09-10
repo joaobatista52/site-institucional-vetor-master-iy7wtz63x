@@ -18,11 +18,11 @@ import {
 } from '@/components/ui/sheet'
 
 const navigation = [
-  { label: 'Início', href: '/#inicio' },
-  { label: 'O Método', href: '/#metodo' },
-  { label: 'Para seu setor', href: '/setores' },
-  { label: 'Soluções', href: '/#solucoes' },
-  { label: 'Sobre o Fundador', href: '/#fundador' },
+  { label: 'Início', href: '/#inicio', path: '/' },
+  { label: 'O Método', href: '/metodo', path: '/metodo' },
+  { label: 'Para seu setor', href: '/setores', path: '/setores' },
+  { label: 'Soluções', href: '/#solucoes', path: '/#solucoes' },
+  { label: 'Sobre o Fundador', href: '/#fundador', path: '/#fundador' },
 ]
 
 export const WHATSAPP_NUMBER = '5511964996966'
@@ -59,23 +59,47 @@ function Header({ onOpenSectorModal }: { onOpenSectorModal: () => void }) {
   const { pathname } = useLocation()
   const isHome = pathname === '/'
 
+  const checkIsActive = (item: (typeof navigation)[number]) => {
+    if (item.path === '/metodo') {
+      return pathname === '/metodo'
+    }
+    if (item.path === '/setores') {
+      return pathname === '/setores'
+    }
+    if (item.path === '/') {
+      return isHome
+    }
+    return false
+  }
+
   return (
     <header className="site-header">
       <div className="site-container header-inner">
         <HeaderLogo />
 
         <nav className="desktop-nav" aria-label="Navegação principal">
-          {navigation.map((item) =>
-            isHome && item.href.startsWith('/#') ? (
-              <a key={item.href} href={item.href.replace(/^\/#/, '#')}>
+          {navigation.map((item) => {
+            const isActive = checkIsActive(item)
+            return isHome && item.href.startsWith('/#') ? (
+              <a
+                key={item.href}
+                href={item.href.replace(/^\/#/, '#')}
+                className={isActive ? 'is-active' : ''}
+                aria-current={isActive ? 'page' : undefined}
+              >
                 {item.label}
               </a>
             ) : (
-              <Link key={item.href} to={item.href}>
+              <Link
+                key={item.href}
+                to={item.href}
+                className={isActive ? 'is-active' : ''}
+                aria-current={isActive ? 'page' : undefined}
+              >
                 {item.label}
               </Link>
-            ),
-          )}
+            )
+          })}
         </nav>
 
         <Button className="header-cta" type="button" onClick={onOpenSectorModal}>
@@ -99,17 +123,30 @@ function Header({ onOpenSectorModal }: { onOpenSectorModal: () => void }) {
               <HeaderLogo />
             </SheetHeader>
             <nav className="mobile-nav" aria-label="Navegação em dispositivos móveis">
-              {navigation.map((item) =>
-                isHome && item.href.startsWith('/#') ? (
+              {navigation.map((item) => {
+                const isActive = checkIsActive(item)
+                return isHome && item.href.startsWith('/#') ? (
                   <SheetClose asChild key={item.href}>
-                    <a href={item.href.replace(/^\/#/, '#')}>{item.label}</a>
+                    <a
+                      href={item.href.replace(/^\/#/, '#')}
+                      className={isActive ? 'is-active text-strategic-blue font-bold' : ''}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </a>
                   </SheetClose>
                 ) : (
                   <SheetClose asChild key={item.href}>
-                    <Link to={item.href}>{item.label}</Link>
+                    <Link
+                      to={item.href}
+                      className={isActive ? 'is-active text-strategic-blue font-bold' : ''}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
                   </SheetClose>
-                ),
-              )}
+                )
+              })}
             </nav>
             <SheetClose asChild>
               <Button className="mobile-sheet-cta" type="button" onClick={onOpenSectorModal}>

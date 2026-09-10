@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import { useEffect } from 'react'
 import Layout from './components/Layout'
 import Index from './pages/Index'
+import Metodo from './pages/Metodo'
 import Sectors from './pages/Sectors'
 import Questionnaire from './pages/Questionnaire'
 import Leads from './pages/Leads'
@@ -39,6 +40,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/metodo" element={<Metodo />} />
           <Route path="/setores" element={<Sectors />} />
           <Route path="/questionario" element={<Navigate to="/setores" replace />} />
           <Route
