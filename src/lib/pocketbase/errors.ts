@@ -21,9 +21,10 @@ export function extractFieldErrors(error: unknown): FieldErrors {
 }
 
 export function isAuthError(error: unknown): boolean {
-  if (!error || typeof error !== 'object') return false
-  const err = error as Record<string, unknown>
-  return err.status === 401 || err.status === 403 || err.code === 401 || err.code === 403
+  if (error instanceof ClientResponseError) {
+    return error.status === 401 || error.status === 403
+  }
+  return false
 }
 
 export function getErrorMessage(error: unknown): string {

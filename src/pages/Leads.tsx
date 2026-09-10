@@ -121,16 +121,19 @@ export function LeadsPage() {
   // Filtragem local
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
-      const cadastro = parseLeadCadastro(lead)
+      const cadastro = parseLeadCadastro(lead) as Record<string, unknown>
       const term = searchTerm.toLowerCase().trim()
+      const origem = typeof cadastro.origem === 'string' ? cadastro.origem : ''
 
       const matchTerm =
         !term ||
-        (cadastro.nomeCompleto && cadastro.nomeCompleto.toLowerCase().includes(term)) ||
-        (cadastro.empresa && cadastro.empresa.toLowerCase().includes(term)) ||
-        (cadastro.email && cadastro.email.toLowerCase().includes(term)) ||
-        (cadastro.cnpj && cadastro.cnpj.toLowerCase().includes(term)) ||
-        (lead.setor && lead.setor.toLowerCase().includes(term))
+        (typeof cadastro.nomeCompleto === 'string' &&
+          cadastro.nomeCompleto.toLowerCase().includes(term)) ||
+        (typeof cadastro.empresa === 'string' && cadastro.empresa.toLowerCase().includes(term)) ||
+        (typeof cadastro.email === 'string' && cadastro.email.toLowerCase().includes(term)) ||
+        (typeof cadastro.cnpj === 'string' && cadastro.cnpj.toLowerCase().includes(term)) ||
+        (lead.setor && lead.setor.toLowerCase().includes(term)) ||
+        origem.toLowerCase().includes(term)
 
       const matchSector =
         selectedSector === 'all' ||
@@ -368,13 +371,21 @@ export function LeadsPage() {
 
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
               {filteredLeads.map((lead) => {
-                const cadastro = parseLeadCadastro(lead)
+                const cadastro = parseLeadCadastro(lead) as Record<string, unknown>
                 const respostas =
                   typeof lead.respostas === 'object' && lead.respostas
                     ? (lead.respostas as Record<string, unknown>)
                     : {}
+                const origem = typeof cadastro.origem === 'string' ? cadastro.origem : ''
+                const isSaasWaitlist =
+                  origem === 'Lista de Prioridade SaaS' ||
+                  cadastro.origemTipo === 'saas_prioridade' ||
+                  respostas.origem === 'Lista de Prioridade SaaS'
+
                 const planoPretendido =
-                  cadastro.planoEscolhido || (respostas.plano_escolhido as string) || ''
+                  (typeof cadastro.planoEscolhido === 'string' && cadastro.planoEscolhido) ||
+                  (respostas.plano_escolhido as string) ||
+                  (isSaasWaitlist ? 'SaaS (R$ 1.190/mês)' : '')
                 const statusMeta = statusBadges[lead.status || 'novo'] || statusBadges.novo
                 const formattedDate = lead.created
                   ? new Date(lead.created).toLocaleDateString('pt-BR', {
@@ -415,6 +426,18 @@ export function LeadsPage() {
                     {/* Coluna 1: Empresa & Setor */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        {isSaasWaitlist ? (
+                          <Badge className="bg-[#22B14C] hover:bg-[#1ea144] text-white border-transparent text-[11px] font-bold shadow-xs">
+                            Origem: Lista de Prioridade SaaS
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant="outline"
+                            className="bg-gray-100 text-gray-700 border-gray-200 text-[11px] font-medium"
+                          >
+                            Origem: Questionário Estratégico
+                          </Badge>
+                        )}
                         <Badge
                           variant="outline"
                           className="bg-[#0066CC]/5 text-[#0066CC] border-[#0066CC]/20 text-[11px] font-semibold"
@@ -422,7 +445,9 @@ export function LeadsPage() {
                           {lead.setor || 'Setor'}
                         </Badge>
                         <Badge className="bg-[#0066CC] text-white border-transparent text-[11px] font-medium hover:bg-[#0055b3]">
-                          Plano Pretendido: {planoPretendido || 'Não especificado'}
+                          {isSaasWaitlist
+                            ? 'SaaS (R$ 1.190/mês)'
+                            : `Plano: ${planoPretendido || 'Não especificado'}`}
                         </Badge>
                         <Badge
                           variant="outline"
@@ -439,23 +464,27 @@ export function LeadsPage() {
                       </div>
 
                       <h2 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-[#0066CC] transition-colors truncate">
-                        {cadastro.empresa || 'Empresa não informada'}
+                        {(typeof cadastro.empresa === 'string' && cadastro.empresa) ||
+                          'Empresa não informada'}
                       </h2>
 
                       <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
                         <span className="flex items-center gap-1">
                           <strong className="text-gray-900 font-medium">
-                            {cadastro.nomeCompleto || 'Nome não informado'}
+                            {(typeof cadastro.nomeCompleto === 'string' && cadastro.nomeCompleto) ||
+                              'Nome não informado'}
                           </strong>
-                          {cadastro.cargo ? ` · ${cadastro.cargo}` : ''}
+                          {typeof cadastro.cargo === 'string' && cadastro.cargo
+                            ? ` · ${cadastro.cargo}`
+                            : ''}
                         </span>
-                        {cadastro.email && (
+                        {typeof cadastro.email === 'string' && cadastro.email && (
                           <span className="flex items-center gap-1 text-gray-500">
                             <Mail className="w-3.5 h-3.5" />
                             {cadastro.email}
                           </span>
                         )}
-                        {cadastro.whatsapp && (
+                        {typeof cadastro.whatsapp === 'string' && cadastro.whatsapp && (
                           <span className="flex items-center gap-1 text-gray-500">
                             <Phone className="w-3.5 h-3.5" />
                             {cadastro.whatsapp}
@@ -467,7 +496,7 @@ export function LeadsPage() {
                     {/* Coluna 2: Faturamento & Data */}
                     <div className="flex items-center justify-between md:justify-end gap-4 shrink-0 text-right">
                       <div className="text-left md:text-right">
-                        {cadastro.faturamento ? (
+                        {typeof cadastro.faturamento === 'string' && cadastro.faturamento ? (
                           <span className="text-xs font-semibold text-gray-800 block">
                             {cadastro.faturamento}
                           </span>

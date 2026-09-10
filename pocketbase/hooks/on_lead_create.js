@@ -184,12 +184,31 @@ onRecordCreateRequest((e) => {
   }
 
   // Validação:
-  // - Empresa / Razão Social obrigatória
-  // - E-mail corporativo válido obrigatório
-  // - Respondente e Cargo obrigatórios
-  // - Setor obrigatório
-  // - Questionário setorial substancialmente respondido (mínimo de respostas obrigatórias)
+  // Se for da 'Lista de Prioridade SaaS', aplicamos a validação específica do formulário da lista de prioridade:
+  // nome, empresa, e-mail, whatsapp, setor e faturamento anual estimado.
+  // Caso contrário, mantemos a validação do questionário setorial de 72h.
   const isEmailValid = email.indexOf('@') > 0 && email.indexOf('.') > email.indexOf('@')
+  const origem = ((cadastro && (cadastro.origem || cadastro['origem'])) || '').trim()
+  const isSaasPriority =
+    origem === 'Lista de Prioridade SaaS' ||
+    (cadastro &&
+      (cadastro.origemTipo === 'saas_prioridade' || cadastro['origemTipo'] === 'saas_prioridade'))
+
+  if (isSaasPriority) {
+    const whatsapp = ((cadastro && (cadastro.whatsapp || cadastro['whatsapp'])) || '').trim()
+    const faturamento = (
+      (cadastro && (cadastro.faturamento || cadastro['faturamento'])) ||
+      ''
+    ).trim()
+
+    if (!respondente || !empresa || !isEmailValid || !whatsapp || !setor || !faturamento) {
+      throw new BadRequestError(
+        'Por favor, preencha todos os campos obrigatórios para entrar na Lista de Prioridade SaaS (Nome, Empresa, E-mail, WhatsApp, Setor e Faturamento).',
+      )
+    }
+    return e.next()
+  }
+
   const hasMinAnswers = filledAnswersCount >= 10
 
   if (!empresa || !isEmailValid || !respondente || !cargo || !setor || !hasMinAnswers) {
@@ -319,12 +338,162 @@ onRecordAfterCreateSuccess((e) => {
 
     const mailClient = $app.newMailClient()
 
+    // Identificação de origem: Lista de Prioridade SaaS vs. Questionário Estratégico
+    const leadOrigem = ((cadastro && (cadastro.origem || cadastro['origem'])) || '').trim()
+    const leadFaturamento = (
+      (cadastro && (cadastro.faturamento || cadastro['faturamento'])) ||
+      ''
+    ).trim()
+    const isSaasPriorityLead =
+      leadOrigem === 'Lista de Prioridade SaaS' ||
+      (cadastro &&
+        (cadastro.origemTipo === 'saas_prioridade' || cadastro['origemTipo'] === 'saas_prioridade'))
+
     // 2. DISPARO DO E-MAIL 1: Confirmação automática ao Lead
     if (leadEmail && leadEmail.indexOf('@') > 0) {
       try {
-        const leadSubject = 'Confirmação de Recebimento: Questionário Estratégico — VETOR MASTER'
+        let leadSubject = ''
+        let leadHtml = ''
 
-        const leadHtml = `<!DOCTYPE html>
+        if (isSaasPriorityLead) {
+          leadSubject = 'Inscrição Confirmada: Lista de Prioridade SaaS — VETOR MASTER'
+          leadHtml = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Prioridade SaaS — VETOR MASTER</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F6F9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#333333;line-height:1.6;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F6F9;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.06);border:1px solid #E2E8F0;">
+          <!-- Cabeçalho Institucional Azul #0066CC -->
+          <tr>
+            <td style="background-color:#0066CC;padding:32px 28px;text-align:center;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center">
+                    <span style="display:inline-block;padding:4px 14px;background:#22B14C;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:#ffffff;text-transform:uppercase;margin-bottom:12px;">
+                      Lista de Prioridade SaaS
+                    </span>
+                    <h1 style="margin:8px 0 0;font-size:26px;font-weight:800;letter-spacing:0.5px;color:#ffffff;line-height:1.2;">
+                      VETOR MASTER
+                    </h1>
+                    <p style="margin:6px 0 0;font-size:13px;color:#E0ECFF;letter-spacing:0.3px;">
+                      Inteligência sob Demanda & Monitoramento Contínuo
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Corpo Principal -->
+          <tr>
+            <td style="padding:36px 32px 28px;">
+              <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#1A202C;">
+                Inscrição confirmada na Lista de Prioridade!
+              </h2>
+
+              <p style="margin:0 0 16px;font-size:15px;color:#4A5568;">
+                Olá, <strong>${leadNome}</strong>,
+              </p>
+
+              <p style="margin:0 0 20px;font-size:15px;color:#4A5568;">
+                Agradecemos pelo seu interesse na solução <strong>VETOR MASTER SaaS</strong> para a empresa <strong>${leadEmpresa}</strong>. Sua vaga foi registrada com prioridade máxima em nossa lista.
+              </p>
+
+              <!-- Caixa de Destaque com Benefício de Acesso Antecipado e Condição de Fundador -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EAF3FD;border-left:4px solid #22B14C;border-radius:6px;margin:24px 0;">
+                <tr>
+                  <td style="padding:18px 20px;">
+                    <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;">
+                      Acesso Antecipado &amp; Condição Especial de Fundador
+                    </p>
+                    <p style="margin:0;font-size:15px;color:#1A365D;font-weight:600;line-height:1.5;">
+                      Assim que o nível SaaS for liberado, você será comunicado em primeira mão com <strong>acesso antecipado exclusivo</strong> e <strong>condição especial reservada aos membros fundadores</strong>.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Detalhes do Registro -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #EDF2F7;border-radius:8px;background-color:#F8FAFC;margin:20px 0 24px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 10px;font-size:12px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:0.8px;">
+                      Resumo da Inscrição
+                    </p>
+                    <table width="100%" cellpadding="4" cellspacing="0" border="0" style="font-size:14px;color:#2D3748;">
+                      <tr>
+                        <td width="38%" style="color:#718096;font-weight:500;">Empresa:</td>
+                        <td style="font-weight:600;">${leadEmpresa}</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#718096;font-weight:500;">Setor:</td>
+                        <td style="font-weight:600;">${setorNome}</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#718096;font-weight:500;">Faturamento Anual:</td>
+                        <td style="font-weight:600;">${leadFaturamento || 'Não informado'}</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#718096;font-weight:500;">Plano Selecionado:</td>
+                        <td style="font-weight:600;color:#0066CC;">SaaS (R$ 1.190/mês)</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#718096;font-weight:500;">Protocolo:</td>
+                        <td style="font-family:monospace;font-size:12px;color:#4A5568;">#${record.id}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Destaque para conhecer o MaaS Híbrido enquanto o SaaS não abre -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px dashed #0066CC;border-radius:8px;background-color:#F0F7FF;margin:24px 0;">
+                <tr>
+                  <td style="padding:18px 20px;">
+                    <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#0066CC;">
+                      Precisa de direção executiva imediata para a sua operação?
+                    </p>
+                    <p style="margin:0 0 12px;font-size:13px;color:#4A5568;">
+                      Conheça o nosso <strong>MaaS Híbrido</strong> (R$ 3.290/mês): união do algoritmo determinístico com validação e acompanhamento C-Level direto para destravar gargalos críticos da sua empresa em até 72h.
+                    </p>
+                    <a href="${siteUrl ? siteUrl + '/#solucoes' : 'https://site-institucional-vetor-master-165d3.shrd00.internal.goskip.dev/#solucoes'}" style="display:inline-block;padding:8px 16px;background-color:#0066CC;color:#ffffff;text-decoration:none;font-weight:700;font-size:12px;border-radius:6px;">
+                      Conhecer o MaaS Híbrido &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:24px 0 0;font-size:14px;color:#2D3748;">
+                Atenciosamente,<br>
+                <strong style="color:#0066CC;">Equipe VETOR MASTER</strong><br>
+                <span style="font-size:12px;color:#718096;">Inteligência em Gestão, Finanças & Governança</span>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Rodapé -->
+          <tr>
+            <td style="background-color:#F8FAFC;padding:20px 32px;text-align:center;border-top:1px solid #E2E8F0;">
+              <p style="margin:0;font-size:12px;color:#A0AEC0;">
+                Este é um e-mail transacional automático referente à sua inscrição na Lista de Prioridade SaaS da VETOR MASTER.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+        } else {
+          leadSubject = 'Confirmação de Recebimento: Questionário Estratégico — VETOR MASTER'
+          leadHtml = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -441,6 +610,7 @@ onRecordAfterCreateSuccess((e) => {
   </table>
 </body>
 </html>`
+        }
 
         const leadMessage = new MailerMessage({
           from: {
@@ -454,7 +624,9 @@ onRecordAfterCreateSuccess((e) => {
 
         mailClient.send(leadMessage)
         console.log(
-          'E-mail de confirmação enviado com sucesso ao lead:',
+          'E-mail de confirmação enviado com sucesso ao lead (' +
+            (isSaasPriorityLead ? 'Lista Prioridade SaaS' : 'Questionário') +
+            '):',
           leadEmail,
           '(leadId: ' + record.id + ')',
         )
@@ -471,9 +643,128 @@ onRecordAfterCreateSuccess((e) => {
     // 3. DISPARO DO E-MAIL 2: Notificação automática à Equipe Interna
     const teamEmail = 'joao.batista@qgassist.com.br'
     try {
-      const teamSubject = 'Novo Dossiê Recebido — ' + leadEmpresa + ' (' + setorNome + ')'
+      let teamSubject = ''
+      let teamHtml = ''
 
-      const teamHtml = `<!DOCTYPE html>
+      if (isSaasPriorityLead) {
+        teamSubject =
+          'Novo Lead na Lista de Prioridade SaaS — ' + leadEmpresa + ' (' + setorNome + ')'
+        teamHtml = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Prioridade SaaS — VETOR MASTER</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F6F9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#333333;line-height:1.6;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F6F9;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.06);border:1px solid #E2E8F0;">
+          <!-- Cabeçalho Notificação Interna -->
+          <tr>
+            <td style="background-color:#1A202C;padding:24px 28px;border-bottom:4px solid #22B14C;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td>
+                    <span style="display:inline-block;padding:3px 10px;background:#22B14C;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:1px;color:#ffffff;text-transform:uppercase;">
+                      LISTA DE PRIORIDADE SAAS
+                    </span>
+                    <h2 style="margin:8px 0 0;font-size:20px;font-weight:700;color:#ffffff;">
+                      VETOR MASTER — Novo Lead SaaS Cadastrado
+                    </h2>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Conteúdo -->
+          <tr>
+            <td style="padding:28px 28px 20px;">
+              <p style="margin:0 0 16px;font-size:14px;color:#4A5568;">
+                Um novo executivo acabou de se cadastrar na <strong>Lista de Prioridade SaaS</strong> com intenção de acesso antecipado e condição de fundador:
+              </p>
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:8px;background-color:#FFFFFF;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <table width="100%" cellpadding="6" cellspacing="0" border="0" style="font-size:14px;color:#2D3748;">
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td width="38%" style="color:#718096;font-weight:600;">Origem:</td>
+                        <td><strong style="color:#22B14C;">Lista de Prioridade SaaS</strong></td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td style="color:#718096;font-weight:600;">Nome:</td>
+                        <td style="font-weight:700;color:#1A202C;">${leadNome || '—'}</td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td style="color:#718096;font-weight:600;">Empresa:</td>
+                        <td style="font-weight:700;color:#1A202C;">${leadEmpresa || '—'}</td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td style="color:#718096;font-weight:600;">E-mail:</td>
+                        <td><a href="mailto:${leadEmail}" style="color:#0066CC;text-decoration:none;">${leadEmail || '—'}</a></td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td style="color:#718096;font-weight:600;">Telefone/WhatsApp:</td>
+                        <td>${leadTelefone || '—'}</td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td style="color:#718096;font-weight:600;">Setor:</td>
+                        <td><strong style="color:#0066CC;">${setorNome}</strong></td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td style="color:#718096;font-weight:600;">Faturamento Anual:</td>
+                        <td><strong>${leadFaturamento || '—'}</strong></td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #EDF2F7;">
+                        <td style="color:#718096;font-weight:600;">Plano de Interesse:</td>
+                        <td><strong style="color:#0066CC;">SaaS (R$ 1.190/mês)</strong></td>
+                      </tr>
+                      <tr>
+                        <td style="color:#718096;font-weight:600;">ID do Registro:</td>
+                        <td style="font-family:monospace;font-size:12px;color:#718096;">${record.id}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Botão de Ação Direta para /leads -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="${leadsPanelUrl}" target="_blank" style="display:inline-block;padding:14px 28px;background-color:#0066CC;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;border-radius:8px;box-shadow:0 2px 6px rgba(0,102,204,0.35);">
+                      Ver no Painel de Leads (/leads) &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:16px 0 0;font-size:12px;color:#A0AEC0;text-align:center;">
+                Link direto: <a href="${leadsPanelUrl}" style="color:#0066CC;">${leadsPanelUrl}</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Rodapé Interno -->
+          <tr>
+            <td style="background-color:#F8FAFC;padding:16px 28px;text-align:center;border-top:1px solid #E2E8F0;">
+              <p style="margin:0;font-size:12px;color:#A0AEC0;">
+                Notificação interna do sistema VETOR MASTER gerada automaticamente.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+      } else {
+        teamSubject = 'Novo Dossiê Recebido — ' + leadEmpresa + ' (' + setorNome + ')'
+        teamHtml = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -587,6 +878,7 @@ onRecordAfterCreateSuccess((e) => {
   </table>
 </body>
 </html>`
+      }
 
       const teamMessage = new MailerMessage({
         from: {
@@ -603,7 +895,10 @@ onRecordAfterCreateSuccess((e) => {
         'Notificação enviada com sucesso à equipe interna (' +
           teamEmail +
           ') para leadId: ' +
-          record.id,
+          record.id +
+          ' (Origem: ' +
+          (isSaasPriorityLead ? 'Lista Prioridade SaaS' : 'Questionário') +
+          ')',
       )
     } catch (errTeam) {
       console.error(

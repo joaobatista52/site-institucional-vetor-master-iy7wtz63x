@@ -39,6 +39,7 @@ import BrandLogo from '@/components/BrandLogo'
 import { VetorMasterEscapePanel } from '@/components/VetorMasterPrisonEscapePanel'
 import { SectorModal } from '@/components/SectorModal'
 import { PlanSelectionModal, type PlanData } from '@/components/PlanSelectionModal'
+import { SaaSWaitlistModal } from '@/components/SaaSWaitlistModal'
 import founderPhoto from '@/assets/foto-jbp-linkedin-copia-1-d051a.png'
 import prisaoFundadorImg from '@/assets/prisao-do-fundador-1-27ago26-0a050.png'
 import {
@@ -418,6 +419,7 @@ export default function Index() {
   const [sectorModalOpen, setSectorModalOpen] = useState(false)
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanData | null>(null)
   const [planModalOpen, setPlanModalOpen] = useState(false)
+  const [saasWaitlistOpen, setSaasWaitlistOpen] = useState(false)
 
   const activeSector = allSectors.find((s) => s.id === selectedSectorId) || allSectors[0]
 
@@ -1050,9 +1052,19 @@ export default function Index() {
                     <div className="solution-icon">
                       <SolutionIcon aria-hidden="true" />
                     </div>
-                    <Badge className={solution.name === 'SaaS' ? 'badge-soon' : 'badge-neutral'}>
-                      {solution.badge}
-                    </Badge>
+                    {solution.name === 'SaaS' ? (
+                      <Button
+                        type="button"
+                        onClick={() => setSaasWaitlistOpen(true)}
+                        className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold text-xs h-8 px-3.5 rounded-md shadow-sm transition-all inline-flex items-center gap-1.5"
+                        title="Cadastre-se para receber acesso antecipado e condição especial de fundador"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+                        Entrar na lista de prioridade
+                      </Button>
+                    ) : (
+                      <Badge className="badge-neutral">{solution.badge}</Badge>
+                    )}
                   </div>
                   <h3>{solution.name}</h3>
                   <div className="solution-price">
@@ -1065,20 +1077,30 @@ export default function Index() {
                     <Check aria-hidden="true" /> {solution.detail}
                   </p>
                   <div className="solution-action">
-                    <Button
-                      type="button"
-                      className={
-                        solution.featured
-                          ? 'conversion-button w-full'
-                          : 'solution-button-outline w-full'
-                      }
-                      onClick={() => {
-                        setSelectedPlanForModal(solution)
-                        setPlanModalOpen(true)
-                      }}
-                    >
-                      Selecionar plano <ArrowRight aria-hidden="true" />
-                    </Button>
+                    {solution.name === 'SaaS' ? (
+                      <Button
+                        type="button"
+                        className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold w-full h-11 shadow-sm"
+                        onClick={() => setSaasWaitlistOpen(true)}
+                      >
+                        Entrar na lista de prioridade <ArrowRight aria-hidden="true" />
+                      </Button>
+                    ) : (
+                      <Button
+                        type="button"
+                        className={
+                          solution.featured
+                            ? 'conversion-button w-full'
+                            : 'solution-button-outline w-full'
+                        }
+                        onClick={() => {
+                          setSelectedPlanForModal(solution)
+                          setPlanModalOpen(true)
+                        }}
+                      >
+                        Selecionar plano <ArrowRight aria-hidden="true" />
+                      </Button>
+                    )}
                   </div>
                 </article>
               )
@@ -1226,6 +1248,17 @@ export default function Index() {
         onOpenChange={setPlanModalOpen}
         plan={selectedPlanForModal}
         onProceedToQuestionnaire={() => setSectorModalOpen(true)}
+      />
+
+      <SaaSWaitlistModal
+        open={saasWaitlistOpen}
+        onOpenChange={setSaasWaitlistOpen}
+        onExploreMaas={() => {
+          const solutionsEl = document.getElementById('solucoes')
+          if (solutionsEl) {
+            solutionsEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        }}
       />
     </>
   )

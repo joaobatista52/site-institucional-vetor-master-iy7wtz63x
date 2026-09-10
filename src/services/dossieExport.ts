@@ -184,8 +184,23 @@ export function validateLeadForExport(lead: LeadRecord): DossieValidationResult 
   const errors: string[] = []
   const warnings: string[] = []
 
-  const cadastro = parseLeadCadastro(lead)
-  const respostas = parseLeadRespostas(lead)
+  const cadastro = parseLeadCadastro(lead) as Record<string, unknown>
+  const respostas = parseLeadRespostas(lead) as Record<string, unknown>
+
+  const origem = typeof cadastro.origem === 'string' ? cadastro.origem : ''
+  if (
+    origem === 'Lista de Prioridade SaaS' ||
+    cadastro.origemTipo === 'saas_prioridade' ||
+    respostas.origem === 'Lista de Prioridade SaaS'
+  ) {
+    return {
+      valid: false,
+      errors: [
+        'O Dossiê Estratégico Schema V6.7 aplica-se apenas a questionários diagnósticos completos de 72h. Este lead é proveniente da Lista de Prioridade SaaS.',
+      ],
+      warnings: [],
+    }
+  }
 
   // 1. Setor válido
   const normalizedSectorId = normalizeSectorIdForDictionary(lead.setor_id, lead.setor)
