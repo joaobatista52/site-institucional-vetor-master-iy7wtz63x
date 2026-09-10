@@ -50,8 +50,6 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-import { whatsappLink } from '@/components/Layout'
-
 type Icon = ComponentType<{ className?: string; 'aria-hidden'?: boolean | string }>
 
 interface SectorItem {
