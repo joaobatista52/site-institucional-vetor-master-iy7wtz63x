@@ -30,6 +30,8 @@ export interface LeadRecord extends RecordModel {
   formato_interesse?: 'MaaS' | 'Híbrido' | 'CaaS' | 'Ainda não sei' | string
   responsavel_documentos?: string
   status?: LeadStatus
+  documentos_pendentes?: boolean
+  documentos_opcao?: string
 }
 
 export function parseLeadCadastro(lead: LeadRecord): LeadCadastro {

@@ -63,6 +63,7 @@ export function LeadsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedSector, setSelectedSector] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
+  const [selectedDocsFilter, setSelectedDocsFilter] = useState<string>('all')
 
   // Lead selecionado para modal de detalhe
   const [selectedLead, setSelectedLead] = useState<LeadRecord | null>(null)
@@ -142,9 +143,15 @@ export function LeadsPage() {
 
       const matchStatus = selectedStatus === 'all' || (lead.status || 'novo') === selectedStatus
 
-      return matchTerm && matchSector && matchStatus
+      const hasDocsPending = Boolean(lead.documentos_pendentes || lead.documentos_opcao)
+      const matchDocs =
+        selectedDocsFilter === 'all' ||
+        (selectedDocsFilter === 'pendentes' && hasDocsPending) ||
+        (selectedDocsFilter === 'com_anexos' && !hasDocsPending)
+
+      return matchTerm && matchSector && matchStatus && matchDocs
     })
-  }, [leads, searchTerm, selectedSector, selectedStatus])
+  }, [leads, searchTerm, selectedSector, selectedStatus, selectedDocsFilter])
 
   // Enquanto estiver validando token inicial do authStore contra o servidor
   if (isValidating) {
@@ -249,7 +256,7 @@ export function LeadsPage() {
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
             {/* Campo de Busca */}
-            <div className="md:col-span-5 relative">
+            <div className="md:col-span-4 relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Buscar por nome, empresa, e-mail, CNPJ ou setor..."
@@ -260,7 +267,7 @@ export function LeadsPage() {
             </div>
 
             {/* Filtro de Setor */}
-            <div className="md:col-span-4">
+            <div className="md:col-span-3">
               <Select value={selectedSector} onValueChange={setSelectedSector}>
                 <SelectTrigger className="h-10 text-sm border-gray-300">
                   <span className="truncate">
@@ -281,7 +288,7 @@ export function LeadsPage() {
             </div>
 
             {/* Filtro de Status */}
-            <div className="md:col-span-3">
+            <div className="md:col-span-2 sm:col-span-3">
               <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                 <SelectTrigger className="h-10 text-sm border-gray-300">
                   <span className="truncate">
@@ -297,6 +304,26 @@ export function LeadsPage() {
                   <SelectItem value="devolutiva_agendada">Devolutiva Agendada</SelectItem>
                   <SelectItem value="concluido">Concluído</SelectItem>
                   <SelectItem value="descartado">Descartado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Filtro de Documentos Pendentes */}
+            <div className="md:col-span-3 sm:col-span-2">
+              <Select value={selectedDocsFilter} onValueChange={setSelectedDocsFilter}>
+                <SelectTrigger className="h-10 text-sm border-gray-300">
+                  <span className="truncate">
+                    {selectedDocsFilter === 'all'
+                      ? 'Documentação: Todos'
+                      : selectedDocsFilter === 'pendentes'
+                        ? 'Documentos Pendentes'
+                        : 'Sem Pendência'}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Documentação: Todos</SelectItem>
+                  <SelectItem value="pendentes">Documentos Pendentes</SelectItem>
+                  <SelectItem value="com_anexos">Sem Pendência</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -345,7 +372,10 @@ export function LeadsPage() {
                 ? 'Nenhum dossiê recebido ainda. Quando um executivo preencher o questionário estratégico em qualquer um dos 12 setores, o lead aparecerá aqui em tempo real.'
                 : 'Nenhum dossiê corresponde aos filtros ou termo de busca selecionados. Tente limpar os filtros.'}
             </p>
-            {(searchTerm || selectedSector !== 'all' || selectedStatus !== 'all') && (
+            {(searchTerm ||
+              selectedSector !== 'all' ||
+              selectedStatus !== 'all' ||
+              selectedDocsFilter !== 'all') && (
               <Button
                 variant="outline"
                 size="sm"
@@ -354,6 +384,7 @@ export function LeadsPage() {
                   setSearchTerm('')
                   setSelectedSector('all')
                   setSelectedStatus('all')
+                  setSelectedDocsFilter('all')
                 }}
               >
                 Limpar filtros
@@ -455,6 +486,14 @@ export function LeadsPage() {
                         >
                           {statusMeta.label}
                         </Badge>
+                        {(lead.documentos_pendentes || lead.documentos_opcao) && (
+                          <Badge
+                            variant="outline"
+                            className="bg-amber-50 text-amber-800 border-amber-300 text-[11px] font-semibold"
+                          >
+                            Documentos pendentes
+                          </Badge>
+                        )}
                         {filesCount > 0 && (
                           <span className="text-[11px] text-gray-500 font-medium inline-flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
                             <FileText className="w-3 h-3 text-gray-600" />

@@ -295,6 +295,14 @@ export function LeadDetailModal({
                     (respostas.plano_escolhido as string) ||
                     (isSaasWaitlist ? 'SaaS (R$ 1.190/mês)' : 'Não especificado')}
                 </Badge>
+                {(lead.documentos_pendentes || lead.documentos_opcao) && (
+                  <Badge
+                    variant="outline"
+                    className="bg-amber-50 text-amber-800 border-amber-300 font-semibold"
+                  >
+                    Documentos pendentes
+                  </Badge>
+                )}
                 <span className="text-xs text-gray-500 flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5" />
                   Recebido em {createdDate}
@@ -586,9 +594,19 @@ export function LeadDetailModal({
           {/* 2. Documentos e Anexos */}
           <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-bold text-[#0066CC] uppercase tracking-wider flex items-center gap-2">
-                <Paperclip className="w-4 h-4" /> Anexos e Documentação ({totalFiles})
-              </h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-sm font-bold text-[#0066CC] uppercase tracking-wider flex items-center gap-2">
+                  <Paperclip className="w-4 h-4" /> Anexos e Documentação ({totalFiles})
+                </h3>
+                {(lead.documentos_pendentes || lead.documentos_opcao) && (
+                  <Badge
+                    variant="outline"
+                    className="bg-amber-50 text-amber-800 border-amber-300 text-xs font-semibold"
+                  >
+                    Documentos pendentes
+                  </Badge>
+                )}
+              </div>
 
               {totalFiles > 0 && (
                 <Button
@@ -603,6 +621,26 @@ export function LeadDetailModal({
                 </Button>
               )}
             </div>
+
+            {/* Aviso de opção registrada quando documentos estão pendentes */}
+            {(lead.documentos_pendentes || lead.documentos_opcao) && (
+              <div className="mb-4 p-3.5 bg-amber-50/90 border border-amber-200 rounded-lg text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="font-bold text-amber-900 block mb-0.5">
+                    Opção registrada no questionário:
+                  </span>
+                  <span className="text-sm font-medium text-amber-950">
+                    &ldquo;{lead.documentos_opcao || 'Documentos pendentes'}&rdquo;
+                  </span>
+                </div>
+                <Badge
+                  variant="outline"
+                  className="bg-white/80 text-amber-800 border-amber-300 self-start sm:self-center font-semibold text-[11px]"
+                >
+                  Pendente de envio
+                </Badge>
+              </div>
+            )}
 
             {totalFiles === 0 ? (
               <p className="text-sm text-gray-500 italic">

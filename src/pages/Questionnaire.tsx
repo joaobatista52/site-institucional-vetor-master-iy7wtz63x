@@ -1117,6 +1117,20 @@ export default function Questionnaire() {
         formData.append('documentacao_adicional', file)
       }
 
+      // Persistir escolha de documentos pendentes quando o usuário marcar uma das opções
+      const hasUploadedFiles =
+        cleanContratoSocial.length > 0 ||
+        cleanCertificacoes.length > 0 ||
+        cleanDocAdicional.length > 0
+
+      if (!hasUploadedFiles && documentosOpcao) {
+        formData.append('documentos_pendentes', 'true')
+        formData.append('documentos_opcao', documentosOpcao)
+      } else {
+        formData.append('documentos_pendentes', 'false')
+        formData.append('documentos_opcao', '')
+      }
+
       const created = await pb.collection('leads').create(formData)
 
       // Limpar o rascunho do setor após envio bem-sucedido
