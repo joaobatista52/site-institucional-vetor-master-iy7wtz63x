@@ -15,6 +15,7 @@ import {
   downloadAllLeadAttachmentsZip,
   type DossieValidationResult,
 } from '@/services/dossieExport'
+import { downloadQuestionnaireAsPdf } from '@/services/questionnairePdf'
 import {
   Dialog,
   DialogContent,
@@ -52,6 +53,7 @@ import {
   Loader2,
   AlertTriangle,
   Check,
+  Printer,
 } from 'lucide-react'
 
 interface LeadDetailModalProps {
@@ -172,6 +174,27 @@ export function LeadDetailModal({
   const totalFiles = contratoFiles.length + certFiles.length + docFiles.length
 
   // Ação de exportar Dossiê em JSON
+  const handleDownloadPdf = () => {
+    if (!lead) return
+    const cadastro = parseLeadCadastro(lead)
+    const respostas = parseLeadRespostas(lead)
+    downloadQuestionnaireAsPdf({
+      id: lead.id,
+      created: lead.created,
+      setor: lead.setor,
+      setor_id: lead.setor_id,
+      status: lead.status,
+      autorizacao_devolutiva: lead.autorizacao_devolutiva,
+      formato_interesse: lead.formato_interesse,
+      responsavel_documentos: lead.responsavel_documentos,
+      contrato_social: lead.contrato_social,
+      certificacoes: lead.certificacoes,
+      documentacao_adicional: lead.documentacao_adicional,
+      cadastro,
+      respostas,
+    })
+  }
+
   const handleExportJson = async () => {
     try {
       setExportErrors([])
@@ -344,24 +367,35 @@ export function LeadDetailModal({
 
               <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                 {!isSaasWaitlist ? (
-                  <Button
-                    onClick={handleExportJson}
-                    disabled={exportingJson || exportingZip}
-                    className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs font-semibold h-9 shadow-sm"
-                    title="Gera arquivo JSON conforme especificação Schema V6.7 v1.0"
-                  >
-                    {exportingJson ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-                        Exportando JSON...
-                      </>
-                    ) : (
-                      <>
-                        <FileJson className="w-3.5 h-3.5 mr-1.5" />
-                        Exportar dossiê (JSON)
-                      </>
-                    )}
-                  </Button>
+                  <>
+                    <Button
+                      onClick={handleDownloadPdf}
+                      disabled={exportingJson || exportingZip}
+                      className="bg-[#22B14C] hover:bg-[#1fa044] text-white text-xs font-semibold h-9 shadow-sm"
+                      title="Gera e imprime documento em PDF com as respostas do lead no padrão institucional"
+                    >
+                      <Printer className="w-3.5 h-3.5 mr-1.5" />
+                      Baixar cópia (PDF)
+                    </Button>
+                    <Button
+                      onClick={handleExportJson}
+                      disabled={exportingJson || exportingZip}
+                      className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs font-semibold h-9 shadow-sm"
+                      title="Gera arquivo JSON conforme especificação Schema V6.7 v1.0"
+                    >
+                      {exportingJson ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                          Exportando JSON...
+                        </>
+                      ) : (
+                        <>
+                          <FileJson className="w-3.5 h-3.5 mr-1.5" />
+                          Exportar dossiê (JSON)
+                        </>
+                      )}
+                    </Button>
+                  </>
                 ) : (
                   <Badge className="bg-[#22B14C] text-white text-xs font-bold py-1.5 px-3">
                     Acesso de Fundador Solicitado
@@ -913,19 +947,30 @@ export function LeadDetailModal({
         <div className="p-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
             {!isSaasWaitlist && (
-              <Button
-                size="sm"
-                onClick={handleExportJson}
-                disabled={exportingJson || exportingZip}
-                className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs h-9"
-              >
-                {exportingJson ? (
-                  <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-                ) : (
-                  <FileJson className="w-3.5 h-3.5 mr-1.5" />
-                )}
-                Exportar dossiê (JSON)
-              </Button>
+              <>
+                <Button
+                  size="sm"
+                  onClick={handleDownloadPdf}
+                  disabled={exportingJson || exportingZip}
+                  className="bg-[#22B14C] hover:bg-[#1fa044] text-white text-xs h-9"
+                >
+                  <Printer className="w-3.5 h-3.5 mr-1.5" />
+                  Baixar cópia (PDF)
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleExportJson}
+                  disabled={exportingJson || exportingZip}
+                  className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs h-9"
+                >
+                  {exportingJson ? (
+                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                  ) : (
+                    <FileJson className="w-3.5 h-3.5 mr-1.5" />
+                  )}
+                  Exportar dossiê (JSON)
+                </Button>
+              </>
             )}
 
             {totalFiles > 0 && (

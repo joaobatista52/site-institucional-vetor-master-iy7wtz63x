@@ -217,6 +217,48 @@ onRecordCreateRequest((e) => {
     )
   }
 
+  // 4. Validação rigorosa dos tipos de arquivos anexados:
+  // Aceitar exclusivamente Word (.doc/.docx), PDF (.pdf) e Excel (.xls/.xlsx).
+  // Bloquear qualquer imagem ou outro formato com a mensagem exata solicitada:
+  // "Formato não aceito: envie apenas Word, PDF ou Excel"
+  const allowedExts = ['pdf', 'doc', 'docx', 'xls', 'xlsx']
+  const fileFields = ['contrato_social', 'certificacoes', 'documentacao_adicional']
+
+  function getExt(filename) {
+    if (!filename || typeof filename !== 'string') return ''
+    const parts = filename.split('.')
+    return parts.length > 1 ? parts.pop().toLowerCase().trim() : ''
+  }
+
+  function validateFileList(val, label) {
+    if (!val) return
+    const list = Array.isArray(val) ? val : [val]
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i]
+      if (!item) continue
+      let name = ''
+      if (typeof item === 'string') {
+        name = item
+      } else if (item.name) {
+        name = item.name
+      } else if (item.filename) {
+        name = item.filename
+      }
+      if (name) {
+        const ext = getExt(name)
+        if (ext && allowedExts.indexOf(ext) === -1) {
+          throw new BadRequestError('Formato não aceito: envie apenas Word, PDF ou Excel')
+        }
+      }
+    }
+  }
+
+  for (let i = 0; i < fileFields.length; i++) {
+    const fName = fileFields[i]
+    let filesVal = record.get(fName)
+    validateFileList(filesVal, fName)
+  }
+
   return e.next()
 }, 'leads')
 
@@ -580,6 +622,23 @@ onRecordAfterCreateSuccess((e) => {
                         <td style="font-family:monospace;font-size:12px;color:#4A5568;">#${record.id}</td>
                       </tr>
                     </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Bloco de Download da Cópia do Questionário -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F0F7FF;border:1px solid #BFDBFE;border-radius:8px;margin:20px 0 24px;">
+                <tr>
+                  <td style="padding:18px 20px;text-align:center;">
+                    <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#004F9F;">
+                      Cópia do seu Questionário Respondido
+                    </p>
+                    <p style="margin:0 0 16px;font-size:13px;color:#4A5568;line-height:1.5;">
+                      Você pode baixar e salvar uma cópia completa das suas respostas no padrão institucional em PDF a qualquer momento.
+                    </p>
+                    <a href="${siteUrl ? siteUrl + '/meu-questionario?protocolo=' + record.id + '&token=' + $security.sha256(record.id + ':' + leadEmail.toLowerCase()).slice(0, 32) : 'https://site-institucional-vetor-master-165d3.shrd00.internal.goskip.dev/meu-questionario?protocolo=' + record.id + '&token=' + $security.sha256(record.id + ':' + leadEmail.toLowerCase()).slice(0, 32)}" target="_blank" style="display:inline-block;padding:12px 24px;background-color:#0066CC;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;border-radius:6px;box-shadow:0 2px 4px rgba(0,102,204,0.25);">
+                      Baixar uma cópia do seu questionário (PDF) &rarr;
+                    </a>
                   </td>
                 </tr>
               </table>

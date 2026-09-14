@@ -6,6 +6,7 @@ import Metodo from './pages/Metodo'
 import Sectors from './pages/Sectors'
 import Questionnaire from './pages/Questionnaire'
 import Leads from './pages/Leads'
+import LeadQuestionnaireView from './pages/LeadQuestionnaireView'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import NotFound from './pages/NotFound'
 
@@ -52,6 +53,14 @@ function App() {
             }
           />
           <Route path="/leads" element={<Leads />} />
+          <Route
+            path="/meu-questionario"
+            element={
+              <ErrorBoundary fallbackTitle="Aviso ao carregar o questionário">
+                <LeadQuestionnaireView />
+              </ErrorBoundary>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

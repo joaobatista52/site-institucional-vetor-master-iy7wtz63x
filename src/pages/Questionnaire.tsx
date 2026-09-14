@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   ClipboardList,
   Clock3,
+  Download,
   FileUp,
   Loader2,
   Paperclip,
@@ -23,6 +24,7 @@ import { engagementFormats } from '@/data/questionnaire'
 import type { Question } from '@/data/questionnaire'
 import { getQuestionnaireSections } from '@/data/questionnaireSectors'
 import { getChosenPlan, saveStoredLead } from '@/lib/leadSession'
+import { downloadQuestionnaireAsPdf } from '@/services/questionnairePdf'
 import {
   clearQuestionnaireDraft,
   loadQuestionnaireDraft,
@@ -48,33 +50,8 @@ const RETURN_MESSAGE =
 const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024 // 100 MB por arquivo
 const MAX_FILES_PER_GROUP = 15
 
-// Extensões comumente suportadas para anexos institucionais e executivos
-const ALLOWED_EXTENSIONS = new Set([
-  'pdf',
-  'doc',
-  'docx',
-  'xls',
-  'xlsx',
-  'csv',
-  'ppt',
-  'pptx',
-  'txt',
-  'rtf',
-  'odt',
-  'ods',
-  'odp',
-  'jpg',
-  'jpeg',
-  'png',
-  'webp',
-  'gif',
-  'bmp',
-  'tiff',
-  'svg',
-  'zip',
-  'rar',
-  '7z',
-])
+// Restrição exclusiva de extensões: Word (.doc, .docx), PDF (.pdf) e Excel (.xls, .xlsx)
+const ALLOWED_EXTENSIONS = new Set(['pdf', 'doc', 'docx', 'xls', 'xlsx'])
 
 function getFileExtension(filename: string): string {
   if (!filename || typeof filename !== 'string') return ''
@@ -375,11 +352,11 @@ export default function Questionnaire() {
         continue
       }
 
-      // Validação tolerante de tipo/extensão
+      // Validação estrita de tipo/extensão: Word, PDF ou Excel apenas (bloqueando imagens e outros)
       const ext = getFileExtension(file.name)
       if (ext && !ALLOWED_EXTENSIONS.has(ext)) {
         rejectedMessages.push(
-          `"${file.name}": extensão ".${ext}" não suportada. Formatos aceitos: PDF, DOC/DOCX, XLS/XLSX, CSV, Imagens e ZIP.`,
+          `"${file.name}": Formato não aceito: envie apenas Word, PDF ou Excel.`,
         )
         continue
       }
@@ -624,33 +601,35 @@ export default function Questionnaire() {
       {
         key: 'contratoSocial',
         title: 'Contrato social',
-        help: 'Contrato social, estatuto ou alterações contratuais (PDF, DOC, JPG, PNG).',
+        help: 'Contrato social, estatuto ou alterações contratuais (exclusivamente PDF, Word ou Excel).',
       },
       {
         key: 'certificacoes',
         title: 'Comprovantes de certificações',
-        help: 'Certificados e comprovantes das certificações informadas (PDF, JPG, PNG).',
+        help: 'Certificados e comprovantes das certificações informadas (exclusivamente PDF, Word ou Excel).',
       },
       {
         key: 'documentacaoAdicional',
         title: 'DOCUMENTAÇÃO ADICIONAL (OPCIONAL)',
-        help: `Itens sugeridos para envio: ${docItems.join(' • ')} (além de Fluxo de Caixa e relatórios gerenciais).`,
+        help: `Itens sugeridos para envio: ${docItems.join(' • ')} (PDF, Word ou Excel).`,
       },
     ]
 
     return (
       <div className="wizard-files">
-        {/* Banner claro e destacado com limites permitidos */}
+        {/* Banner claro e destacado com formatos aceitos */}
         <div className="p-4 rounded-xl border border-blue-200 bg-[#EAF3FD] text-[#004f9f] space-y-1.5 shadow-sm">
           <div className="flex items-center gap-2 font-bold text-sm text-[#0066CC]">
             <Paperclip className="w-4 h-4 text-[#0066CC]" />
-            <span>Limites e Formatos Suportados de Arquivos</span>
+            <span>Formatos e Limites de Arquivos Aceitos</span>
           </div>
           <p className="text-xs sm:text-[13px] text-gray-700 leading-relaxed">
-            • <strong>Tamanho máximo permitido:</strong> até <strong>100 MB por arquivo</strong>.
-            <br />• <strong>Quantidade máxima:</strong> até <strong>15 arquivos por campo</strong>.
-            <br />• <strong>Formatos aceitos:</strong> PDF, Word (.doc, .docx), Excel (.xls, .xlsx,
-            .csv), Imagens (JPG, PNG, WEBP), Arquivos Compactados (ZIP) e TXT.
+            • <strong>Formatos aceitos exclusivamente:</strong> Word (.doc, .docx), PDF (.pdf) e
+            Excel (.xls, .xlsx).
+            <br />• <strong>Imagens bloqueadas:</strong> Arquivos JPG, PNG, HEIC e imagens em geral
+            não são aceitos.
+            <br />• <strong>Tamanho e quantidade:</strong> até <strong>100 MB por arquivo</strong> e
+            no máximo <strong>15 arquivos por campo</strong>.
           </p>
         </div>
 
@@ -681,6 +660,7 @@ export default function Questionnaire() {
               <input
                 id={`file-input-${group.key}`}
                 type="file"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 multiple
                 className="sr-only"
                 onChange={(event) => {
@@ -999,6 +979,10 @@ export default function Questionnaire() {
               `O arquivo "${file.name}" tem ${formatFileSize(file.size)}, acima do limite máximo suportado de 100 MB. Remova-o ou selecione uma versão menor para prosseguir.`,
             )
           }
+          const ext = getFileExtension(file.name)
+          if (!ext || !ALLOWED_EXTENSIONS.has(ext)) {
+            throw new Error(`"${file.name}": Formato não aceito: envie apenas Word, PDF ou Excel`)
+          }
           result.push(file)
         }
         return result.slice(0, MAX_FILES_PER_GROUP)
@@ -1098,6 +1082,29 @@ export default function Questionnaire() {
   if (!sector) return null
 
   if (submittedId) {
+    const handleDownloadCopy = () => {
+      downloadQuestionnaireAsPdf({
+        id: submittedId,
+        created: new Date().toISOString(),
+        setor: sector.name,
+        setor_id: sector.id,
+        status: 'novo',
+        autorizacao_devolutiva: autorizacaoDevolutiva || 'Sim, autorizo',
+        formato_interesse: formatoInteresse,
+        responsavel_documentos: responsavelDocumentos,
+        contrato_social: files.contratoSocial.map((f) => f.name),
+        certificacoes: files.certificacoes.map((f) => f.name),
+        documentacao_adicional: files.documentacaoAdicional.map((f) => f.name),
+        cadastro: {
+          nomeCompleto: cadastro.nomeCompleto,
+          empresa: cadastro.empresa,
+          email: cadastro.email,
+          whatsapp: cadastro.whatsapp,
+        },
+        respostas: answers,
+      })
+    }
+
     return (
       <div className="wizard-success">
         <CheckCircle2 aria-hidden="true" />
@@ -1107,13 +1114,42 @@ export default function Questionnaire() {
           empresa <strong>{cadastro.empresa}</strong> para o setor de <strong>{sector.name}</strong>
           .
         </p>
+
         <div className="wizard-success-message" role="status">
           <Clock3 aria-hidden="true" />
           <span>{RETURN_MESSAGE}</span>
         </div>
+
+        {/* Destaque de Download da Cópia do Questionário no Padrão Institucional */}
+        <div className="my-6 p-5 rounded-xl border border-blue-200 bg-[#F0F7FF] text-center max-w-lg mx-auto shadow-sm space-y-3">
+          <div className="font-bold text-[#0066CC] text-base flex items-center justify-center gap-2">
+            <Download className="w-5 h-5 text-[#0066CC]" />
+            <span>Cópia do seu Questionário Respondido</span>
+          </div>
+          <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
+            Você pode gerar e baixar agora mesmo uma cópia completa das suas respostas no padrão
+            visual institucional em PDF.
+          </p>
+          <div>
+            <Button
+              type="button"
+              onClick={handleDownloadCopy}
+              className="bg-[#22B14C] hover:bg-[#1ea043] text-white font-bold px-6 py-5 text-sm rounded-lg shadow-sm"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Baixar uma cópia do seu questionário
+            </Button>
+          </div>
+          <p className="text-[11px] text-gray-500">
+            Protocolo #{submittedId} · O link também foi enviado para{' '}
+            {cadastro.email || 'seu e-mail'}.
+          </p>
+        </div>
+
         {cadastro.email && (
           <p className="text-xs text-muted-foreground mt-2">
-            Enviamos uma confirmação automática para <strong>{cadastro.email}</strong>.
+            Enviamos uma confirmação automática para <strong>{cadastro.email}</strong> com link para
+            acesso à sua cópia a qualquer momento.
           </p>
         )}
         {(files.contratoSocial.length > 0 ||
