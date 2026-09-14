@@ -12,6 +12,7 @@ export interface QuestionnaireDraftData {
   autorizacaoDevolutiva: string
   formatoInteresse: string
   responsavelDocumentos: string
+  documentosOpcao?: string
   savedAt: string
 }
 
@@ -51,6 +52,7 @@ export function loadQuestionnaireDraft(sectorId: string): QuestionnaireDraftData
       autorizacaoDevolutiva: parsed.autorizacaoDevolutiva || '',
       formatoInteresse: parsed.formatoInteresse || '',
       responsavelDocumentos: parsed.responsavelDocumentos || '',
+      documentosOpcao: parsed.documentosOpcao || '',
       savedAt: parsed.savedAt || new Date().toISOString(),
     }
   } catch {

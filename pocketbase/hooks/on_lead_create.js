@@ -643,6 +643,41 @@ onRecordAfterCreateSuccess((e) => {
                 </tr>
               </table>
 
+              ${(() => {
+                // Verificar se o lead não possui nenhum arquivo anexado
+                function getFilesLength(field) {
+                  const val = record.get ? record.get(field) : null
+                  if (!val) return 0
+                  if (Array.isArray(val)) return val.length
+                  return 1
+                }
+                const totalFilesCount =
+                  getFilesLength('contrato_social') +
+                  getFilesLength('certificacoes') +
+                  getFilesLength('documentacao_adicional')
+                const hasPendingDocsFlag = record.getBool
+                  ? record.getBool('documentos_pendentes')
+                  : Boolean(record.get('documentos_pendentes'))
+
+                if (totalFilesCount === 0 || hasPendingDocsFlag) {
+                  return `
+              <!-- Orientações para Envio Posterior de Demonstrativos -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FFFBEB;border:1px solid #FCD34D;border-left:4px solid #D97706;border-radius:6px;margin:20px 0 24px;">
+                <tr>
+                  <td style="padding:16px 18px;">
+                    <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;">
+                      Envio de Demonstrativos e Relatórios
+                    </p>
+                    <p style="margin:0;font-size:14px;color:#78350F;line-height:1.5;">
+                      Se desejar enviar os demonstrativos depois, basta responder a este e-mail ou chamar no WhatsApp — a equipe orienta.
+                    </p>
+                  </td>
+                </tr>
+              </table>`
+                }
+                return ''
+              })()}
+
               <p style="margin:0 0 16px;font-size:14px;color:#4A5568;">
                 Durante a Sessão de Devolutiva, nossos especialistas apresentarão um raio-x dos gargalos operacionais e oportunidades de otimização identificadas na sua operação.
               </p>

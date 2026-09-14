@@ -13,6 +13,7 @@ import {
   Loader2,
   Paperclip,
   Send,
+  ShieldCheck,
   Trash2,
   X,
 } from 'lucide-react'
@@ -31,6 +32,7 @@ import {
   saveQuestionnaireDraft,
 } from '@/lib/questionnaireDraft'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -163,6 +165,7 @@ export default function Questionnaire() {
   const [autorizacaoDevolutiva, setAutorizacaoDevolutiva] = useState<string>('')
   const [formatoInteresse, setFormatoInteresse] = useState<string>('')
   const [responsavelDocumentos, setResponsavelDocumentos] = useState<string>('')
+  const [documentosOpcao, setDocumentosOpcao] = useState<string>('')
   const [highestReachedStep, setHighestReachedStep] = useState<number>(0)
   const [stepErrors, setStepErrors] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
@@ -200,6 +203,7 @@ export default function Questionnaire() {
         Boolean(draft.autorizacaoDevolutiva) ||
         Boolean(draft.formatoInteresse) ||
         Boolean(draft.responsavelDocumentos) ||
+        Boolean(draft.documentosOpcao) ||
         draft.step > 0
 
       if (hasContent) {
@@ -210,6 +214,7 @@ export default function Questionnaire() {
         setAutorizacaoDevolutiva(draft.autorizacaoDevolutiva || '')
         setFormatoInteresse(draft.formatoInteresse || '')
         setResponsavelDocumentos(draft.responsavelDocumentos || '')
+        setDocumentosOpcao(draft.documentosOpcao || '')
         setDraftBannerVisible(true)
         if (draft.savedAt) {
           try {
@@ -230,6 +235,7 @@ export default function Questionnaire() {
       setAutorizacaoDevolutiva('')
       setFormatoInteresse('')
       setResponsavelDocumentos('')
+      setDocumentosOpcao('')
       setDraftBannerVisible(false)
       setDraftSavedTime(null)
     }
@@ -252,6 +258,7 @@ export default function Questionnaire() {
       Boolean(autorizacaoDevolutiva) ||
       Boolean(formatoInteresse) ||
       Boolean(responsavelDocumentos) ||
+      Boolean(documentosOpcao) ||
       step > 0
 
     if (!hasAnyData) return
@@ -265,6 +272,7 @@ export default function Questionnaire() {
       autorizacaoDevolutiva,
       formatoInteresse,
       responsavelDocumentos,
+      documentosOpcao,
     })
   }, [
     sectorId,
@@ -275,6 +283,7 @@ export default function Questionnaire() {
     autorizacaoDevolutiva,
     formatoInteresse,
     responsavelDocumentos,
+    documentosOpcao,
     submittedId,
   ])
 
@@ -286,6 +295,7 @@ export default function Questionnaire() {
     setAutorizacaoDevolutiva('')
     setFormatoInteresse('')
     setResponsavelDocumentos('')
+    setDocumentosOpcao('')
     setFiles({
       contratoSocial: [],
       certificacoes: [],
@@ -600,23 +610,35 @@ export default function Questionnaire() {
     const groups: { key: FileGroup; title: string; help: string }[] = [
       {
         key: 'contratoSocial',
-        title: 'Contrato social',
-        help: 'Contrato social, estatuto ou alterações contratuais (exclusivamente PDF, Word ou Excel).',
+        title: 'Demonstrativos Econômico-Financeiros (DRE, Balanço)',
+        help: 'Balanço Patrimonial dos últimos 2 anos, DRE gerencial ou contábil detalhada, Balancetes recentes.',
       },
       {
         key: 'certificacoes',
-        title: 'Comprovantes de certificações',
-        help: 'Certificados e comprovantes das certificações informadas (exclusivamente PDF, Word ou Excel).',
+        title: 'Relatórios Gerenciais',
+        help: 'Fluxo de Caixa realizado e projetado, relatórios de vendas, custos operacionais e margem por linha.',
       },
       {
         key: 'documentacaoAdicional',
-        title: 'DOCUMENTAÇÃO ADICIONAL (OPCIONAL)',
+        title: 'Documentação Adicional',
         help: `Itens sugeridos para envio: ${docItems.join(' • ')} (PDF, Word ou Excel).`,
       },
     ]
 
+    const totalAttachedFiles =
+      files.contratoSocial.length + files.certificacoes.length + files.documentacaoAdicional.length
+
     return (
-      <div className="wizard-files">
+      <div className="wizard-files space-y-6">
+        {/* Bloco de Valor: Substitui o rótulo "opcional" por texto de conscientização */}
+        <div className="bg-sky-50/90 border border-sky-200 rounded-xl p-4 sm:p-5 text-sky-950 shadow-sm">
+          <p className="text-xs sm:text-sm leading-relaxed font-medium">
+            Estes documentos são fundamentais para a qualidade do seu diagnóstico. Com eles, as
+            análises se apoiam em números reais da sua operação — e o plano de ação resultante ganha
+            precisão muito maior. Sem eles, o diagnóstico permanece válido, porém menos profundo.
+          </p>
+        </div>
+
         {/* Banner claro e destacado com formatos aceitos */}
         <div className="p-4 rounded-xl border border-blue-200 bg-[#EAF3FD] text-[#004f9f] space-y-1.5 shadow-sm">
           <div className="flex items-center gap-2 font-bold text-sm text-[#0066CC]">
@@ -641,77 +663,145 @@ export default function Questionnaire() {
           </p>
         )}
 
-        {groups.map((group) => (
-          <div className="wizard-file-group" key={group.key}>
-            {' '}
-            <div className="wizard-file-group-head">
-              <Paperclip aria-hidden="true" />
-              <div>
-                <h4>{group.title}</h4>
-                <p>{group.help}</p>
-              </div>
-            </div>
-            <label
-              htmlFor={`file-input-${group.key}`}
-              className="wizard-file-dropzone cursor-pointer"
-            >
-              <FileUp aria-hidden="true" />
-              <span>Clique para selecionar ou anexar arquivos</span>
-              <input
-                id={`file-input-${group.key}`}
-                type="file"
-                accept=".pdf,.doc,.docx,.xls,.xlsx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                multiple
-                className="sr-only"
-                onChange={(event) => {
-                  if (event.target.files && event.target.files.length > 0) {
-                    addFiles(group.key, event.target.files)
-                  }
-                  event.target.value = ''
-                }}
-              />
-            </label>
-            {files[group.key].length > 0 ? (
-              <div className="mt-3">
-                <div className="flex items-center justify-between text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-200 mb-2">
-                  <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    {files[group.key].length} arquivo(s) pronto(s) para envio:
-                  </span>
+        <div className="space-y-4">
+          {groups.map((group) => (
+            <div className="wizard-file-group" key={group.key}>
+              <div className="wizard-file-group-head">
+                <Paperclip aria-hidden="true" />
+                <div>
+                  <h4>{group.title}</h4>
+                  <p>{group.help}</p>
                 </div>
-                <ul className="wizard-file-list">
-                  {files[group.key].map((file, index) => (
-                    <li key={`${file.name}-${file.size}-${index}`}>
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Paperclip className="w-4 h-4 text-[#0066CC] shrink-0" />
-                        <span className="truncate font-medium">{file.name}</span>
-                        <span className="text-xs text-gray-500 shrink-0">
-                          ({formatFileSize(file.size)})
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          removeFile(group.key, index)
-                        }}
-                        aria-label={`Remover ${file.name}`}
-                        title="Remover arquivo"
-                      >
-                        <Trash2 aria-hidden="true" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
               </div>
-            ) : (
-              <p className="text-xs text-muted-foreground mt-2 italic">
-                Nenhum arquivo anexado ainda neste grupo.
-              </p>
-            )}
+              <label
+                htmlFor={`file-input-${group.key}`}
+                className="wizard-file-dropzone cursor-pointer"
+              >
+                <FileUp aria-hidden="true" />
+                <span>Clique para selecionar ou anexar arquivos</span>
+                <input
+                  id={`file-input-${group.key}`}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  multiple
+                  className="sr-only"
+                  onChange={(event) => {
+                    if (event.target.files && event.target.files.length > 0) {
+                      addFiles(group.key, event.target.files)
+                    }
+                    event.target.value = ''
+                  }}
+                />
+              </label>
+              {files[group.key].length > 0 ? (
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-200 mb-2">
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      {files[group.key].length} arquivo(s) pronto(s) para envio:
+                    </span>
+                  </div>
+                  <ul className="wizard-file-list">
+                    {files[group.key].map((file, index) => (
+                      <li key={`${file.name}-${file.size}-${index}`}>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Paperclip className="w-4 h-4 text-[#0066CC] shrink-0" />
+                          <span className="truncate font-medium">{file.name}</span>
+                          <span className="text-xs text-gray-500 shrink-0">
+                            ({formatFileSize(file.size)})
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            removeFile(group.key, index)
+                          }}
+                          aria-label={`Remover ${file.name}`}
+                          title="Remover arquivo"
+                        >
+                          <Trash2 aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground mt-2 italic">
+                  Nenhum arquivo anexado ainda neste grupo.
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Checkboxes exibidos quando nenhum arquivo estiver anexado */}
+        {totalAttachedFiles === 0 && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4 sm:p-5 space-y-3">
+            <p className="text-xs font-bold uppercase tracking-wider text-amber-900">
+              Caso não vá anexar arquivos agora:
+            </p>
+            <div className="space-y-2.5">
+              <label
+                className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                  documentosOpcao === 'Não possuo estes documentos no momento'
+                    ? 'bg-amber-100/90 border-amber-400 text-amber-950 font-medium'
+                    : 'bg-white/90 border-amber-200 hover:bg-amber-50 text-amber-900'
+                }`}
+              >
+                <Checkbox
+                  id="opt-nao-possuo"
+                  checked={documentosOpcao === 'Não possuo estes documentos no momento'}
+                  onCheckedChange={(checked) => {
+                    setDocumentosOpcao(checked ? 'Não possuo estes documentos no momento' : '')
+                  }}
+                  className="mt-0.5 border-amber-400 data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600"
+                />
+                <span className="text-xs sm:text-sm select-none leading-snug">
+                  Não possuo estes documentos no momento
+                </span>
+              </label>
+
+              <label
+                className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                  documentosOpcao === 'Prefiro enviar depois, com a equipe VETOR MASTER'
+                    ? 'bg-amber-100/90 border-amber-400 text-amber-950 font-medium'
+                    : 'bg-white/90 border-amber-200 hover:bg-amber-50 text-amber-900'
+                }`}
+              >
+                <Checkbox
+                  id="opt-enviar-depois"
+                  checked={documentosOpcao === 'Prefiro enviar depois, com a equipe VETOR MASTER'}
+                  onCheckedChange={(checked) => {
+                    setDocumentosOpcao(
+                      checked ? 'Prefiro enviar depois, com a equipe VETOR MASTER' : '',
+                    )
+                  }}
+                  className="mt-0.5 border-amber-400 data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600"
+                />
+                <span className="text-xs sm:text-sm select-none leading-snug">
+                  Prefiro enviar depois, com a equipe VETOR MASTER
+                </span>
+              </label>
+            </div>
+            <p className="text-[11px] text-amber-800 leading-normal">
+              O preenchimento dessas opções ajuda nossa equipe a preparar a melhor dinâmica para sua
+              Devolutiva. O envio continua 100% liberado mesmo sem selecionar.
+            </p>
           </div>
-        ))}
+        )}
+
+        {/* Bloco LGPD de Segurança e Sigilo */}
+        <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/90 p-4 text-slate-700 shadow-sm">
+          <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+          <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
+            Seus documentos são tratados com sigilo absoluto, armazenados de forma criptografada,
+            acessados exclusivamente pela equipe responsável pelo seu diagnóstico e utilizados
+            apenas para esta análise — em fiel cumprimento à LGPD. Você pode solicitar a exclusão a
+            qualquer momento.
+          </p>
+        </div>
       </div>
     )
   }
