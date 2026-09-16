@@ -20,6 +20,7 @@ import {
 
 import pb from '@/lib/pocketbase/client'
 import { getErrorMessage } from '@/lib/pocketbase/errors'
+import { useAuth } from '@/services/auth'
 import { findSector } from '@/data/sectors'
 import { engagementFormats } from '@/data/questionnaire'
 import type { Question } from '@/data/questionnaire'
@@ -141,6 +142,7 @@ export default function Questionnaire() {
   const { sectorId } = useParams()
   const navigate = useNavigate()
   const sector = findSector(sectorId)
+  const { user, isValid: isAdminAuthenticated } = useAuth()
 
   // Capturar e persistir plano escolhido via URL (?plano=...) se presente
   useEffect(() => {
@@ -497,9 +499,11 @@ export default function Questionnaire() {
   }
 
   function handleNext() {
-    const errors = validateCurrentStep()
-    setStepErrors(errors)
-    if (errors.length > 0) return
+    if (!isAdminAuthenticated) {
+      const errors = validateCurrentStep()
+      setStepErrors(errors)
+      if (errors.length > 0) return
+    }
     setStepErrors([])
     setStep((prev) => {
       const nextStep = Math.min(prev + 1, TOTAL_STEPS - 1)
@@ -910,6 +914,14 @@ export default function Questionnaire() {
   }
 
   async function handleSubmit() {
+    if (isAdminAuthenticated) {
+      toast({
+        title: 'Modo revisão ativo',
+        description: 'O envio de leads está desativado no modo revisão para administradores.',
+      })
+      return
+    }
+
     try {
       const errors = validateCurrentStep()
       setStepErrors(errors)
@@ -1274,13 +1286,54 @@ export default function Questionnaire() {
 
   return (
     <div className="wizard-page">
-      <section className="wizard-hero">
+      {/* Faixa fixa do Modo Revisão para administradores */}
+      {isAdminAuthenticated && (
+        <aside
+          role="status"
+          aria-label="Faixa informativa de Modo Revisão para administradores"
+          className="fixed top-[72px] inset-x-0 z-40 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 text-white shadow-md border-b border-amber-600/40"
+        >
+          <div className="site-container mx-auto px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm">
+            <div className="flex items-center gap-2 font-medium min-w-0">
+              <span className="inline-flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase shrink-0">
+                <ShieldCheck className="w-3.5 h-3.5" /> Modo Revisão
+              </span>
+              <span className="font-semibold truncate">Modo revisão — envio desativado</span>
+              <span className="hidden md:inline text-amber-100 text-xs">
+                • Navegação livre por todas as etapas sem exigência de respostas
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-amber-50 self-end sm:self-auto shrink-0">
+              <span className="hidden sm:inline">
+                Admin: {user?.name || user?.email || 'Conectado'}
+              </span>
+              <Link
+                to="/leads"
+                className="inline-flex items-center gap-1 bg-white text-amber-900 hover:bg-amber-100 font-bold px-2.5 py-1 rounded text-xs transition-colors shadow-xs"
+              >
+                Painel /leads <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+        </aside>
+      )}
+
+      <section
+        className={`wizard-hero ${isAdminAuthenticated ? 'pt-[134px] max-md:pt-[130px]' : ''}`}
+      >
         <div className="site-container">
           <div className="wizard-hero-topline">
             <Link to="/setores" className="wizard-back-link">
               <ArrowLeft aria-hidden="true" /> Todos os setores
             </Link>
-            <span className="wizard-hero-sector">SETOR · {sector.name.toUpperCase()}</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              {isAdminAuthenticated && (
+                <span className="border border-amber-300 bg-amber-50 text-amber-800 font-bold text-xs px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shadow-xs">
+                  <ShieldCheck className="w-3 h-3 text-amber-600" /> Modo Revisão Ativo
+                </span>
+              )}
+              <span className="wizard-hero-sector">SETOR · {sector.name.toUpperCase()}</span>
+            </div>
           </div>
           <h1>Questionário Estratégico</h1>
           <p>
@@ -1292,19 +1345,26 @@ export default function Questionnaire() {
 
       <section className="wizard-body">
         <div className="site-container wizard-layout">
-          <aside className="wizard-progress" aria-label="Progresso do questionário">
+          <aside
+            className={`wizard-progress ${isAdminAuthenticated ? '!top-[132px]' : ''}`}
+            aria-label="Progresso do questionário"
+          >
             <div className="wizard-progress-head">
               <ClipboardList aria-hidden="true" />
               <span>ETAPAS</span>
+              {isAdminAuthenticated && (
+                <span className="ml-auto text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded tracking-normal">
+                  Livre
+                </span>
+              )}
             </div>
             <ol>
               {stepTitles.map((title, index) => {
                 const complete = isStepComplete(index)
-                // Regra de navegação solicitada pelo usuário:
-                // 1. O usuário precisa poder IR E VOLTAR para qualquer etapa já iniciada (index <= highestReachedStep), inclusive parcialmente preenchida.
-                // 2. Etapas futuras ainda não alcançadas (index > highestReachedStep) permanecem bloqueadas até as anteriores serem alcançadas/preenchidas.
-                // 3. A barra lateral é totalmente clicável para as etapas acessíveis.
-                const canNavigate = index <= highestReachedStep
+                // Regra de navegação:
+                // - Administrador autenticado: navegação 100% livre em todas as etapas (canNavigate = true)
+                // - Usuário comum não autenticado: IR E VOLTAR para etapas já iniciadas (index <= highestReachedStep)
+                const canNavigate = isAdminAuthenticated || index <= highestReachedStep
 
                 return (
                   <li
@@ -1496,19 +1556,39 @@ export default function Questionnaire() {
                 </Button>
               )}
 
-              {step === TOTAL_STEPS - 1 && (
-                <Button className="conversion-button" onClick={handleSubmit} disabled={submitting}>
-                  {submitting ? (
-                    <>
-                      <Loader2 className="wizard-spinner" aria-hidden="true" /> Enviando…
-                    </>
-                  ) : (
-                    <>
-                      Enviar questionário <Send aria-hidden="true" />
-                    </>
-                  )}
-                </Button>
-              )}
+              {step === TOTAL_STEPS - 1 &&
+                (isAdminAuthenticated ? (
+                  <div className="flex flex-col sm:flex-row items-center gap-2.5">
+                    <div className="text-xs text-amber-800 bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 text-center sm:text-right font-medium">
+                      Modo revisão ativo — envio desativado para nunca registrar leads de teste.
+                    </div>
+                    <Button
+                      type="button"
+                      disabled
+                      aria-disabled="true"
+                      className="bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400 opacity-70 font-semibold"
+                      title="Envio desativado no modo revisão"
+                    >
+                      Envio desativado (Modo Revisão)
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    className="conversion-button"
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="wizard-spinner" aria-hidden="true" /> Enviando…
+                      </>
+                    ) : (
+                      <>
+                        Enviar questionário <Send aria-hidden="true" />
+                      </>
+                    )}
+                  </Button>
+                ))}
             </footer>
           </div>
         </div>

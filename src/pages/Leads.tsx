@@ -203,6 +203,19 @@ export function LeadsPage() {
             <Button
               variant="outline"
               size="sm"
+              asChild
+              className="h-9 text-[#0066CC] hover:bg-[#EAF3FD] border-[#0066CC]/30 font-medium"
+              title="Revisar questionários e textos dos 12 setores no Modo Revisão"
+            >
+              <Link to="/setores">
+                <FileText className="w-4 h-4 mr-1.5 text-[#0066CC]" />
+                Modo Revisão (Questionários)
+              </Link>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
               onClick={loadLeads}
               disabled={loading}
               title="Recarregar lista"
