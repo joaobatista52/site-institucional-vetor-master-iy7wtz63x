@@ -651,7 +651,7 @@ export function LeadDetailModal({
                 {contratoFiles.length > 0 && (
                   <div>
                     <span className="text-xs font-semibold text-gray-700 block mb-1.5">
-                      Contrato Social / Ato Constitutivo:
+                      Demonstrativos Econômico-Financeiros:
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {contratoFiles.map((file, idx) => (
@@ -681,7 +681,7 @@ export function LeadDetailModal({
                 {certFiles.length > 0 && (
                   <div>
                     <span className="text-xs font-semibold text-gray-700 block mb-1.5">
-                      Certificações / Atestados:
+                      Relatórios Gerenciais:
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {certFiles.map((file, idx) => (
@@ -711,7 +711,7 @@ export function LeadDetailModal({
                 {docFiles.length > 0 && (
                   <div>
                     <span className="text-xs font-semibold text-gray-700 block mb-1.5">
-                      Documentação Adicional / Relatórios:
+                      Sociedade e documentos complementares:
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {docFiles.map((file, idx) => (

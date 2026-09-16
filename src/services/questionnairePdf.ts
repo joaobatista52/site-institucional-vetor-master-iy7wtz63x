@@ -448,17 +448,17 @@ export function generateQuestionnaireHtml(data: QuestionnairePdfData): string {
     <h4>Documentos e Anexos Informados (${totalAnexos} arquivo(s))</h4>
     ${
       contratos.length > 0
-        ? `<div class="anexo-item"><strong>Contrato Social:</strong> ${contratos.map(escapeHtml).join(', ')}</div>`
+        ? `<div class="anexo-item"><strong>Demonstrativos Econômico-Financeiros:</strong> ${contratos.map(escapeHtml).join(', ')}</div>`
         : ''
     }
     ${
       certificacoes.length > 0
-        ? `<div class="anexo-item"><strong>Certificações:</strong> ${certificacoes.map(escapeHtml).join(', ')}</div>`
+        ? `<div class="anexo-item"><strong>Relatórios Gerenciais:</strong> ${certificacoes.map(escapeHtml).join(', ')}</div>`
         : ''
     }
     ${
       adicionais.length > 0
-        ? `<div class="anexo-item"><strong>Documentação Adicional:</strong> ${adicionais.map(escapeHtml).join(', ')}</div>`
+        ? `<div class="anexo-item"><strong>Sociedade e documentos complementares:</strong> ${adicionais.map(escapeHtml).join(', ')}</div>`
         : ''
     }
   </section>

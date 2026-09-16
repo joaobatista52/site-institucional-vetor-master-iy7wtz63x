@@ -587,41 +587,27 @@ export default function Questionnaire() {
     const isComercio = sectorId === 'comercio-internacional'
     const isFacilities = sectorId === 'facilities'
 
-    const docItems = isComercio
-      ? [
-          'Balanço Patrimonial',
-          'DRE',
-          'Organograma',
-          'Relatórios de Vendas',
-          'Contratos de Câmbio',
-          'Planilha de Landed Cost',
-        ]
+    const grupo3Help = isComercio
+      ? 'Itens sugeridos para envio: • Contrato Social/Estatuto (último consolidado) • Acordo de Cotistas/Acionistas; Código de Ética • Contratos de Câmbio • Planilha de Landed Cost; Outros que julgar adequado (PDF, Word ou Excel).'
       : isFacilities
-        ? [
-            'Balanço Patrimonial',
-            'DRE',
-            'Organograma',
-            'Relatórios de Vendas',
-            'Contratos',
-            'Planilha de Margem por Contrato',
-          ]
-        : ['Balanço Patrimonial', 'DRE', 'Organograma', 'Relatórios de Vendas']
+        ? 'Itens sugeridos para envio: • Contrato Social/Estatuto (último consolidado) • Acordo de Cotistas/Acionistas • Contratos • Planilha de Margem por Contrato; Outros que julgar adequado (PDF, Word ou Excel).'
+        : 'Itens sugeridos para envio: • Contrato Social/Estatuto (último consolidado), Acordo de Cotistas/Acionistas; Código de Ética; Outros que julgar adequado • (PDF, Word ou Excel).'
 
     const groups: { key: FileGroup; title: string; help: string }[] = [
       {
         key: 'contratoSocial',
-        title: 'Demonstrativos Econômico-Financeiros (DRE, Balanço)',
-        help: 'Balanço Patrimonial dos últimos 2 anos, DRE gerencial ou contábil detalhada, Balancetes recentes.',
+        title: 'Demonstrativos Econômico-Financeiros (DRE, Balanço Patrimonial, Fluxo de Caixa)',
+        help: 'Balanço Patrimonial, DRE gerencial ou contábil detalhada, Balancetes recentes e Fluxo de Caixa. Envie todos dos últimos 3 anos.',
       },
       {
         key: 'certificacoes',
         title: 'Relatórios Gerenciais',
-        help: 'Fluxo de Caixa realizado e projetado, relatórios de vendas, custos operacionais e margem por linha.',
+        help: 'Fluxo de Caixa Gerencial orçado vs. realizado, Relatórios de Vendas, Custos Operacionais, Margem por linha e Organograma.',
       },
       {
         key: 'documentacaoAdicional',
-        title: 'Documentação Adicional',
-        help: `Itens sugeridos para envio: ${docItems.join(' • ')} (PDF, Word ou Excel).`,
+        title: 'Sociedade e documentos complementares',
+        help: grupo3Help,
       },
     ]
 
@@ -1282,7 +1268,7 @@ export default function Questionnaire() {
   const stepTitles = [
     ...sections.map((section) => section.title),
     'Próximos Passos',
-    'Documentação Adicional',
+    'Sociedade e documentos complementares',
     'Cadastro',
   ]
 
