@@ -7,10 +7,11 @@ import { inflateSync } from 'node:zlib'
 describe('inspect images', () => {
   it('reads png headers', () => {
     const files = [
+      'public/og-image.png',
       'src/assets/logo-5e-vetor-master-14jul26-7f7d4.png',
       'src/assets/logo-5-vetor-master-06jul26-6e3d7.png',
       'src/assets/logo-5e-vetor-master-14jul26-6e983.png',
-      'src/assets/logo-5a-vetor-master-14jul26-9062c.png'
+      'src/assets/logo-5a-vetor-master-14jul26-9062c.png',
     ]
 
     for (const f of files) {
@@ -31,7 +32,11 @@ describe('inspect images', () => {
         if (type === 'IEND') break
       }
       const decompressed = inflateSync(Buffer.concat(idat))
-      console.log(`FILE_INFO:${f}:${width}:${height}:${bitDepth}:${colorType}:${decompressed.length}`)
+      if (f === 'public/og-image.png') {
+        throw new Error(
+          `DEBUG_INFO:${f}:w=${width}:h=${height}:bd=${bitDepth}:ct=${colorType}:size=${buf.length}:decomp=${decompressed.length}`,
+        )
+      }
     }
   })
 })
