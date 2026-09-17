@@ -24,10 +24,6 @@ export function isAuthError(error: unknown): boolean {
   if (error instanceof ClientResponseError) {
     return error.status === 401 || error.status === 403
   }
-  if (typeof error === 'object' && error !== null && 'status' in error) {
-    const status = (error as { status: unknown }).status
-    return status === 401 || status === 403
-  }
   return false
 }
 

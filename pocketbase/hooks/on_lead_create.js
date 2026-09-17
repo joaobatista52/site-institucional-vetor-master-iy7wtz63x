@@ -375,7 +375,11 @@ onRecordAfterCreateSuccess((e) => {
       'VETOR MASTER — Inteligência Estratégica'
 
     // Obter URL do site (se configurada em secrets/env) para link direto ao painel /leads
-    const siteUrl = ($os.getenv('SITE_URL') || '').trim().replace(/\/$/, '')
+    const siteUrl = (
+      $os.getenv('SITE_URL') || 'https://site-institucional-vetor-master-165d3.goskip.app'
+    )
+      .trim()
+      .replace(/\/$/, '')
     const leadsPanelUrl = siteUrl ? siteUrl + '/leads' : '/leads'
 
     const mailClient = $app.newMailClient()
@@ -504,7 +508,7 @@ onRecordAfterCreateSuccess((e) => {
                     <p style="margin:0 0 12px;font-size:13px;color:#4A5568;">
                       Conheça o nosso <strong>MaaS Híbrido</strong> (R$ 3.290/mês): união do algoritmo determinístico com validação e acompanhamento C-Level direto para destravar gargalos críticos da sua empresa em até 72h.
                     </p>
-                    <a href="${siteUrl ? siteUrl + '/#solucoes' : 'https://site-institucional-vetor-master-165d3.shrd00.internal.goskip.dev/#solucoes'}" style="display:inline-block;padding:8px 16px;background-color:#0066CC;color:#ffffff;text-decoration:none;font-weight:700;font-size:12px;border-radius:6px;">
+                    <a href="${siteUrl ? siteUrl + '/#solucoes' : 'https://site-institucional-vetor-master-165d3.goskip.app/#solucoes'}" style="display:inline-block;padding:8px 16px;background-color:#0066CC;color:#ffffff;text-decoration:none;font-weight:700;font-size:12px;border-radius:6px;">
                       Conhecer o MaaS Híbrido &rarr;
                     </a>
                   </td>
@@ -636,7 +640,7 @@ onRecordAfterCreateSuccess((e) => {
                     <p style="margin:0 0 16px;font-size:13px;color:#4A5568;line-height:1.5;">
                       Você pode baixar e salvar uma cópia completa das suas respostas no padrão institucional em PDF a qualquer momento.
                     </p>
-                    <a href="${siteUrl ? siteUrl + '/meu-questionario?protocolo=' + record.id + '&token=' + $security.sha256(record.id + ':' + leadEmail.toLowerCase()).slice(0, 32) : 'https://site-institucional-vetor-master-165d3.shrd00.internal.goskip.dev/meu-questionario?protocolo=' + record.id + '&token=' + $security.sha256(record.id + ':' + leadEmail.toLowerCase()).slice(0, 32)}" target="_blank" style="display:inline-block;padding:12px 24px;background-color:#0066CC;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;border-radius:6px;box-shadow:0 2px 4px rgba(0,102,204,0.25);">
+                    <a href="${siteUrl ? siteUrl + '/meu-questionario?protocolo=' + record.id + '&token=' + $security.sha256(record.id + ':' + leadEmail.toLowerCase()).slice(0, 32) : 'https://site-institucional-vetor-master-165d3.goskip.app/meu-questionario?protocolo=' + record.id + '&token=' + $security.sha256(record.id + ':' + leadEmail.toLowerCase()).slice(0, 32)}" target="_blank" style="display:inline-block;padding:12px 24px;background-color:#0066CC;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;border-radius:6px;box-shadow:0 2px 4px rgba(0,102,204,0.25);">
                       Baixar uma cópia do seu questionário (PDF) &rarr;
                     </a>
                   </td>
