@@ -73,7 +73,8 @@ export const leadSectors: LeadSector[] = [
   {
     id: 'comercio-internacional',
     name: 'Comércio Internacional - Trading Company',
-    tagline: 'Importação, Exportação, Trading, Despacho Aduaneiro, Câmbio e Cativeiro de Crédito.',
+    tagline:
+      'Importação, Exportação, Trading, Logística, Planejamento Tributário/Fiscal, Câmbio e Trade Finance.',
     description:
       'Importação, Exportação, Logística, Câmbio, Trade Finance, Capital Intensivo, Exposição Cambial, Reestruturação e Planejamento Fiscal/Tributário, Marketing, Abertura e Estruturação de Novos Mercados, Gestão Operacional, Full Service.',
     painPoint:
