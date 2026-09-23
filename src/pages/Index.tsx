@@ -116,7 +116,7 @@ const allSectors: SectorItem[] = [
     name: 'Comércio Internacional - Trading Company',
     tagline: 'Importação, Exportação, Trading, Despacho Aduaneiro, Câmbio e Cativeiro de Crédito.',
     description:
-      'Importação, Exportação, Trading, Despacho Aduaneiro, Câmbio e Cativeiro de Crédito. Capital intensivo com ciclo de caixa longo e exposição cambial.',
+      'Importação, Exportação, Logística, Câmbio, Trade Finance, Capital Intensivo, Exposição Cambial, Reestruturação e Planejamento Fiscal/Tributário, Marketing, Abertura e Estruturação de Novos Mercados, Gestão Operacional, Full Service.',
     painPoint:
       'Créditos tributários não aproveitados · fim do ICMS como produto · retenção de caixa no Split Payment · ciclo de caixa longo · exposição cambial · retrabalho aduaneiro · capital imobilizado em trânsito · bitributação no regime dual até 2033.',
     solutionPillar:
