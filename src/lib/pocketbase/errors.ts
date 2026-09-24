@@ -2,6 +2,13 @@ import { ClientResponseError } from 'pocketbase'
 
 export type FieldErrors = Record<string, string>
 
+export function isAuthError(error: unknown): boolean {
+  if (error instanceof ClientResponseError) {
+    return error.status === 401 || error.status === 403
+  }
+  return false
+}
+
 export function extractFieldErrors(error: unknown): FieldErrors {
   if (!(error instanceof ClientResponseError)) return {}
   const data = error.response?.data
@@ -26,11 +33,4 @@ export function getErrorMessage(error: unknown): string {
   }
   const msgs = Object.values(extractFieldErrors(error))
   return msgs.length > 0 ? msgs.join(' ') : error.message || 'An unexpected error occurred.'
-}
-
-export function isAuthError(error: unknown): boolean {
-  if (error instanceof ClientResponseError) {
-    return error.status === 401 || error.status === 403
-  }
-  return false
 }
