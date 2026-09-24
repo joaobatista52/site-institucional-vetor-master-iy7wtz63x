@@ -209,10 +209,10 @@ function Footer() {
         </div>
 
         <div>
-          <h2>Cobertura regional</h2>
+          <h2>Cobertura regional — Bespoke/CaaS</h2>
           <p>
-            Atendimento prioritário em São Paulo e Distrito Federal. Demais regiões do Sudeste e
-            Sul: sob consulta — retorno em até 5 dias.
+            Atendimento presencial prioritário em São Paulo e Distrito Federal — válido para o plano
+            Bespoke/CaaS. Demais regiões do Sudeste e Sul: sob consulta — retorno em até 5 dias.
           </p>
         </div>
       </div>
