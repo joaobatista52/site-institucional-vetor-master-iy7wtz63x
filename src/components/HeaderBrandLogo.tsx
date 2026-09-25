@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 // HeaderBrandLogo — logotipo vetorial oficial
-import vetorMasterSvg from '@/assets/vetor-master2.svg'
+import logo5eCleanOfficial from '@/assets/logo-5e-clean-ccemici-25set26-63b73.png'
 
 interface HeaderBrandLogoProps {
   className?: string
@@ -10,9 +10,10 @@ interface HeaderBrandLogoProps {
 /**
  * HeaderBrandLogo — Cabeçalho fixo VETOR MASTER
  *
- * Logomarca vetorial oficial a partir de vetor-master2.svg:
- * Nós hexagonais, seta de crescimento, wordmark "VETOR MASTER" e tagline "DIREÇÃO · CONEXÃO · CRESCIMENTO"
- * Alturas de leitura generosa: até ~50px no desktop / proporcional no mobile, sem scale hacks.
+ * Logomarca 5e-clean oficial:
+ * Horizontal colorida (VETOR azul #0066CC, MASTER verde #22B14C, tagline "DIREÇÃO • CONEXÃO • CRESCIMENTO").
+ * Exibida na navbar glass dark (#0B1120 / rgba(11,17,32,0.85)).
+ * Respiro generoso ≥ altura do "V", sem distorção nem sombra.
  */
 export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLogoProps) {
   return (
@@ -21,8 +22,8 @@ export default function HeaderBrandLogo({ className = '', style }: HeaderBrandLo
       style={style}
     >
       <img
-        src={vetorMasterSvg}
-        alt="VETOR MASTER — Direção · Conexão · Crescimento"
+        src={logo5eCleanOfficial}
+        alt="VETOR MASTER — Direção • Conexão • Crescimento"
         loading="eager"
         decoding="async"
         className="header-brand-logo-img"

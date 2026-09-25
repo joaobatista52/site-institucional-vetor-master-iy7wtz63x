@@ -2,6 +2,7 @@ import type { CSSProperties, ImgHTMLAttributes } from 'react'
 import logo5StackedOfficial from '@/assets/logo-5-vetor-master-06jul26-6e3d7.png'
 import logo5eHorizontalOfficial from '@/assets/logo-5e-vetor-master-14jul26-7f7d4.png'
 import logo5dFooterOfficial from '@/assets/logo-5e-vetor-master-14jul26-6e983.png'
+import logo5eCleanOfficial from '@/assets/logo-5e-clean-ccemici-25set26-63b73.png'
 import vetorMaster2Svg from '@/assets/vetor-master2.svg'
 import vetorMaster2ReverseSvg from '@/assets/vetor-master2-reverse.svg'
 
@@ -22,6 +23,7 @@ import vetorMaster2ReverseSvg from '@/assets/vetor-master2-reverse.svg'
 export type LogoVariant =
   | 'logo5'
   | 'logo5e'
+  | 'logo5e-clean'
   | 'logo5d'
   | 'stacked'
   | 'horizontal'
@@ -42,9 +44,11 @@ function resolveLogoSrc(variant: LogoVariant, light?: boolean): string {
       return light ? vetorMaster2ReverseSvg : vetorMaster2Svg
     case 'svg-reverse':
       return vetorMaster2ReverseSvg
+    case 'logo5e-clean':
+      return light ? vetorMaster2ReverseSvg : logo5eCleanOfficial
     case 'logo5e':
     case 'horizontal':
-      return light ? vetorMaster2ReverseSvg : vetorMaster2Svg
+      return light ? vetorMaster2ReverseSvg : logo5eCleanOfficial
     case 'logo5d':
       return light ? vetorMaster2ReverseSvg : logo5dFooterOfficial
     case 'logo5':

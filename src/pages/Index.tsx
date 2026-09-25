@@ -240,29 +240,88 @@ const allSectors: SectorItem[] = [
 
 const solutions = [
   {
-    name: 'SaaS',
-    price: 'R$ 1.190',
-    description: 'Inteligência sob demanda para monitoramento contínuo.',
+    name: 'SaaS Puro',
+    price: 'R$ 1.190,00',
+    description: 'Consultor digital em autosserviço total; tarefas executáveis simplificadas.',
     badge: 'EM BREVE',
     icon: BarChart3,
-    detail: 'Indicadores estratégicos e evolução da empresa em uma leitura contínua.',
+    detail:
+      'Consultor digital em autosserviço total com tarefas executáveis simplificadas — sem adicionais.',
+    additionals: '—',
   },
   {
     name: 'MaaS Híbrido',
-    price: 'R$ 3.290',
-    description: 'A união do algoritmo determinístico com supervisão executiva.',
+    price: 'R$ 3.290,00',
+    description: 'Tudo do SaaS + profundidade metodológica + 2 reuniões virtuais de 90 min/mês.',
     badge: 'MAIS ESCOLHIDO',
     icon: Network,
-    detail: 'Direção algorítmica com validação humana para acelerar decisões críticas.',
+    detail: 'Tudo do SaaS + profundidade metodológica + 2 reuniões virtuais de 90 min/mês.',
+    additionals: 'Adicional: R$ 890,00/reunião extra',
     featured: true,
   },
   {
-    name: 'Bespoke/CaaS',
-    price: 'R$ 15.750',
-    description: 'Diagnóstico profundo e acompanhamento estratégico personalizado.',
+    name: 'Bespoke CaaS',
+    price: 'R$ 15.750,00',
+    description: 'Tudo do MaaS + 12 h/mês presenciais com Consultor Executivo.',
     badge: 'ALTA COMPLEXIDADE',
     icon: UserRoundCheck,
-    detail: 'Atuação próxima para cenários que exigem visão executiva sob medida.',
+    detail: 'Tudo do MaaS + 12 h/mês presenciais com Consultor Executivo.',
+    additionals: 'Adicional: R$ 790,00/hora adicional',
+  },
+]
+
+const realCases = [
+  {
+    company: 'Sab Company',
+    sector: 'Comércio Internacional – Trading',
+    pain: 'Dependência estrutural e escala limitada',
+    intervention: 'C-Level as a Service + estruturação fiscal/M&A, Governança Corporativa',
+    result:
+      '15x crescimento em 5 anos; ~US$ 800M/ano; GPTW Top 150 Brasil; entre as 10 maiores tradings; Escola de Negócios.',
+    tag: '15x em 5 anos',
+  },
+  {
+    company: 'DGT',
+    sector: 'Logística',
+    pain: 'Sem visibilidade de estoque/armazém',
+    intervention: 'Projeto WMS + governança operacional',
+    result: 'WMS implantado; rastreabilidade; +40% eficiência de armazém.',
+    tag: '+40% eficiência',
+  },
+  {
+    company: 'OtorrinoDF',
+    sector: 'TI / Saúde',
+    pain: 'Escala e governança para expansão',
+    intervention: 'M&A/Hospital Dia + estruturação estratégica e operacional',
+    result: '−70% nas glosas; +40% taxa de ocupação; expansão via Hospital Dia; ampliação e M&A.',
+    tag: '−70% glosas',
+  },
+  {
+    company: 'APC',
+    sector: 'Facilities',
+    pain: 'Margem apertada e gestão de contratos',
+    intervention: 'Turnaround operacional + precificação e Governança',
+    result: '+100% de faturamento em 2 anos; abertura de filiais e novos mercados.',
+    tag: '+100% faturamento',
+  },
+]
+
+const authorityCredentials = [
+  {
+    name: 'Sainte Marie',
+    impact: '+35% Receitas via Planejamento Estratégico/BSC e Governança',
+  },
+  {
+    name: 'Gocil',
+    impact: 'Inovação e Tecnologia; OKRs + Oceano Azul',
+  },
+  {
+    name: 'Mannesmann / Acesita / Coimex',
+    impact: 'Governança e Sucessão Familiar; 12x receita em 8 anos',
+  },
+  {
+    name: 'Huawei',
+    impact: 'Planejamento tributário/fiscal em importações e logística internacional',
   },
 ]
 
@@ -1030,6 +1089,92 @@ export default function Index() {
         </div>
       </section>
 
+      {/* CASES REAIS — NOVO BLOCO (Seção 8.4) — Base clara com autoridade corporativa */}
+      <section
+        className="section real-cases-section bg-[#F5F5F5] border-y border-[#E0E0E0]"
+        id="cases"
+      >
+        <div className="site-container">
+          <SectionHeading
+            eyebrow="PROVA SOCIAL &amp; CASES REAIS"
+            title="Resultados comprovados na prática executiva."
+            description="Intervenções determinísticas de C-Level estruturadas para resolver dores profundas de escala, margem e governança em múltiplos setores."
+            align="center"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-10 reveal">
+            {realCases.map((c) => (
+              <div
+                key={c.company}
+                className="bg-white rounded-xl p-7 border border-[#E0E0E0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <span className="font-heading font-extrabold text-xl text-[#0066CC]">
+                      {c.company}
+                    </span>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded bg-[#eaf3fd] text-[#0066CC] border border-[#0066CC]/20">
+                      {c.tag}
+                    </span>
+                  </div>
+                  <div className="text-xs uppercase tracking-wider text-[#707070] font-semibold mb-4">
+                    Setor: {c.sector}
+                  </div>
+
+                  <div className="space-y-2.5 text-sm">
+                    <div className="bg-[#f9fafb] p-3 rounded-lg border border-[#eef2f6]">
+                      <span className="text-xs font-bold text-[#b91c1c] uppercase tracking-wide block mb-1">
+                        Dor identificada:
+                      </span>
+                      <p className="text-[#333333] m-0 leading-relaxed font-medium">{c.pain}</p>
+                    </div>
+
+                    <div className="bg-[#f0fdf4] p-3 rounded-lg border border-[#dcfce7]">
+                      <span className="text-xs font-bold text-[#15803d] uppercase tracking-wide block mb-1">
+                        Intervenção determinística:
+                      </span>
+                      <p className="text-[#166534] m-0 leading-relaxed font-medium">
+                        {c.intervention}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 pt-4 border-t border-[#E0E0E0]">
+                  <span className="text-xs font-bold text-[#0066CC] uppercase tracking-wide block mb-1">
+                    Resultado mensurado:
+                  </span>
+                  <p className="text-sm font-bold text-[#1f2937] m-0 leading-snug">{c.result}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Faixa de autoridade — Destaque corporativo */}
+          <div className="bg-white rounded-xl p-6 sm:p-8 border border-[#E0E0E0] shadow-sm reveal">
+            <div className="flex items-center gap-2 mb-4 text-[#0066CC]">
+              <Award className="w-5 h-5 text-[#0066CC]" />
+              <h3 className="font-heading font-bold text-sm sm:text-base uppercase tracking-wider text-[#333333] m-0">
+                Trajetória Executiva &amp; Credenciais Corporativas
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {authorityCredentials.map((auth) => (
+                <div
+                  key={auth.name}
+                  className="p-4 rounded-lg bg-[#F5F5F5] border border-[#E0E0E0] flex flex-col justify-between"
+                >
+                  <strong className="font-heading text-sm text-[#0066CC] font-bold block mb-1">
+                    {auth.name}
+                  </strong>
+                  <span className="text-xs text-[#555555] leading-relaxed">{auth.impact}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 5. SOLUÇÕES (SaaS, MaaS Híbrido, Bespoke/CaaS) */}
       <section className="section solutions-section" id="solucoes">
         <div className="site-container">
@@ -1043,6 +1188,7 @@ export default function Index() {
           <div className="solutions-grid reveal">
             {solutions.map((solution) => {
               const SolutionIcon = solution.icon
+              const isSaas = solution.name === 'SaaS Puro'
               return (
                 <article
                   className={`solution-card ${solution.featured ? 'is-featured' : ''}`}
@@ -1053,7 +1199,7 @@ export default function Index() {
                     <div className="solution-icon">
                       <SolutionIcon aria-hidden="true" />
                     </div>
-                    {solution.name === 'SaaS' ? (
+                    {isSaas ? (
                       <Button
                         type="button"
                         onClick={() => setSaasWaitlistOpen(true)}
@@ -1077,8 +1223,13 @@ export default function Index() {
                   <p className="solution-detail">
                     <Check aria-hidden="true" /> {solution.detail}
                   </p>
+                  {solution.additionals && solution.additionals !== '—' ? (
+                    <p className="text-xs font-semibold text-[#0066CC] mt-2 pt-2 border-t border-slate-100">
+                      {solution.additionals}
+                    </p>
+                  ) : null}
                   <div className="solution-action">
-                    {solution.name === 'SaaS' ? (
+                    {isSaas ? (
                       <Button
                         type="button"
                         className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold w-full h-11 shadow-sm"
