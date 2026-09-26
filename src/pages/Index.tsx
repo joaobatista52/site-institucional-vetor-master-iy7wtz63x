@@ -313,10 +313,16 @@ const authorityCredentials = [
   },
   {
     name: 'Gocil',
-    impact: 'Inovação e Tecnologia; OKRs + Oceano Azul',
+    impact:
+      'Inovação e Tecnologia; OKRs + Oceano Azul; Planejamento Estratégico e Inovação de Valor (Venda de SLA e não de homem/hora)',
   },
   {
-    name: 'Mannesmann / Acesita / Coimex',
+    name: 'Mannesmann / Acesita',
+    impact:
+      'Planejamento Estratégico, Turnaround, Contabilidade Gerencial e Reestruturação Financeira de Filiais',
+  },
+  {
+    name: 'Coimex',
     impact: 'Governança e Sucessão Familiar; 12x receita em 8 anos',
   },
   {
@@ -1158,7 +1164,7 @@ export default function Index() {
                 Trajetória Executiva &amp; Credenciais Corporativas
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
               {authorityCredentials.map((auth) => (
                 <div
                   key={auth.name}
