@@ -576,7 +576,7 @@ export default function Index() {
 
               {/* Logo 5 Oficial em Destaque Máximo no Topo do Painel (Ponto Focal) */}
               <div className="hero-card-brand">
-                <BrandLogo variant="logo5" className="hero-brand-logo" />
+                <BrandLogo variant="svg-reverse" className="hero-brand-logo" />
               </div>
 
               {/* Métricas Principais Integradas */}
