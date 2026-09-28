@@ -323,8 +323,9 @@ const authorityCredentials = [
       'Inovação e Tecnologia; OKRs + Oceano Azul; Planejamento Estratégico e Inovação de Valor (Venda de SLA e não de homem/hora)',
   },
   {
-    name: 'Huawei',
-    impact: 'Planejamento tributário/fiscal em importações e logística internacional',
+    name: 'Huawei do Brasil',
+    impact:
+      'Estruturação de operações de importação no Brasil, Planejamento tributário/fiscal em importações, Logística internacional, Interface com escritórios de advocacia',
   },
   {
     name: 'Mannesmann/Acesita',
