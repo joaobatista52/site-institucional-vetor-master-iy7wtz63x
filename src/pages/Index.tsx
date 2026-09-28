@@ -341,7 +341,12 @@ const faqItems = [
   {
     question: 'Em quais regiões vocês atuam?',
     answer:
-      'Atendimento prioritário em São Paulo e Distrito Federal. Demais regiões do Sudeste e Sul: sob consulta — retorno em até 5 dias.',
+      'Atendimento presencial prioritário em São Paulo e Distrito Federal — válido para o plano Bespoke/CaaS. Demais regiões do Sudeste e Sul: sob consulta — retorno em até 5 dias.',
+  },
+  {
+    question: 'Isso é um curso ou mentoria?',
+    answer:
+      'Não. Curso e mentoria vendem conteúdo genérico. O VETOR MASTER entrega um diagnóstico determinístico do seu negócio e um plano de ação aplicado — o aprendizado de conceitos e ferramentas de gestão acontece dentro da sua operação, sobre os seus números reais.',
   },
   {
     question: 'O que é um Diagnóstico Estratégico determinístico com zero alucinação?',
@@ -565,6 +570,9 @@ export default function Index() {
               </span>
               <span>
                 <Check aria-hidden="true" /> SLA de 72h em 12 setores estruturados
+              </span>
+              <span>
+                <Check aria-hidden="true" /> Plano de ação aplicado — não treinamento genérico
               </span>
             </div>
           </div>
@@ -848,6 +856,12 @@ export default function Index() {
 
           {/* PAINEL VISUAL VETOR MASTER — INSTRUMENTO DE TRANSIÇÃO DA PRISÃO DO FUNDADOR */}
           <VetorMasterEscapePanel onStartDiagnosis={() => setSectorModalOpen(true)} />
+
+          <p className="founder-trap-closing reveal">
+            O mercado oferece treinamentos e mentorias genéricas. A metodologia VETOR MASTER entrega
+            o plano de ação que rompe a prisão — aplicado ao seu negócio, com os conceitos e
+            ferramentas de gestão aprendidos em uso real, não em sala de aula.
+          </p>
         </div>
       </section>
 
