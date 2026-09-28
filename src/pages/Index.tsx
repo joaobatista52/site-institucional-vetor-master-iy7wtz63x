@@ -346,7 +346,7 @@ const faqItems = [
   {
     question: 'Isso é um curso ou mentoria?',
     answer:
-      'Não. Curso e mentoria vendem conteúdo genérico. O VETOR MASTER entrega um diagnóstico determinístico do seu negócio e um plano de ação aplicado — o aprendizado de conceitos e ferramentas de gestão acontece dentro da sua operação, sobre os seus números reais.',
+      'Não é um curso e nem uma mentoria — é um serviço de diagnóstico. O VETOR MASTER analisa os dados reais do seu negócio e devolve um plano de ação aplicado à sua operação. O aprendizado de conceitos e ferramentas de gestão acontece como consequência: dentro do seu negócio, sobre os seus números — não em sala de aula.',
   },
   {
     question: 'O que é um Diagnóstico Estratégico determinístico com zero alucinação?',
