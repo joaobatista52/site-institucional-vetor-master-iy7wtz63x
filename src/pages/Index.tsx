@@ -308,26 +308,32 @@ const realCases = [
 
 const authorityCredentials = [
   {
-    name: 'Sainte Marie',
+    name: 'Coimex/Cisa Trading',
+    impact:
+      'M&A, Turnaround, Planejamento Estratégico; Governança e Sucessão Familiar; 12x receita em 8 anos',
+  },
+  {
+    name: 'Sainte Marie Trading',
     impact: '+35% Receitas via Planejamento Estratégico/BSC e Governança',
   },
   {
-    name: 'Gocil',
+    name: 'Gocil Facilities e Segurança',
     impact:
       'Inovação e Tecnologia; OKRs + Oceano Azul; Planejamento Estratégico e Inovação de Valor (Venda de SLA e não de homem/hora)',
   },
   {
-    name: 'Mannesmann / Acesita',
+    name: 'Huawei',
+    impact: 'Planejamento tributário/fiscal em importações e logística internacional',
+  },
+  {
+    name: 'Mannesmann/Acesita',
     impact:
       'Planejamento Estratégico, Turnaround, Contabilidade Gerencial e Reestruturação Financeira de Filiais',
   },
   {
-    name: 'Coimex',
-    impact: 'Governança e Sucessão Familiar; 12x receita em 8 anos',
-  },
-  {
-    name: 'Huawei',
-    impact: 'Planejamento tributário/fiscal em importações e logística internacional',
+    name: 'Lorenzetti S/A',
+    impact:
+      'Implantação de ERP e Gestão Industrial, Planejamento Estratégico, Growth Marketing, Implantação de Processos (BPMN), Sucessão Familiar',
   },
 ]
 
@@ -1164,7 +1170,7 @@ export default function Index() {
                 Trajetória Executiva &amp; Credenciais Corporativas
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {authorityCredentials.map((auth) => (
                 <div
                   key={auth.name}
