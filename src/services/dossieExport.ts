@@ -340,7 +340,7 @@ export function resolveQuestionAnswer(
   if (isCheckboxType) {
     const formattedCheckbox = formatCheckboxAnswer(val, questionMeta?.options)
     if (formattedCheckbox) {
-      return { hasAnswer: true, value: formattedCheckbox }
+      val = formattedCheckbox
     }
   }
 
@@ -363,6 +363,14 @@ export function resolveQuestionAnswer(
     } else {
       val = 'Outro (não detalhado)'
     }
+  } else if (
+    typeof val === 'string' &&
+    outroText &&
+    outroText.trim() &&
+    /\bOutro\b/i.test(val) &&
+    !val.includes(`Outro: ${outroText.trim()}`)
+  ) {
+    val = val.replace(/\bOutro\b/gi, `Outro: ${outroText.trim()}`)
   }
 
   // Ponto 2: Varejo - "e-commerce" agregável
@@ -511,7 +519,8 @@ export async function buildDossieJson(
   ]
   for (const key of possibleSegmentKeys) {
     if (respostas[key] !== undefined && respostas[key] !== null) {
-      const { hasAnswer, value } = resolveQuestionAnswer(key, respostas)
+      const matchingQuestion = rawSections.flatMap((s) => s.questions).find((q) => q.id === key)
+      const { hasAnswer, value } = resolveQuestionAnswer(key, respostas, matchingQuestion)
       if (hasAnswer && value) {
         segmentoResolvido = value
         break

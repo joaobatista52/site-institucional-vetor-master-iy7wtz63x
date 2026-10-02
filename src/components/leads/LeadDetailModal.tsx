@@ -899,49 +899,57 @@ export function LeadDetailModal({
                               if (formattedCheckbox) {
                                 val = formattedCheckbox
                               }
-                            } else {
-                              // Ponto 4: Tratamento de "Outro"
-                              // Procurar especificação se existir campo complementar
-                              const outroText =
-                                (respostas[`${question.id}_outro`] as string) ||
-                                (respostas[`${question.id}Outro`] as string) ||
-                                (question.id.endsWith('_segmento')
-                                  ? (respostas[`${question.id}Outro`] as string) ||
-                                    (respostas[`${question.id}_outro`] as string)
-                                  : '')
+                            }
 
-                              const isValEmpty = val === undefined || val === '' || val === null
-                              const isValOutro =
-                                typeof val === 'string' && val.trim().toLowerCase() === 'outro'
+                            // Ponto 4: Tratamento de "Outro"
+                            // Procurar especificação se existir campo complementar
+                            const outroText =
+                              (respostas[`${question.id}_outro`] as string) ||
+                              (respostas[`${question.id}Outro`] as string) ||
+                              (question.id.endsWith('_segmento')
+                                ? (respostas[`${question.id}Outro`] as string) ||
+                                  (respostas[`${question.id}_outro`] as string)
+                                : '')
 
-                              // Se valor for vazio mas existe outroText
-                              if (isValEmpty && outroText && outroText.trim()) {
+                            const isValEmpty = val === undefined || val === '' || val === null
+                            const isValOutro =
+                              typeof val === 'string' && val.trim().toLowerCase() === 'outro'
+
+                            // Se valor for vazio mas existe outroText
+                            if (isValEmpty && outroText && outroText.trim()) {
+                              val = `Outro: ${outroText.trim()}`
+                            } else if (isValOutro) {
+                              if (outroText && outroText.trim()) {
                                 val = `Outro: ${outroText.trim()}`
-                              } else if (isValOutro) {
-                                if (outroText && outroText.trim()) {
-                                  val = `Outro: ${outroText.trim()}`
-                                } else {
-                                  val = 'Outro (não detalhado)'
-                                }
+                              } else {
+                                val = 'Outro (não detalhado)'
                               }
+                            } else if (
+                              typeof val === 'string' &&
+                              outroText &&
+                              outroText.trim() &&
+                              /\bOutro\b/i.test(val) &&
+                              !val.includes(`Outro: ${outroText.trim()}`)
+                            ) {
+                              val = val.replace(/\bOutro\b/gi, `Outro: ${outroText.trim()}`)
+                            }
 
-                              // Ponto 2: Varejo - "e-commerce" agregável
-                              // No dossiê, quando segmento != ecommerce e resposta = Sim, exibir "«segmento escolhido» + E-commerce complementar"
-                              if (question.id === 'varejo_segmento') {
-                                const ecomIntegrated = respostas['varejo_1_ecommerce_integrado'] as
-                                  | string
-                                  | undefined
-                                const isYesEcom =
-                                  ecomIntegrated &&
-                                  (ecomIntegrated.toLowerCase().startsWith('sim') ||
-                                    ecomIntegrated.includes('omnichannel'))
-                                const segmentStr = typeof val === 'string' ? val : ''
-                                const isNotEcommerce =
-                                  segmentStr && !segmentStr.toLowerCase().includes('e-commerce')
+                            // Ponto 2: Varejo - "e-commerce" agregável
+                            // No dossiê, quando segmento != ecommerce e resposta = Sim, exibir "«segmento escolhido» + E-commerce complementar"
+                            if (question.id === 'varejo_segmento') {
+                              const ecomIntegrated = respostas['varejo_1_ecommerce_integrado'] as
+                                | string
+                                | undefined
+                              const isYesEcom =
+                                ecomIntegrated &&
+                                (ecomIntegrated.toLowerCase().startsWith('sim') ||
+                                  ecomIntegrated.includes('omnichannel'))
+                              const segmentStr = typeof val === 'string' ? val : ''
+                              const isNotEcommerce =
+                                segmentStr && !segmentStr.toLowerCase().includes('e-commerce')
 
-                                if (isNotEcommerce && isYesEcom) {
-                                  val = `${segmentStr} + E-commerce complementar`
-                                }
+                              if (isNotEcommerce && isYesEcom) {
+                                val = `${segmentStr} + E-commerce complementar`
                               }
                             }
 
