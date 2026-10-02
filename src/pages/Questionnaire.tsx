@@ -563,6 +563,61 @@ export default function Questionnaire() {
       )
     }
 
+    if (question.type === 'checkbox') {
+      let selectedValues: string[] = []
+      try {
+        const parsed = JSON.parse(value)
+        if (Array.isArray(parsed)) {
+          selectedValues = parsed
+        } else if (typeof parsed === 'string') {
+          selectedValues = [parsed]
+        }
+      } catch {
+        if (value) {
+          selectedValues = value
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean)
+        }
+      }
+
+      const toggleOption = (optVal: string) => {
+        let next: string[]
+        if (selectedValues.includes(optVal)) {
+          next = selectedValues.filter((v) => v !== optVal)
+        } else {
+          next = [...selectedValues, optVal]
+        }
+        setAnswer(question.id, JSON.stringify(next))
+      }
+
+      return (
+        <div className="space-y-2 pt-1" id={question.id}>
+          {options.map((option) => {
+            const isChecked = selectedValues.includes(option.value)
+            return (
+              <label
+                key={option.value}
+                className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                  isChecked
+                    ? 'bg-[#0066CC]/5 border-[#0066CC]/50 text-gray-900 font-medium'
+                    : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-700'
+                }`}
+              >
+                <Checkbox
+                  id={`${question.id}-${option.value}`}
+                  checked={isChecked}
+                  onCheckedChange={() => toggleOption(option.value)}
+                  className="mt-0.5 border-gray-300 data-[state=checked]:bg-[#0066CC] data-[state=checked]:border-[#0066CC]"
+                />
+                <span className="text-xs sm:text-sm select-none leading-snug">{option.label}</span>
+              </label>
+            )
+          })}
+        </div>
+      )
+    }
+
     if (question.type === 'select' || question.type === 'yes-no') {
       return (
         <Select value={value} onValueChange={(next) => setAnswer(question.id, next)}>

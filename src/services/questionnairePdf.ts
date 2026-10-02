@@ -124,7 +124,7 @@ export function generateQuestionnaireHtml(data: QuestionnairePdfData): string {
     let perguntasHtml = ''
     sec.questions.forEach((q) => {
       countPerguntasTotal++
-      const { hasAnswer, value } = resolveQuestionAnswer(q.id, respostas)
+      const { hasAnswer, value } = resolveQuestionAnswer(q.id, respostas, q)
       if (hasAnswer) countRespondidas++
 
       perguntasHtml += `

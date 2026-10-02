@@ -271,11 +271,78 @@ export async function calculateSha256(buffer: ArrayBuffer): Promise<string> {
  * - "Outro: ..." se marcado 'Outro' ou campo complementar
  * - Varejo: "«segmento escolhido» + E-commerce complementar" se aplicável
  */
+/**
+ * Converte valor de pergunta do tipo checkbox (JSON array, array nativo ou string separada por vírgula)
+ * em uma lista legível e formatada das opções marcadas.
+ */
+export function formatCheckboxAnswer(
+  val: unknown,
+  options?: { value: string; label: string }[],
+): string | null {
+  if (val === undefined || val === null || val === '') return null
+
+  let items: string[] = []
+  if (Array.isArray(val)) {
+    items = val.map((x) => String(x).trim()).filter(Boolean)
+  } else if (typeof val === 'string') {
+    const trimmed = val.trim()
+    if (!trimmed) return null
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed)
+        if (Array.isArray(parsed)) {
+          items = parsed.map((x) => String(x).trim()).filter(Boolean)
+        }
+      } catch {
+        // Fallback para divisão por vírgula caso o parse JSON falhe
+        items = trimmed
+          .slice(1, -1)
+          .split(',')
+          .map((s) => s.replace(/^["']|["']$/g, '').trim())
+          .filter(Boolean)
+      }
+    } else {
+      // String simples ou valores separados por vírgula
+      items = trimmed
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    }
+  }
+
+  if (items.length === 0) return null
+
+  // Se options foi fornecido, mapeia para os rótulos amigáveis mantendo opções personalizadas
+  if (options && options.length > 0) {
+    const labels = items.map((item) => {
+      const match = options.find((opt) => opt.value === item || opt.label === item)
+      return match ? match.label : item
+    })
+    return labels.join(', ')
+  }
+
+  return items.join(', ')
+}
+
 export function resolveQuestionAnswer(
   questionId: string,
   respostas: Record<string, unknown>,
+  questionMeta?: Question,
 ): { hasAnswer: boolean; value: string | null } {
   let val = respostas[questionId]
+
+  // Tratamento específico para tipo checkbox (respostas múltiplas)
+  const isCheckboxType =
+    questionMeta?.type === 'checkbox' ||
+    (Array.isArray(val) && val.length > 0) ||
+    (typeof val === 'string' && val.trim().startsWith('[') && val.trim().endsWith(']'))
+
+  if (isCheckboxType) {
+    const formattedCheckbox = formatCheckboxAnswer(val, questionMeta?.options)
+    if (formattedCheckbox) {
+      return { hasAnswer: true, value: formattedCheckbox }
+    }
+  }
 
   // Ponto 4: Tratamento de "Outro"
   const outroText =
@@ -569,7 +636,7 @@ export async function buildDossieJson(
 
     let answeredCount = 0
     const perguntas: DossiePerguntaExport[] = sec.questions.map((q) => {
-      const { hasAnswer, value } = resolveQuestionAnswer(q.id, respostas)
+      const { hasAnswer, value } = resolveQuestionAnswer(q.id, respostas, q)
       const status: DossieStatus = hasAnswer ? 'respondido' : 'nao_respondido'
       if (hasAnswer) answeredCount++
 
