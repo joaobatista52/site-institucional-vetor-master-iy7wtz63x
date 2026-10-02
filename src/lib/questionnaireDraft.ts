@@ -2,7 +2,7 @@ export interface QuestionnaireDraftData {
   sectorId: string
   step: number
   highestReachedStep: number
-  answers: Record<string, string>
+  answers: Record<string, any>
   cadastro: {
     nomeCompleto: string
     empresa: string

@@ -84,8 +84,48 @@ const emptyCadastro: CadastroData = {
   whatsapp: '',
 }
 
-// 9 seções de perguntas + Próximos Passos + Documentação + Cadastro = 12 etapas
-const TOTAL_STEPS = 12
+/**
+ * Universal tolerant parser for multi-value / checkbox answers.
+ * Handles:
+ * - falsy/null/undefined -> []
+ * - Array -> map(String).map(s => s.trim()).filter(Boolean)
+ * - string:
+ *     - trimmed === '' -> []
+ *     - starts/ends with [ ] -> try JSON.parse and return mapped array (fallback to split)
+ *     - else -> split(',').map(s => s.trim()).filter(Boolean)
+ * - any other type -> [String(raw).trim()].filter(Boolean)
+ */
+export function parseCheckboxValue(raw: unknown): string[] {
+  if (raw === null || raw === undefined) return []
+
+  if (Array.isArray(raw)) {
+    return raw.map((item) => String(item).trim()).filter(Boolean)
+  }
+
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim()
+    if (trimmed === '') return []
+
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed)
+        if (Array.isArray(parsed)) {
+          return parsed.map((item) => String(item).trim()).filter(Boolean)
+        }
+      } catch {
+        // Fallback para divisão por vírgula
+      }
+    }
+
+    return trimmed
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  }
+
+  const str = String(raw).trim()
+  return str ? [str] : []
+}
 
 function maskCNPJ(value: string): string {
   return value
@@ -157,7 +197,7 @@ export default function Questionnaire() {
     }
   }, [])
   const [step, setStep] = useState(0)
-  const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [answers, setAnswers] = useState<Record<string, any>>({})
   const [cadastro, setCadastro] = useState<CadastroData>(emptyCadastro)
   const [files, setFiles] = useState<WizardFiles>({
     contratoSocial: [],
@@ -186,6 +226,7 @@ export default function Questionnaire() {
   // "Questionários_Consolidados_12_Setores_V6.7", incluindo as variações de
   // Comércio Internacional e Facilities).
   const sections = useMemo(() => getQuestionnaireSections(sectorId), [sectorId])
+  const totalSteps = sections.length + 3
   const nextStepsStep = sections.length
   const docsStep = sections.length + 1
   const cadastroStep = sections.length + 2
@@ -209,8 +250,8 @@ export default function Questionnaire() {
         draft.step > 0
 
       if (hasContent) {
-        setStep(Math.min(draft.step, TOTAL_STEPS - 1))
-        setHighestReachedStep(Math.min(draft.highestReachedStep, TOTAL_STEPS - 1))
+        setStep(Math.min(draft.step, totalSteps - 1))
+        setHighestReachedStep(Math.min(draft.highestReachedStep, totalSteps - 1))
         setAnswers(draft.answers || {})
         setCadastro(draft.cadastro || emptyCadastro)
         setAutorizacaoDevolutiva(draft.autorizacaoDevolutiva || '')
@@ -245,7 +286,7 @@ export default function Questionnaire() {
     setTimeout(() => {
       isRestoredRef.current = true
     }, 50)
-  }, [sectorId])
+  }, [sectorId, totalSteps])
 
   // Salvar automaticamente a cada alteração após restauração inicial
   useEffect(() => {
@@ -315,7 +356,12 @@ export default function Questionnaire() {
     [sections],
   )
   const answeredCount = useMemo(
-    () => Object.values(answers).filter((value) => value.trim() !== '').length,
+    () =>
+      Object.values(answers).filter((val) => {
+        if (val === null || val === undefined) return false
+        if (Array.isArray(val)) return val.length > 0
+        return String(val).trim() !== ''
+      }).length,
     [answers],
   )
 
@@ -416,11 +462,17 @@ export default function Questionnaire() {
     (question: Question): boolean => {
       if (!question.condition) return true
       const { questionId, value } = question.condition
-      const parentVal = (answers[questionId] ?? '').trim()
+      const rawParent = answers[questionId]
+      const parentValues = parseCheckboxValue(rawParent)
+      const parentVal = (
+        parentValues[0] ??
+        (rawParent !== null && rawParent !== undefined ? String(rawParent).trim() : '')
+      ).trim()
+
       if (Array.isArray(value)) {
-        return value.includes(parentVal)
+        return value.some((expected) => parentValues.includes(expected) || parentVal === expected)
       }
-      return parentVal === value
+      return parentValues.includes(value) || parentVal === value
     },
     [answers],
   )
@@ -432,22 +484,14 @@ export default function Questionnaire() {
         if (!sec) return false
         for (const question of sec.questions) {
           if (!isQuestionVisible(question)) continue
-          const rawVal = answers[question.id] ?? ''
+          const rawVal = answers[question.id]
           if (question.type === 'checkbox') {
             if (question.required) {
-              try {
-                const parsed = JSON.parse(rawVal)
-                if (!Array.isArray(parsed) || parsed.length === 0) return false
-              } catch {
-                const parts = rawVal
-                  .split(',')
-                  .map((s) => s.trim())
-                  .filter(Boolean)
-                if (parts.length === 0) return false
-              }
+              const selected = parseCheckboxValue(rawVal)
+              if (selected.length === 0) return false
             }
           } else {
-            const val = rawVal.trim()
+            const val = rawVal !== null && rawVal !== undefined ? String(rawVal).trim() : ''
             if (question.required && val === '') {
               return false
             }
@@ -499,26 +543,16 @@ export default function Questionnaire() {
     if (currentSection) {
       for (const question of currentSection.questions) {
         if (!isQuestionVisible(question)) continue
-        const rawVal = answers[question.id] ?? ''
+        const rawVal = answers[question.id]
         if (question.type === 'checkbox') {
           if (question.required) {
-            try {
-              const parsed = JSON.parse(rawVal)
-              if (!Array.isArray(parsed) || parsed.length === 0) {
-                errors.push(`Selecione ao menos uma opção: ${question.label}`)
-              }
-            } catch {
-              const parts = rawVal
-                .split(',')
-                .map((s) => s.trim())
-                .filter(Boolean)
-              if (parts.length === 0) {
-                errors.push(`Selecione ao menos uma opção: ${question.label}`)
-              }
+            const selected = parseCheckboxValue(rawVal)
+            if (selected.length === 0) {
+              errors.push(`Selecione ao menos uma opção: ${question.label}`)
             }
           }
         } else {
-          const value = rawVal.trim()
+          const value = rawVal !== null && rawVal !== undefined ? String(rawVal).trim() : ''
           if (question.required && value === '') {
             errors.push(`Responda: ${question.label}`)
           }
@@ -557,7 +591,7 @@ export default function Questionnaire() {
     }
     setStepErrors([])
     setStep((prev) => {
-      const nextStep = Math.min(prev + 1, TOTAL_STEPS - 1)
+      const nextStep = Math.min(prev + 1, totalSteps - 1)
       setHighestReachedStep((curr) => Math.max(curr, nextStep))
       return nextStep
     })
@@ -585,22 +619,7 @@ export default function Questionnaire() {
     }
 
     if (question.type === 'checkbox') {
-      let selectedValues: string[] = []
-      try {
-        const parsed = JSON.parse(value)
-        if (Array.isArray(parsed)) {
-          selectedValues = parsed
-        } else if (typeof parsed === 'string') {
-          selectedValues = [parsed]
-        }
-      } catch {
-        if (value) {
-          selectedValues = value
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean)
-        }
-      }
+      const selectedValues = parseCheckboxValue(value)
 
       const toggleOption = (optVal: string) => {
         let next: string[]
@@ -960,7 +979,7 @@ export default function Questionnaire() {
   }
 
   function renderCadastroStep() {
-    const isLast = step === TOTAL_STEPS - 1
+    const isLast = step === totalSteps - 1
     return (
       <div className="wizard-cadastro">
         <div className="wizard-cadastro-grid">
@@ -1125,7 +1144,11 @@ export default function Questionnaire() {
       const consolidatedAnswers: Record<string, string> = {}
       for (const [key, rawVal] of Object.entries(answers)) {
         if (rawVal === undefined || rawVal === null) continue
-        consolidatedAnswers[key] = String(rawVal)
+        if (Array.isArray(rawVal)) {
+          consolidatedAnswers[key] = JSON.stringify(rawVal)
+        } else {
+          consolidatedAnswers[key] = String(rawVal)
+        }
       }
 
       if (memorizedPlan) {
@@ -1133,33 +1156,41 @@ export default function Questionnaire() {
       }
 
       // Consolidar perguntas com "Outro" (tanto select quanto checkbox múltiplo)
-      for (const [qId, val] of Object.entries(answers)) {
+      for (const [qId, rawVal] of Object.entries(answers)) {
         const outroText =
-          (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim()) ||
-          (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
+          (answers[`${qId}_outro`] !== undefined &&
+            answers[`${qId}_outro`] !== null &&
+            String(answers[`${qId}_outro`]).trim()) ||
+          (answers[`${qId}Outro`] !== undefined &&
+            answers[`${qId}Outro`] !== null &&
+            String(answers[`${qId}Outro`]).trim()) ||
           (qId.endsWith('_segmento')
-            ? (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
-              (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim())
+            ? (answers[`${qId}Outro`] !== undefined &&
+                answers[`${qId}Outro`] !== null &&
+                String(answers[`${qId}Outro`]).trim()) ||
+              (answers[`${qId}_outro`] !== undefined &&
+                answers[`${qId}_outro`] !== null &&
+                String(answers[`${qId}_outro`]).trim())
             : '')
 
         if (!outroText) continue
 
-        if (typeof val === 'string') {
-          if (val.trim().toLowerCase() === 'outro') {
+        const parsedValues = parseCheckboxValue(rawVal)
+        if (parsedValues.includes('Outro')) {
+          const replaced = parsedValues.map((item) =>
+            item === 'Outro' ? `Outro: ${outroText}` : item,
+          )
+          if (
+            replaced.length === 1 &&
+            typeof rawVal === 'string' &&
+            !rawVal.trim().startsWith('[')
+          ) {
             consolidatedAnswers[qId] = `Outro: ${outroText}`
           } else {
-            try {
-              const parsed = JSON.parse(val)
-              if (Array.isArray(parsed) && parsed.includes('Outro')) {
-                const replaced = parsed.map((item) =>
-                  item === 'Outro' ? `Outro: ${outroText}` : item,
-                )
-                consolidatedAnswers[qId] = JSON.stringify(replaced)
-              }
-            } catch {
-              // não é JSON array
-            }
+            consolidatedAnswers[qId] = JSON.stringify(replaced)
           }
+        } else if (typeof rawVal === 'string' && rawVal.trim().toLowerCase() === 'outro') {
+          consolidatedAnswers[qId] = `Outro: ${outroText}`
         }
       }
 
@@ -1528,11 +1559,11 @@ export default function Questionnaire() {
             <div className="wizard-progress-bar">
               <div
                 className="wizard-progress-bar-fill"
-                style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
+                style={{ width: `${((step + 1) / totalSteps) * 100}%` }}
               />
             </div>
             <span className="wizard-progress-caption">
-              Etapa {step + 1} de {TOTAL_STEPS}
+              Etapa {step + 1} de {totalSteps}
             </span>
           </aside>
 
@@ -1601,7 +1632,7 @@ export default function Questionnaire() {
 
             <header className="wizard-panel-header">
               <span className="wizard-panel-eyebrow">
-                ETAPA {String(step + 1).padStart(2, '0')} / {String(TOTAL_STEPS).padStart(2, '0')}
+                ETAPA {String(step + 1).padStart(2, '0')} / {String(totalSteps).padStart(2, '0')}
               </span>
               <h2>
                 Setor de {sector.name} — {stepTitles[step]}
@@ -1671,13 +1702,13 @@ export default function Questionnaire() {
                 <ArrowLeft aria-hidden="true" /> Voltar
               </Button>
 
-              {step < TOTAL_STEPS - 1 && (
+              {step < totalSteps - 1 && (
                 <Button className="conversion-button" onClick={handleNext} disabled={submitting}>
                   Avançar <ArrowRight aria-hidden="true" />
                 </Button>
               )}
 
-              {step === TOTAL_STEPS - 1 &&
+              {step === totalSteps - 1 &&
                 (isAdminAuthenticated ? (
                   <div className="flex flex-col sm:flex-row items-center gap-2.5">
                     <div className="text-xs text-amber-800 bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 text-center sm:text-right font-medium">

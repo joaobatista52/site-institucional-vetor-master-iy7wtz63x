@@ -297,7 +297,7 @@ export function formatCheckboxAnswer(
         // Fallback para divisão por vírgula caso o parse JSON falhe
         items = trimmed
           .slice(1, -1)
-  // peek 320
+          // peek 320
           .split(',')
           .map((s) => s.replace(/^["']|["']$/g, '').trim())
           .filter(Boolean)
@@ -357,7 +357,7 @@ export function resolveQuestionAnswer(
   } else if (isValOutro) {
     if (outroText && outroText.trim()) {
       val = `Outro: ${outroText.trim()}`
-  // peek 375
+      // peek 375
     } else {
       val = 'Outro (não detalhado)'
     }
@@ -496,6 +496,9 @@ export async function buildDossieJson(
   const standardizedSectorEnum = getStandardizedSectorEnum(lead.setor_id, lead.setor)
   const sectorDisplayed = lead.setor || sectorInfo?.name || 'Setor não informado'
 
+  // 3. Bloco Seções 1–9 com perguntas enriquecidas com o dicionário
+  const rawSections = getQuestionnaireSections(normalizedSectorId)
+
   // Resolver segmento do lead (com tratamento de Outro e Varejo)
   let segmentoResolvido: string | null = null
   const possibleSegmentKeys = [
@@ -631,8 +634,6 @@ export async function buildDossieJson(
 
   // 3. Bloco Seções 1–9 com perguntas enriquecidas com o dicionário
   onProgress?.('Enriquecendo seções e perguntas com o dicionário V6.7...')
-  const rawSections = getQuestionnaireSections(normalizedSectorId)
-
   const secoesMap: Record<string, DossieSecaoExport> = {}
 
   rawSections.forEach((sec, idx) => {
