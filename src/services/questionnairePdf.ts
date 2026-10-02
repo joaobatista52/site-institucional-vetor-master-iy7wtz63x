@@ -45,11 +45,11 @@ export function generateQuestionnaireHtml(data: QuestionnairePdfData): string {
   const normalizedSectorId = normalizeSectorIdForDictionary(data.setor_id, data.setor)
   const sector = findSector(normalizedSectorId)
   const sectorTitle = data.setor || sector?.name || 'Diagnóstico Setorial'
-
   const cadastro = data.cadastro || {}
   const respostas = data.respostas || {}
 
   // Extração inteligente de dados caso estejam dispersos nas respostas
+  // peek 100
   const nomeCompleto =
     cadastro.nomeCompleto ||
     (respostas[`${normalizedSectorId}_respondente`] as string) ||

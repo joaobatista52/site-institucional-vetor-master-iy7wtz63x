@@ -498,9 +498,30 @@ export default function Questionnaire() {
 
     if (currentSection) {
       for (const question of currentSection.questions) {
-        const value = (answers[question.id] ?? '').trim()
-        if (question.required && value === '') {
-          errors.push(`Responda: ${question.label}`)
+        if (!isQuestionVisible(question)) continue
+        const rawVal = answers[question.id] ?? ''
+        if (question.type === 'checkbox') {
+          if (question.required) {
+            try {
+              const parsed = JSON.parse(rawVal)
+              if (!Array.isArray(parsed) || parsed.length === 0) {
+                errors.push(`Selecione ao menos uma opção: ${question.label}`)
+              }
+            } catch {
+              const parts = rawVal
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean)
+              if (parts.length === 0) {
+                errors.push(`Selecione ao menos uma opção: ${question.label}`)
+              }
+            }
+          }
+        } else {
+          const value = rawVal.trim()
+          if (question.required && value === '') {
+            errors.push(`Responda: ${question.label}`)
+          }
         }
       }
       return errors
@@ -1111,18 +1132,33 @@ export default function Questionnaire() {
         consolidatedAnswers.plano_escolhido = memorizedPlan
       }
 
-      // Consolidar perguntas com "Outro"
+      // Consolidar perguntas com "Outro" (tanto select quanto checkbox múltiplo)
       for (const [qId, val] of Object.entries(answers)) {
-        if (typeof val === 'string' && val.trim().toLowerCase() === 'outro') {
-          const outroText =
-            (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim()) ||
-            (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
-            (qId.endsWith('_segmento')
-              ? (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
-                (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim())
-              : '')
-          if (outroText) {
+        const outroText =
+          (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim()) ||
+          (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
+          (qId.endsWith('_segmento')
+            ? (typeof answers[`${qId}Outro`] === 'string' && answers[`${qId}Outro`]?.trim()) ||
+              (typeof answers[`${qId}_outro`] === 'string' && answers[`${qId}_outro`]?.trim())
+            : '')
+
+        if (!outroText) continue
+
+        if (typeof val === 'string') {
+          if (val.trim().toLowerCase() === 'outro') {
             consolidatedAnswers[qId] = `Outro: ${outroText}`
+          } else {
+            try {
+              const parsed = JSON.parse(val)
+              if (Array.isArray(parsed) && parsed.includes('Outro')) {
+                const replaced = parsed.map((item) =>
+                  item === 'Outro' ? `Outro: ${outroText}` : item,
+                )
+                consolidatedAnswers[qId] = JSON.stringify(replaced)
+              }
+            } catch {
+              // não é JSON array
+            }
           }
         }
       }

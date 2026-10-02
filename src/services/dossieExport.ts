@@ -297,6 +297,7 @@ export function formatCheckboxAnswer(
         // Fallback para divisão por vírgula caso o parse JSON falhe
         items = trimmed
           .slice(1, -1)
+  // peek 320
           .split(',')
           .map((s) => s.replace(/^["']|["']$/g, '').trim())
           .filter(Boolean)
@@ -336,14 +337,12 @@ export function resolveQuestionAnswer(
     questionMeta?.type === 'checkbox' ||
     (Array.isArray(val) && val.length > 0) ||
     (typeof val === 'string' && val.trim().startsWith('[') && val.trim().endsWith(']'))
-
   if (isCheckboxType) {
     const formattedCheckbox = formatCheckboxAnswer(val, questionMeta?.options)
     if (formattedCheckbox) {
       val = formattedCheckbox
     }
   }
-
   // Ponto 4: Tratamento de "Outro"
   const outroText =
     (respostas[`${questionId}_outro`] as string) ||
@@ -351,15 +350,14 @@ export function resolveQuestionAnswer(
     (questionId.endsWith('_segmento')
       ? (respostas[`${questionId}Outro`] as string) || (respostas[`${questionId}_outro`] as string)
       : '')
-
   const isValEmpty = val === undefined || val === '' || val === null
   const isValOutro = typeof val === 'string' && val.trim().toLowerCase() === 'outro'
-
   if (isValEmpty && outroText && outroText.trim()) {
     val = `Outro: ${outroText.trim()}`
   } else if (isValOutro) {
     if (outroText && outroText.trim()) {
       val = `Outro: ${outroText.trim()}`
+  // peek 375
     } else {
       val = 'Outro (não detalhado)'
     }
