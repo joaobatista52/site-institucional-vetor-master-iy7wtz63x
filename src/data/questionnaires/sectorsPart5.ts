@@ -21,7 +21,7 @@ export const educacaoSections: QuestionSection[] = [
       {
         id: 'edu_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Básica', label: 'Básica' },
@@ -487,7 +487,7 @@ export const academiasSections: QuestionSection[] = [
       {
         id: 'acad_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Musculação', label: 'Musculação' },

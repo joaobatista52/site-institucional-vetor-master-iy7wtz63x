@@ -20,7 +20,7 @@ export const saudeSections: QuestionSection[] = [
       {
         id: 'saude_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Hospitalar', label: 'Hospitalar' },
@@ -501,7 +501,7 @@ export const servicosSections: QuestionSection[] = [
       {
         id: 'servicos_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Consultoria', label: 'Consultoria' },

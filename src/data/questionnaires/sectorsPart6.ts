@@ -27,7 +27,7 @@ export const comercioInternacionalSections: QuestionSection[] = [
       {
         id: 'trade_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Importação', label: 'Importação' },
@@ -636,7 +636,7 @@ export const facilitiesSections: QuestionSection[] = [
       {
         id: 'fac_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Facilities Management', label: 'Facilities Management' },

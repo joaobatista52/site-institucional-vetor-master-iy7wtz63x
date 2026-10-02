@@ -20,7 +20,7 @@ export const agronegocioSections: QuestionSection[] = [
       {
         id: 'agro_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Grãos', label: 'Grãos' },
@@ -488,7 +488,7 @@ export const tecnologiaSections: QuestionSection[] = [
       {
         id: 'tech_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'SaaS', label: 'SaaS' },

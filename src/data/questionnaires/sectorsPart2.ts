@@ -20,7 +20,7 @@ export const industriaSections: QuestionSection[] = [
       {
         id: 'industria_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Manufatura', label: 'Manufatura' },
@@ -494,7 +494,7 @@ export const varejoSections: QuestionSection[] = [
       {
         id: 'varejo_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Lojas Físicas', label: 'Lojas Físicas' },

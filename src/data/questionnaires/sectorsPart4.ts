@@ -20,7 +20,7 @@ export const construcaoSections: QuestionSection[] = [
       {
         id: 'const_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Edificações', label: 'Edificações' },
@@ -486,7 +486,7 @@ export const logisticaSections: QuestionSection[] = [
       {
         id: 'log_segmento',
         label: 'Segmento:',
-        type: 'select',
+        type: 'checkbox',
         required: true,
         options: [
           { value: 'Cargas', label: 'Cargas' },
