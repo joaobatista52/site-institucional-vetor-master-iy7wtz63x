@@ -2083,39 +2083,22 @@ footer[id],
   margin-bottom: 36px;
 }
 
-.sectors-featured-heading,
-.sectors-secondary-heading {
-  display: flex;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.sectors-secondary-heading {
-  margin-top: 28px;
-}
-
-.sectors-group-label {
-  font-family: var(--font-heading);
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  color: var(--corporate-gray);
-  padding: 4px 12px;
-  background: rgba(0, 102, 204, 0.08);
-  border-radius: 6px;
-  border-left: 3px solid var(--strategic-blue);
-}
-
-.sectors-featured-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-
-.sectors-secondary-grid {
+.sectors-unified-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .sectors-unified-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .sectors-unified-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sector-interactive-box {
@@ -2133,52 +2116,6 @@ footer[id],
   outline: none;
 }
 
-/* Cards de Destaque Maiores (Saúde, Varejo, Serviços) */
-.sector-box-featured {
-  padding: 24px 20px;
-  border-radius: 14px;
-  border: 2px solid #dbeafe;
-  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-  box-shadow: 0 4px 16px rgba(0, 102, 204, 0.06);
-}
-
-.sector-box-featured .sector-box-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
-}
-
-.sector-box-featured .sector-box-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.sector-box-featured .sector-box-title {
-  font-size: 1.15rem;
-  margin-bottom: 6px;
-}
-
-.sector-box-featured .sector-box-tagline {
-  font-size: 0.82rem;
-  line-height: 1.4;
-  margin-bottom: 12px;
-}
-
-.sector-featured-badge {
-  position: absolute;
-  top: -10px;
-  right: 16px;
-  padding: 2px 9px;
-  background: var(--growth-green);
-  color: #ffffff;
-  font-family: var(--font-heading);
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(34, 177, 76, 0.35);
-}
-
 .sector-box-kpi-chip {
   margin-top: auto;
   display: inline-flex;
@@ -2189,10 +2126,6 @@ footer[id],
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--strategic-blue);
-}
-
-.sector-box-secondary {
-  padding: 16px 14px;
 }
 
 .sector-interactive-box:hover {
@@ -2296,12 +2229,6 @@ footer[id],
 
 .sector-interactive-box.is-active .sector-box-kpi-chip span {
   color: #ffffff !important;
-}
-
-.sector-interactive-box.is-active .sector-featured-badge {
-  background: #ffffff !important;
-  color: var(--strategic-blue-dark) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Painel Detalhado de Destaque do Setor Selecionado */

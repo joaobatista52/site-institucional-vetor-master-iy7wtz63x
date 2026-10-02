@@ -412,15 +412,45 @@ export default function Questionnaire() {
     setFiles((prev) => ({ ...prev, [group]: prev[group].filter((_, i) => i !== index) }))
   }
 
+  const isQuestionVisible = useCallback(
+    (question: Question): boolean => {
+      if (!question.condition) return true
+      const { questionId, value } = question.condition
+      const parentVal = (answers[questionId] ?? '').trim()
+      if (Array.isArray(value)) {
+        return value.includes(parentVal)
+      }
+      return parentVal === value
+    },
+    [answers],
+  )
+
   const isStepComplete = useCallback(
     (stepIndex: number): boolean => {
       if (stepIndex < sections.length) {
         const sec = sections[stepIndex]
         if (!sec) return false
         for (const question of sec.questions) {
-          const val = (answers[question.id] ?? '').trim()
-          if (question.required && val === '') {
-            return false
+          if (!isQuestionVisible(question)) continue
+          const rawVal = answers[question.id] ?? ''
+          if (question.type === 'checkbox') {
+            if (question.required) {
+              try {
+                const parsed = JSON.parse(rawVal)
+                if (!Array.isArray(parsed) || parsed.length === 0) return false
+              } catch {
+                const parts = rawVal
+                  .split(',')
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+                if (parts.length === 0) return false
+              }
+            }
+          } else {
+            const val = rawVal.trim()
+            if (question.required && val === '') {
+              return false
+            }
           }
         }
         return true

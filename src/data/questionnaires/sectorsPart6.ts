@@ -1,9 +1,10 @@
 import type { QuestionSection } from '../questionnaire'
 
-// Setor 11: Comércio Internacional (Trading Company) (Páginas 36 a 39 do PDF)
+// Setor 11: Comércio Internacional (Trading Company) — Questionários Consolidados 12 Setores V7.2 (30/09)
 // Nota Importante do PDF: O setor Comércio Internacional – Trading Company não segue o template numérico padrão dos demais setores.
 // Peculiaridades:
 // - Modalidade de atuação no bloco de identificação
+// - Seção 1 com perguntas trade_1_1 a trade_1_14 (inclui condicionais de repasse de incentivo ICMS e importação por encomenda)
 // - Seção 3 com 8 perguntas (3.1 a 3.8)
 // - Seção 6 com 10 perguntas (6.1 a 6.10)
 // - Seção 8 com 9 perguntas (8.1 a 8.9)
@@ -118,6 +119,68 @@ export const comercioInternacionalSections: QuestionSection[] = [
       {
         id: 'trade_1_8',
         label: '1.8 Possui certificações (OEA, ISO, RADAR ativo)?',
+        type: 'text',
+        required: true,
+      },
+      {
+        id: 'trade_1_9',
+        label: '1.9 A trading repassa parte dos ganhos de incentivo fiscal de ICMS ao cliente?',
+        type: 'yes-no',
+        required: true,
+      },
+      {
+        id: 'trade_1_9_politica',
+        label:
+          'Em caso afirmativo, descreva a política: critérios, percentuais e forma de repasse (ex.: redução do valor da NF de venda na Importação por Encomenda; diferença entre os incentivos e o valor a menor não cobrado do cliente na Importação por Conta e Ordem sem fee).',
+        type: 'textarea',
+        required: false,
+        condition: {
+          questionId: 'trade_1_9',
+          value: 'Sim',
+        },
+      },
+      {
+        id: 'trade_1_10',
+        label:
+          '1.10 Nas operações de Importação por Conta e Ordem, a NF de Simples Remessa é registrada como Receita Bruta (contábil ou gerencial)?',
+        type: 'yes-no',
+        required: true,
+      },
+      {
+        id: 'trade_1_11',
+        label:
+          '1.11 Nas operações de Importação por Conta e Ordem, apenas as NFs de Prestação de Serviços (fee) são registradas como Receita Bruta?',
+        type: 'yes-no',
+        required: true,
+      },
+      {
+        id: 'trade_1_12',
+        label:
+          '1.12 Nas operações de Importação por Encomenda, a NF de venda é registrada integralmente como Receita Bruta operacional?',
+        type: 'yes-no',
+        required: true,
+      },
+      {
+        id: 'trade_1_13',
+        label:
+          '1.13 O cliente da trading (adquirente) possui matriz e/ou filial no mesmo estado da trading onde o incentivo fiscal é aplicado (ex.: SC/ES)?',
+        type: 'yes-no',
+        required: true,
+      },
+      {
+        id: 'trade_1_13_encomenda',
+        label: 'Em caso negativo, as operações são estruturadas como Importação por Encomenda?',
+        type: 'yes-no',
+        required: false,
+        condition: {
+          questionId: 'trade_1_13',
+          value: 'Não',
+        },
+      },
+      {
+        id: 'trade_1_14',
+        label:
+          '1.14 Qual o Valor Bruto das operações de Importação por Conta e Ordem (conhecido no momento da emissão da NF de Simples Remessa)?',
         type: 'text',
         required: true,
       },

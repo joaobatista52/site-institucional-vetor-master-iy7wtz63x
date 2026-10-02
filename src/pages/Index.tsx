@@ -112,36 +112,6 @@ const allSectors: SectorItem[] = [
     icon: BriefcaseBusiness,
   },
   {
-    id: 'comercio-internacional',
-    name: 'Comércio Internacional - Trading Company',
-    tagline:
-      'Importação, Exportação, Trading, Logística, Planejamento Tributário/Fiscal, Câmbio e Trade Finance.',
-    description:
-      'Importação, Exportação, Logística, Câmbio, Trade Finance, Capital Intensivo, Exposição Cambial, Reestruturação e Planejamento Fiscal/Tributário, Marketing, Abertura e Estruturação de Novos Mercados, Gestão Operacional, Full Service.',
-    painPoint:
-      'Créditos tributários não aproveitados · fim do ICMS como produto · retenção de caixa no Split Payment · ciclo de caixa longo · exposição cambial · retrabalho aduaneiro · capital imobilizado em trânsito · bitributação no regime dual até 2033.',
-    solutionPillar:
-      'Diagnóstico Estratégico que revela créditos não aproveitados e capital imobilizado, e estrutura o caminho para liberar caixa e margem.',
-    unlock:
-      'A VETOR MASTER destrava a sua trading company pelo caixa que ficou preso sem ninguém notar: créditos tributários não aproveitados, capital imobilizado em trânsito e o impacto do Split Payment no seu ciclo. O Diagnóstico Estratégico mapeia a exposição cambial, o retrabalho aduaneiro e os efeitos do regime dual até 2033, e estrutura o caminho para liberar caixa e margem de forma determinística.',
-    icon: Globe2,
-  },
-  {
-    id: 'facilities',
-    name: 'Facilities',
-    tagline:
-      'Facilities Management, Limpeza e Conservação, Segurança Patrimonial, Manutenção Predial, Portaria/Recepção e Serviços Terceirizados.',
-    description:
-      'Facilities Management, Limpeza e Conservação, Segurança Patrimonial, Manutenção Predial, Portaria/Recepção e Serviços Terceirizados. Venda de mão de obra com margem apertada.',
-    painPoint:
-      'Contratos sem revisão · horas ociosas · retrabalho · turnover · aditivos não cobrados · margem por contrato · venda de mão de obra física (HH) enquanto as maiores vendem SLA.',
-    solutionPillar:
-      'Diagnóstico Estratégico que revela horas ociosas e contratos sem revisão, e estrutura o caminho para migrar de venda de horas para venda de resultado.',
-    unlock:
-      'A VETOR MASTER destrava a sua operação de facilities mostrando a margem que cada contrato esconde: horas ociosas, aditivos não cobrados e contratos sem revisão corroendo o resultado mês a mês. O Diagnóstico Estratégico mede a margem por contrato e estrutura o caminho para sair da venda de mão de obra física (HH) — como as maiores já fazem — para a venda de resultado com SLA.',
-    icon: Building2,
-  },
-  {
     id: 'industria',
     name: 'Indústria',
     tagline: 'Manufatura, Metalurgia, Alimentos, Químico, Têxtil e Plástico.',
@@ -156,8 +126,22 @@ const allSectors: SectorItem[] = [
     icon: Factory,
   },
   {
+    id: 'agronegocio',
+    name: 'Agronegócio',
+    tagline: 'Grãos, Pecuária, Cana, Café e Fruticultura.',
+    description:
+      'Grãos, Pecuária, Cana, Café e Fruticultura. Operação sazonal com decisões concentradas e janelas críticas.',
+    painPoint:
+      'Perda na colheita · custo por hectare · ociosidade da frota · janelas perdidas · quebra técnica.',
+    solutionPillar:
+      'Diagnóstico Estratégico que quantifica perdas e ociosidade, e estrutura decisões para não travar nas janelas críticas.',
+    unlock:
+      'A VETOR MASTER destrava o seu agronegócio nas decisões que não podem esperar a próxima safra: perdas na colheita, custo por hectare e janelas críticas que, perdidas, não voltam. O Diagnóstico Estratégico quantifica a quebra técnica e a ociosidade da frota e estrutura as decisões para que a operação não trave na janela — com o fundador deixando de decidir sozinho sob pressão.',
+    icon: Sprout,
+  },
+  {
     id: 'tecnologia',
-    name: 'Tech/Startups',
+    name: 'Tecnologia',
     tagline: 'SaaS, Fintech, Healthtech, Edtech e Marketplace.',
     description:
       'SaaS, Fintech, Healthtech, Edtech e Marketplace. Crescimento rápido com riscos de retenção e concentração de receita.',
@@ -185,7 +169,7 @@ const allSectors: SectorItem[] = [
   },
   {
     id: 'logistica',
-    name: 'Logística/Transporte',
+    name: 'Logística',
     tagline: 'Cargas, Passageiros, Distribuição e Armazenagem.',
     description:
       'Cargas, Passageiros, Distribuição e Armazenagem. Operação com custo sensível a frota, rotas e manutenção.',
@@ -210,22 +194,8 @@ const allSectors: SectorItem[] = [
     icon: GraduationCap,
   },
   {
-    id: 'agronegocio',
-    name: 'Agronegócio',
-    tagline: 'Grãos, Pecuária, Cana, Café e Fruticultura.',
-    description:
-      'Grãos, Pecuária, Cana, Café e Fruticultura. Operação sazonal com decisões concentradas e janelas críticas.',
-    painPoint:
-      'Perda na colheita · custo por hectare · ociosidade da frota · janelas perdidas · quebra técnica.',
-    solutionPillar:
-      'Diagnóstico Estratégico que quantifica perdas e ociosidade, e estrutura decisões para não travar nas janelas críticas.',
-    unlock:
-      'A VETOR MASTER destrava o seu agronegócio nas decisões que não podem esperar a próxima safra: perdas na colheita, custo por hectare e janelas críticas que, perdidas, não voltam. O Diagnóstico Estratégico quantifica a quebra técnica e a ociosidade da frota e estrutura as decisões para que a operação não trave na janela — com o fundador deixando de decidir sozinho sob pressão.',
-    icon: Sprout,
-  },
-  {
     id: 'academias',
-    name: 'Academias de Ginástica',
+    name: 'Academias',
     tagline: 'Musculação, Estúdio, CrossFit, Pilates e Natação.',
     description:
       'Musculação, Estúdio, CrossFit, Pilates e Natação. Receita dependente de retenção e ocupação por horário.',
@@ -235,6 +205,36 @@ const allSectors: SectorItem[] = [
     unlock:
       'A VETOR MASTER destrava a sua academia onde o modelo de mensalidade esconde o problema: evasão silenciosa, capacidade ociosa e horários mortos pagando estrutura cheia. O Diagnóstico Estratégico mapeia a evasão e o CAC por aluno, mede a ocupação por horário e estrutura o caminho para reter alunos e ocupar a capacidade que você já tem — antes de investir mais em aquisição.',
     icon: Dumbbell,
+  },
+  {
+    id: 'comercio-internacional',
+    name: 'Comércio Internacional',
+    tagline:
+      'Importação, Exportação, Trading, Logística, Planejamento Tributário/Fiscal, Câmbio e Trade Finance.',
+    description:
+      'Importação, Exportação, Logística, Câmbio, Trade Finance, Capital Intensivo, Exposição Cambial, Reestruturação e Planejamento Fiscal/Tributário, Marketing, Abertura e Estruturação de Novos Mercados, Gestão Operacional, Full Service.',
+    painPoint:
+      'Créditos tributários não aproveitados · fim do ICMS como produto · retenção de caixa no Split Payment · ciclo de caixa longo · exposição cambial · retrabalho aduaneiro · capital imobilizado em trânsito · bitributação no regime dual até 2033.',
+    solutionPillar:
+      'Diagnóstico Estratégico que revela créditos não aproveitados e capital imobilizado, e estrutura o caminho para liberar caixa e margem.',
+    unlock:
+      'A VETOR MASTER destrava a sua trading company pelo caixa que ficou preso sem ninguém notar: créditos tributários não aproveitados, capital imobilizado em trânsito e o impacto do Split Payment no seu ciclo. O Diagnóstico Estratégico mapeia a exposição cambial, o retrabalho aduaneiro e os efeitos do regime dual até 2033, e estrutura o caminho para liberar caixa e margem de forma determinística.',
+    icon: Globe2,
+  },
+  {
+    id: 'facilities',
+    name: 'Facilities',
+    tagline:
+      'Facilities Management, Limpeza e Conservação, Segurança Patrimonial, Manutenção Predial, Portaria/Recepção e Serviços Terceirizados.',
+    description:
+      'Facilities Management, Limpeza e Conservação, Segurança Patrimonial, Manutenção Predial, Portaria/Recepção e Serviços Terceirizados. Venda de mão de obra com margem apertada.',
+    painPoint:
+      'Contratos sem revisão · horas ociosas · retrabalho · turnover · aditivos não cobrados · margem por contrato · venda de mão de obra física (HH) enquanto as maiores vendem SLA.',
+    solutionPillar:
+      'Diagnóstico Estratégico que revela horas ociosas e contratos sem revisão, e estrutura o caminho para migrar de venda de horas para venda de resultado.',
+    unlock:
+      'A VETOR MASTER destrava a sua operação de facilities mostrando a margem que cada contrato esconde: horas ociosas, aditivos não cobrados e contratos sem revisão corroendo o resultado mês a mês. O Diagnóstico Estratégico mede a margem por contrato e estrutura o caminho para sair da venda de mão de obra física (HH) — como as maiores já fazem — para a venda de resultado com SLA.',
+    icon: Building2,
   },
 ]
 
@@ -294,7 +294,8 @@ const realCases = [
     sector: 'Saúde',
     pain: 'Escala e governança para expansão',
     intervention: 'M&A/Hospital Dia + estruturação estratégica e operacional',
-    result: '−70% nas glosas; +40% taxa de ocupação; expansão via Hospital Dia; ampliação e M&A.',
+    result:
+      '-70% nas glosas/ +40% na taxa de ocupação; Projeto de expansão com Hospital Dia; Ampliação de Unidades e M&A',
     tag: '−70% glosas',
   },
   {
@@ -939,19 +940,14 @@ export default function Index() {
             description="O mesmo rigor determinístico, aplicado aos indicadores, gargalos e alavancas que definem os 12 principais setores da economia brasileira. Clique em um setor para explorar a rota estratégica."
           />
 
-          {/* Grade de Setores: Destaque Top 3 (Saúde, Varejo, Serviços) + Grade Secundária (9 setores) */}
+          {/* Grade de Setores: Grade Única Uniforme com os 12 Setores */}
           <div className="sectors-structure-wrap reveal">
-            {/* Top 3 Setores de Destaque */}
-            <div className="sectors-featured-heading">
-              <span className="sectors-group-label">PRINCIPAIS SETORES DE ATUAÇÃO</span>
-            </div>
-
             <div
-              className="sectors-featured-grid"
+              className="sectors-unified-grid"
               role="tablist"
-              aria-label="Principais setores de destaque VETOR MASTER"
+              aria-label="12 setores atendidos pela VETOR MASTER"
             >
-              {allSectors.slice(0, 3).map((sector, index) => {
+              {allSectors.map((sector, index) => {
                 const SectorIcon = sector.icon
                 const isActive = sector.id === selectedSectorId
                 return (
@@ -963,11 +959,8 @@ export default function Index() {
                     aria-selected={isActive}
                     aria-controls={`sector-panel-${sector.id}`}
                     onClick={() => setSelectedSectorId(sector.id)}
-                    className={`sector-interactive-box sector-box-featured ${
-                      isActive ? 'is-active' : ''
-                    }`}
+                    className={`sector-interactive-box ${isActive ? 'is-active' : ''}`}
                   >
-                    <div className="sector-featured-badge">DESTAQUE 0{index + 1}</div>
                     <div className="sector-box-top">
                       <div className="sector-box-icon">
                         <SectorIcon aria-hidden="true" />
@@ -981,48 +974,6 @@ export default function Index() {
                     <div className="sector-box-kpi-chip">
                       <span>{kpiPromise}</span>
                     </div>
-                  </button>
-                )
-              })}
-            </div>
-
-            {/* Grade Secundária: Demais 9 Setores Estruturados */}
-            <div className="sectors-secondary-heading">
-              <span className="sectors-group-label">DEMAIS SETORES ATENDIDOS</span>
-            </div>
-
-            <div
-              className="sectors-secondary-grid"
-              role="tablist"
-              aria-label="Demais setores atendidos pela VETOR MASTER"
-            >
-              {allSectors.slice(3).map((sector, index) => {
-                const SectorIcon = sector.icon
-                const isActive = sector.id === selectedSectorId
-                const globalIndex = index + 4
-                return (
-                  <button
-                    type="button"
-                    key={sector.id}
-                    role="tab"
-                    id={`sector-tab-${sector.id}`}
-                    aria-selected={isActive}
-                    aria-controls={`sector-panel-${sector.id}`}
-                    onClick={() => setSelectedSectorId(sector.id)}
-                    className={`sector-interactive-box sector-box-secondary ${
-                      isActive ? 'is-active' : ''
-                    }`}
-                  >
-                    <div className="sector-box-top">
-                      <div className="sector-box-icon">
-                        <SectorIcon aria-hidden="true" />
-                      </div>
-                      <span className="sector-box-number">
-                        {String(globalIndex).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <strong className="sector-box-title">{sector.name}</strong>
-                    <span className="sector-box-tagline">{sector.tagline}</span>
                   </button>
                 )
               })}

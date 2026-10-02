@@ -7,11 +7,16 @@
 // As listas específicas por setor (Comércio Internacional e Facilities) estão
 // em ./questionnaireSectors, expostas via getQuestionnaireSections().
 
-export type QuestionType = 'text' | 'textarea' | 'select' | 'yes-no' // Sim / Não / Parcialmente
+export type QuestionType = 'text' | 'textarea' | 'select' | 'yes-no' | 'checkbox' // Sim / Não / Parcialmente; checkbox múltipla escolha
 
 export interface QuestionOption {
   value: string
   label: string
+}
+
+export interface QuestionCondition {
+  questionId: string
+  value: string | string[]
 }
 
 export interface Question {
@@ -22,6 +27,7 @@ export interface Question {
   options?: QuestionOption[]
   placeholder?: string
   helpText?: string
+  condition?: QuestionCondition
 }
 
 export interface QuestionSection {
