@@ -46,21 +46,14 @@ export default function Sectors() {
 
       <section className="section sectors-page-body">
         <div className="site-container">
-          {/* Estrutura de Destaque idêntica à da Landing Page:
-              - Top 3 Setores de Destaque com badges e kpi-chip
-              - Demais 9 Setores Atendidos
-              - Ambos com seleção interativa que abre o painel completo de detalhes */}
+          {/* Grade Uniforme com os 12 Setores na Sequência Canônica (sem badges, sem destaque) */}
           <div className="sectors-structure-wrap">
-            <div className="sectors-featured-heading">
-              <span className="sectors-group-label">PRINCIPAIS SETORES DE ATUAÇÃO</span>
-            </div>
-
             <div
-              className="sectors-featured-grid"
+              className="sectors-unified-grid"
               role="tablist"
-              aria-label="Principais setores de destaque VETOR MASTER"
+              aria-label="12 setores atendidos pela VETOR MASTER"
             >
-              {leadSectors.slice(0, 3).map((sector, index) => {
+              {leadSectors.map((sector, index) => {
                 const SectorIcon = sector.icon
                 const isActive = sector.id === selectedSectorId
                 return (
@@ -72,11 +65,8 @@ export default function Sectors() {
                     aria-selected={isActive}
                     aria-controls={`sector-panel-${sector.id}`}
                     onClick={() => handleSelectSector(sector.id)}
-                    className={`sector-interactive-box sector-box-featured ${
-                      isActive ? 'is-active' : ''
-                    }`}
+                    className={`sector-interactive-box ${isActive ? 'is-active' : ''}`}
                   >
-                    <div className="sector-featured-badge">DESTAQUE 0{index + 1}</div>
                     <div className="sector-box-top">
                       <div className="sector-box-icon">
                         <SectorIcon aria-hidden="true" />
@@ -90,47 +80,6 @@ export default function Sectors() {
                     <div className="sector-box-kpi-chip">
                       <span>{KPI_PROMISE}</span>
                     </div>
-                  </button>
-                )
-              })}
-            </div>
-
-            <div className="sectors-secondary-heading">
-              <span className="sectors-group-label">DEMAIS SETORES ATENDIDOS</span>
-            </div>
-
-            <div
-              className="sectors-secondary-grid"
-              role="tablist"
-              aria-label="Demais setores atendidos pela VETOR MASTER"
-            >
-              {leadSectors.slice(3).map((sector, index) => {
-                const SectorIcon = sector.icon
-                const isActive = sector.id === selectedSectorId
-                const globalIndex = index + 4
-                return (
-                  <button
-                    type="button"
-                    key={sector.id}
-                    role="tab"
-                    id={`sector-tab-${sector.id}`}
-                    aria-selected={isActive}
-                    aria-controls={`sector-panel-${sector.id}`}
-                    onClick={() => handleSelectSector(sector.id)}
-                    className={`sector-interactive-box sector-box-secondary ${
-                      isActive ? 'is-active' : ''
-                    }`}
-                  >
-                    <div className="sector-box-top">
-                      <div className="sector-box-icon">
-                        <SectorIcon aria-hidden="true" />
-                      </div>
-                      <span className="sector-box-number">
-                        {String(globalIndex).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <strong className="sector-box-title">{sector.name}</strong>
-                    <span className="sector-box-tagline">{sector.tagline}</span>
                   </button>
                 )
               })}

@@ -54,26 +54,15 @@ export function SectorModal({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
           {leadSectors.map((sector, index) => {
             const Icon = sector.icon
-            const isFeatured = index < 3
             return (
               <button
                 key={sector.id}
                 type="button"
                 onClick={() => handleSelect(sector.id)}
-                className={`group relative flex flex-col items-start text-left p-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${
-                  isFeatured
-                    ? 'border-[#0066CC] bg-[#F5F9FF] shadow-sm hover:border-[#0066CC] hover:bg-[#EAF3FD] hover:shadow-md'
-                    : 'border-slate-200 bg-white hover:border-[#0066CC]/60 hover:bg-slate-50 hover:shadow-sm'
-                }`}
+                className="group relative flex flex-col items-start text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:border-[#0066CC]/60 hover:bg-slate-50 hover:shadow-sm transition-all duration-200 cursor-pointer"
               >
                 <div className="flex items-center justify-between w-full mb-2">
-                  <div
-                    className={`p-2 rounded-lg ${
-                      isFeatured
-                        ? 'bg-[#EAF3FD] text-[#0066CC] border border-[#0066CC]/20'
-                        : 'bg-slate-100 text-[#0066CC] group-hover:bg-[#0066CC] group-hover:text-white transition-colors'
-                    }`}
-                  >
+                  <div className="p-2 rounded-lg bg-slate-100 text-[#0066CC] group-hover:bg-[#0066CC] group-hover:text-white transition-colors">
                     <Icon className="w-4 h-4" aria-hidden="true" />
                   </div>
                   <span className="text-[11px] font-mono font-bold text-slate-400 group-hover:text-[#0066CC] transition-colors">
@@ -81,13 +70,7 @@ export function SectorModal({
                   </span>
                 </div>
 
-                <strong
-                  className={`text-sm font-bold leading-snug transition-colors ${
-                    isFeatured
-                      ? 'text-[#333333] font-extrabold group-hover:text-[#0066CC]'
-                      : 'text-slate-900 group-hover:text-[#0066CC]'
-                  }`}
-                >
+                <strong className="text-sm font-bold leading-snug transition-colors text-slate-900 group-hover:text-[#0066CC]">
                   {sector.name}
                 </strong>
                 <p className="text-[11px] text-slate-600 line-clamp-2 mt-1 leading-snug">
