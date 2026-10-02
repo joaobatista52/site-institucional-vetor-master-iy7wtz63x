@@ -211,8 +211,9 @@ function Footer() {
         <div>
           <h2>COBERTURA REGIONAL</h2>
           <p>
-            Atendimento presencial prioritário em São Paulo e Distrito Federal — válido para o plano
-            Bespoke/CaaS. Demais regiões do Sudeste e Sul: sob consulta — retorno em até 5 dias.
+            Atendimento presencial prioritário em São Paulo e Distrito Federal — exclusivo para
+            clientes do plano Bespoke/CaaS. Demais regiões do Sudeste e Sul: sob consulta — retorno
+            em até 5 dias.
           </p>
         </div>
       </div>
