@@ -21,7 +21,10 @@ export function extractFieldErrors(error: unknown): FieldErrors {
 }
 
 export function isAuthError(error: unknown): boolean {
-  return error instanceof ClientResponseError && (error.status === 401 || error.status === 403)
+  if (error instanceof ClientResponseError) {
+    return error.status === 401 || error.status === 403
+  }
+  return false
 }
 
 export function getErrorMessage(error: unknown): string {
