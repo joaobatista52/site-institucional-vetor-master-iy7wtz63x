@@ -2264,6 +2264,7 @@ footer[id],
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #38bdf8;
+  max-width: 100%;
 }
 
 .sector-panel-badge svg {
@@ -2276,6 +2277,7 @@ footer[id],
   display: flex;
   align-items: center;
   gap: 12px;
+  max-width: 100%;
 }
 
 .kpi-label {
@@ -2376,10 +2378,12 @@ footer[id],
 .sector-panel-action {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .sector-action-box {
   width: 100%;
+  min-width: 0;
   padding: 26px 24px;
   border-radius: 12px;
   background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
@@ -3266,10 +3270,131 @@ footer[id],
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .sector-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 18px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-badge {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-size: 0.74rem;
+  }
+
+  .sector-panel-badge svg {
+    flex-shrink: 0;
+  }
+
+  .sector-panel-kpi {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-kpi .kpi-value {
+    display: inline-block;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
+
   .sector-panel-body {
     grid-template-columns: 1fr;
     gap: 28px;
     padding: 24px 20px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-main h3 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-panel-desc {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-subcard {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-subcard .subcard-title {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+  }
+
+  .sector-subcard .subcard-title svg {
+    flex-shrink: 0;
+  }
+
+  .sector-panel-action {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-action-box {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-action-box .conversion-button {
+    white-space: normal;
+    height: auto;
+    min-height: 48px;
+    padding: 12px 14px;
+    line-height: 1.3;
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .sector-action-box .conversion-button a {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    gap: 6px;
+    line-height: 1.3;
+    width: 100%;
+  }
+
+  .sector-action-box .conversion-button svg {
+    flex-shrink: 0;
+    margin-left: 0;
   }
 
   .contrast-card-vetor {
@@ -3435,15 +3560,180 @@ footer[id],
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    padding: 14px 18px;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-badge {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .sector-panel-badge svg {
+    flex-shrink: 0;
+  }
+
+  .sector-panel-badge span {
+    min-width: 0;
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-panel-kpi {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-kpi .kpi-value {
+    display: inline-block;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    padding: 4px 8px;
+  }
+
+  .sector-panel-body {
+    padding: 20px 14px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-panel-main h3 {
+    font-size: 1.45rem;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-panel-desc {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-size: 0.95rem;
   }
 
   .sector-panel-cards {
     grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-subcard {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 14px 14px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-subcard .subcard-title {
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+  }
+
+  .sector-subcard .subcard-title svg {
+    flex-shrink: 0;
+  }
+
+  .sector-subcard p {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-panel-action {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sector-action-box {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 20px 14px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-action-box h4 {
+    font-size: 1.05rem;
+    line-height: 1.3;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-action-box p {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sector-action-box .conversion-button {
+    white-space: normal;
+    height: auto;
+    min-height: 48px;
+    padding: 12px 14px;
+    line-height: 1.3;
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .sector-action-box .conversion-button a {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    gap: 6px;
+    line-height: 1.3;
+    width: 100%;
+  }
+
+  .sector-action-box .conversion-button svg {
+    flex-shrink: 0;
+    margin-left: 0;
   }
 
   .sector-detail-panel {
     scroll-margin-top: 76px;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .sector-cta {

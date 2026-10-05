@@ -67,10 +67,17 @@ export function SectorDetailPanel({ sector, index }: SectorDetailPanelProps) {
               {sector.unlock ||
                 `A VETOR MASTER destrava a sua operação de ${sector.name} onde a margem escapa. Responda o Questionário Estratégico e receba o diagnóstico completo.`}
             </p>
-            <Button className="conversion-button w-full" size="lg" asChild>
-              <Link to={`/questionario/${sector.id}`}>
-                Diagnóstico para {sector.name}
-                <ArrowRight aria-hidden="true" />
+            <Button
+              className="conversion-button w-full h-auto min-h-[48px] py-3 px-4 whitespace-normal"
+              size="lg"
+              asChild
+            >
+              <Link
+                to={`/questionario/${sector.id}`}
+                className="inline-flex items-center justify-center flex-wrap gap-2 text-center whitespace-normal break-words max-w-full leading-snug"
+              >
+                <span>Diagnóstico para {sector.name}</span>
+                <ArrowRight aria-hidden="true" className="shrink-0 ml-0" />
               </Link>
             </Button>
           </div>
