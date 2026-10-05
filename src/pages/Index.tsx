@@ -500,8 +500,39 @@ export default function Index() {
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanData | null>(null)
   const [planModalOpen, setPlanModalOpen] = useState(false)
   const [saasWaitlistOpen, setSaasWaitlistOpen] = useState(false)
+  const shouldScrollSectorDetailRef = useRef(false)
 
   const activeSector = allSectors.find((s) => s.id === selectedSectorId) || allSectors[0]
+
+  useEffect(() => {
+    if (!shouldScrollSectorDetailRef.current) return
+    shouldScrollSectorDetailRef.current = false
+
+    const panel =
+      document.getElementById(`sector-panel-${selectedSectorId}`) ||
+      document.getElementById('sector-detail-panel') ||
+      document.querySelector('.sector-detail-panel')
+
+    if (panel) {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [selectedSectorId])
+
+  function handleSelectSector(sectorId: string) {
+    shouldScrollSectorDetailRef.current = true
+    if (sectorId === selectedSectorId) {
+      const panel =
+        document.getElementById(`sector-panel-${sectorId}`) ||
+        document.getElementById('sector-detail-panel') ||
+        document.querySelector('.sector-detail-panel')
+      if (panel) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+      shouldScrollSectorDetailRef.current = false
+    } else {
+      setSelectedSectorId(sectorId)
+    }
+  }
 
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>('.reveal')
@@ -958,7 +989,7 @@ export default function Index() {
                     id={`sector-tab-${sector.id}`}
                     aria-selected={isActive}
                     aria-controls={`sector-panel-${sector.id}`}
-                    onClick={() => setSelectedSectorId(sector.id)}
+                    onClick={() => handleSelectSector(sector.id)}
                     className={`sector-interactive-box ${isActive ? 'is-active' : ''}`}
                   >
                     <div className="sector-box-top">
@@ -985,6 +1016,7 @@ export default function Index() {
             <div
               className="sector-detail-panel reveal is-visible"
               id={`sector-panel-${activeSector.id}`}
+              data-panel-id="sector-detail-panel"
               role="tabpanel"
               aria-labelledby={`sector-tab-${activeSector.id}`}
             >

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { leadSectors } from '@/data/sectors'
 import { SectorDetailPanel } from '@/components/SectorDetailPanel'
@@ -10,17 +10,38 @@ const KPI_PROMISE = 'Diagnóstico em 72h · Devolutiva de 45 min'
 export default function Sectors() {
   const [selectedSectorId, setSelectedSectorId] = useState<string>('saude')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const shouldScrollOnSelectRef = useRef<boolean>(false)
 
   const activeSector = leadSectors.find((s) => s.id === selectedSectorId) || leadSectors[0]
 
   const activeIndex = leadSectors.findIndex((s) => s.id === activeSector.id)
 
-  function handleSelectSector(sectorId: string) {
-    setSelectedSectorId(sectorId)
-    // Rolagem suave até o painel de detalhes para garantir boa experiência no mobile e desktop
-    const panel = document.getElementById(`sector-panel-${sectorId}`)
+  useEffect(() => {
+    if (!shouldScrollOnSelectRef.current) return
+    shouldScrollOnSelectRef.current = false
+
+    const panel =
+      document.getElementById(`sector-panel-${selectedSectorId}`) ||
+      document.querySelector('.sector-detail-panel')
+
     if (panel) {
-      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [selectedSectorId])
+
+  function handleSelectSector(sectorId: string) {
+    shouldScrollOnSelectRef.current = true
+    if (sectorId === selectedSectorId) {
+      // Se clicou no setor já ativo, rola diretamente para o painel aberto
+      const panel =
+        document.getElementById(`sector-panel-${sectorId}`) ||
+        document.querySelector('.sector-detail-panel')
+      if (panel) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+      shouldScrollOnSelectRef.current = false
+    } else {
+      setSelectedSectorId(sectorId)
     }
   }
 

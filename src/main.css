@@ -2242,6 +2242,7 @@ footer[id],
   overflow: hidden;
   margin-bottom: 32px;
   animation: fadeIn 350ms ease;
+  scroll-margin-top: 88px;
 }
 
 .sector-panel-header {
@@ -3439,6 +3440,10 @@ footer[id],
 
   .sector-panel-cards {
     grid-template-columns: 1fr;
+  }
+
+  .sector-detail-panel {
+    scroll-margin-top: 76px;
   }
 
   .sector-cta {
