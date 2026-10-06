@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import pb from '@/lib/pocketbase/client'
 import { leadSectors } from '@/data/sectors'
 import { revenueRanges } from '@/data/questionnaireBase'
+import { saveChosenPlan } from '@/lib/leadSession'
+import { loadQuestionnaireDraft, saveQuestionnaireDraft } from '@/lib/questionnaireDraft'
 import {
   Dialog,
   DialogContent,
@@ -34,6 +37,7 @@ import {
   AlertCircle,
   Award,
   Layers,
+  HelpCircle,
 } from 'lucide-react'
 
 interface SaaSWaitlistModalProps {
@@ -61,6 +65,7 @@ interface FormErrors {
 }
 
 export function SaaSWaitlistModal({ open, onOpenChange, onExploreMaas }: SaaSWaitlistModalProps) {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState<FormData>({
     nome: '',
     empresa: '',
@@ -212,6 +217,77 @@ export function SaaSWaitlistModal({ open, onOpenChange, onExploreMaas }: SaaSWai
     }
   }
 
+  const handleStartQuestionnaire = () => {
+    const targetSectorId = formData.setorId || 'saude'
+
+    // Pré-preencher rascunho com os dados já informados pelo lead para economizar tempo
+    try {
+      const existingDraft = loadQuestionnaireDraft(targetSectorId)
+      const existingCadastro = existingDraft?.cadastro || {
+        nomeCompleto: '',
+        empresa: '',
+        email: '',
+        whatsapp: '',
+      }
+
+      // Prefixos de campos das etapas iniciais conforme o setor
+      const sectorPrefixMap: Record<string, string> = {
+        saude: 'saude',
+        varejo: 'varejo',
+        servicos: 'servicos',
+        comercio_internacional: 'trade',
+        facilities: 'fac',
+        industria: 'industria',
+        tecnologia: 'tech',
+        construcao: 'const',
+        logistica: 'log',
+        educacao: 'edu',
+        agronegocio: 'agro',
+        academias: 'acad',
+      }
+      const prefix = sectorPrefixMap[targetSectorId]
+
+      const mergedAnswers = { ...(existingDraft?.answers || {}) }
+      if (prefix) {
+        if (!mergedAnswers[`${prefix}_razaoSocial`] && formData.empresa) {
+          mergedAnswers[`${prefix}_razaoSocial`] = formData.empresa
+        }
+        if (!mergedAnswers[`${prefix}_respondente`] && formData.nome) {
+          mergedAnswers[`${prefix}_respondente`] = formData.nome
+        }
+        if (!mergedAnswers[`${prefix}_1_1`] && formData.faturamento) {
+          mergedAnswers[`${prefix}_1_1`] = formData.faturamento
+        }
+      }
+
+      saveQuestionnaireDraft({
+        sectorId: targetSectorId,
+        step: existingDraft?.step ?? 0,
+        highestReachedStep: existingDraft?.highestReachedStep ?? 0,
+        answers: mergedAnswers,
+        cadastro: {
+          nomeCompleto: existingCadastro.nomeCompleto || formData.nome.trim(),
+          empresa: existingCadastro.empresa || formData.empresa.trim(),
+          email: existingCadastro.email || formData.email.trim().toLowerCase(),
+          whatsapp: existingCadastro.whatsapp || formData.whatsapp.trim(),
+        },
+        autorizacaoDevolutiva: existingDraft?.autorizacaoDevolutiva || 'Sim, autorizo',
+        formatoInteresse: existingDraft?.formatoInteresse || 'Híbrido',
+        responsavelDocumentos:
+          existingDraft?.responsavelDocumentos || formData.nome.trim() || 'Diretoria / Gestão',
+        documentosOpcao: existingDraft?.documentosOpcao || '',
+      })
+
+      // Marcar contexto de Lista de Espera SaaS para classificação consistente
+      saveChosenPlan('Lista de Espera SaaS')
+    } catch (err) {
+      console.warn('Aviso ao preparar rascunho do questionário:', err)
+    }
+
+    handleModalClose(false)
+    navigate(`/questionario/${targetSectorId}`)
+  }
+
   return (
     <Dialog open={open} onOpenChange={handleModalClose}>
       <DialogContent className="max-w-xl max-h-[92vh] overflow-y-auto p-0 gap-0 bg-[#FBFDFF] border-[#0066CC]/20 text-[#333333] shadow-2xl">
@@ -295,26 +371,57 @@ export function SaaSWaitlistModal({ open, onOpenChange, onExploreMaas }: SaaSWai
               </div>
             </div>
 
-            {/* Caixa de Sugestão do MaaS Híbrido */}
-            <div className="bg-gradient-to-r from-blue-50/70 to-emerald-50/50 border border-[#0066CC]/20 rounded-xl p-4 sm:p-5">
+            {/* Bloco 2: MaaS Híbrido */}
+            <div className="bg-gradient-to-r from-blue-50/80 to-blue-50/30 border border-[#0066CC]/25 rounded-xl p-4 sm:p-5">
               <div className="flex items-start gap-3">
-                <Layers className="w-5 h-5 text-[#0066CC] shrink-0 mt-0.5" />
+                <div className="p-2 rounded-lg bg-[#0066CC]/10 text-[#0066CC] shrink-0 mt-0.5">
+                  <Layers className="w-5 h-5" />
+                </div>
                 <div className="space-y-2 flex-1">
-                  <h4 className="text-sm font-bold text-gray-900">
-                    Precisa de direção executiva e diagnóstico imediato?
+                  <h4 className="text-sm sm:text-base font-bold text-gray-900">
+                    A inteligência executiva já está disponível hoje
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                    Enquanto o SaaS é preparado, o <strong>MaaS Híbrido (R$ 3.290/mês)</strong> já
-                    está ativo com diagnósticos estratégicos determinísticos em até 72h e supervisão
-                    direta de especialistas para destravar a sua empresa.
+                    Enquanto a sua vaga no SaaS não se abre, o Diagnóstico Estratégico completo já
+                    pode estar em suas mãos. O MaaS Híbrido une o algoritmo determinístico à
+                    supervisão executiva de C-level — com devolutiva de 45 minutos.
                   </p>
-                  <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+                  <div className="pt-1.5">
                     <Button
                       type="button"
                       onClick={handleNavigateToSolutions}
-                      className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs font-semibold h-9 shadow-sm"
+                      className="bg-[#0066CC] hover:bg-[#0055b3] text-white text-xs font-semibold h-9 px-4 shadow-sm"
                     >
                       Conhecer o MaaS Híbrido
+                      <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bloco 3: Questionário Estratégico do Setor Escolhido */}
+            <div className="bg-gradient-to-r from-emerald-50/80 to-emerald-50/30 border border-[#22B14C]/30 rounded-xl p-4 sm:p-5">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-[#22B14C]/10 text-[#22B14C] shrink-0 mt-0.5">
+                  <HelpCircle className="w-5 h-5" />
+                </div>
+                <div className="space-y-2 flex-1">
+                  <h4 className="text-sm sm:text-base font-bold text-gray-900">
+                    Quer que conheçamos melhor o contexto da sua empresa?
+                  </h4>
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                    Responda o Questionário Estratégico do seu setor. Leva poucos minutos, é sem
+                    compromisso e nos ajuda a entender o momento da sua empresa — enquanto sua
+                    posição na Lista de Prioridade permanece exatamente a mesma.
+                  </p>
+                  <div className="pt-1.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <Button
+                      type="button"
+                      onClick={handleStartQuestionnaire}
+                      className="bg-[#22B14C] hover:bg-[#1ea043] text-white text-xs font-semibold h-9 px-4 shadow-sm"
+                    >
+                      Responder o questionário do meu setor
                       <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                     </Button>
                     <Button
