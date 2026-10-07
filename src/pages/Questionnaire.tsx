@@ -1725,21 +1725,34 @@ export default function Questionnaire() {
                     </Button>
                   </div>
                 ) : (
-                  <Button
-                    className="conversion-button"
-                    onClick={handleSubmit}
-                    disabled={submitting}
-                  >
-                    {submitting ? (
-                      <>
-                        <Loader2 className="wizard-spinner" aria-hidden="true" /> Enviando…
-                      </>
-                    ) : (
-                      <>
-                        Enviar questionário <Send aria-hidden="true" />
-                      </>
-                    )}
-                  </Button>
+                  <div className="flex flex-col items-end gap-2">
+                    <Button
+                      className="conversion-button"
+                      onClick={handleSubmit}
+                      disabled={submitting}
+                    >
+                      {submitting ? (
+                        <>
+                          <Loader2 className="wizard-spinner" aria-hidden="true" /> Enviando…
+                        </>
+                      ) : (
+                        <>
+                          Enviar questionário <Send aria-hidden="true" />
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-gray-500 text-right">
+                      Ao enviar, você concorda com nossa{' '}
+                      <Link
+                        to="/privacidade"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#0066CC] underline hover:text-[#0052a3]"
+                      >
+                        Política de Privacidade
+                      </Link>
+                    </p>
+                  </div>
                 ))}
             </footer>
           </div>

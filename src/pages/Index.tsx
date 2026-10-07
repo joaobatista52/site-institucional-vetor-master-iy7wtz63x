@@ -367,14 +367,49 @@ const faqItems = [
       'O Vetor Master é desenhado especificamente para PMEs brasileiras com faturamento anual de R$ 400 mil a R$ 150 milhões, com foco em destravar a sobrecarga decisória do fundador e destravar o crescimento sustentável em 12 setores da economia.',
   },
   {
+    question: 'Meu setor não está na lista. Vocês atendem?',
+    answer:
+      'O questionário estratégico está disponível hoje para 12 setores da economia, de Saúde a Academias de Ginástica. Se o seu segmento não está na grade, sua empresa ainda pode ser atendida: pelo plano Bespoke/CaaS, o diagnóstico é desenhado sob medida para o seu contexto. Fale conosco pelo e-mail contato.comercial@vetormaster.com.br e avaliaremos o seu caso.',
+  },
+  {
     question: 'Qual é o investimento inicial?',
     answer:
       'As soluções partem de R$ 1.190/mês no modelo SaaS, com opções híbridas (MaaS Híbrido a R$ 3.290/mês) e personalizadas (Bespoke/CaaS a R$ 15.750/mês) conforme a maturidade e a complexidade da sua operação.',
   },
   {
+    question: 'Como funciona a Lista de Prioridade do SaaS?',
+    answer:
+      'O SaaS está em fase final de preparação e as vagas iniciais são limitadas. Ao se inscrever na Lista de Prioridade, você garante sua posição na ordem de convocação e, como membro fundador, condições especiais no lançamento. Não há compromisso: sua inscrição apenas reserva o lugar. Quando sua vaga abrir, avisaremos pelo e-mail cadastrado — e, se quiser antecipar o valor da inteligência executiva, o MaaS Híbrido já está disponível hoje.',
+  },
+  {
+    question: 'Preciso de fidelidade? Posso cancelar?',
+    answer:
+      'No SaaS e no MaaS Híbrido, não há fidelidade: os planos são mensais e você pode cancelar a qualquer momento, sem multa — a decisão de continuar deve nascer do valor entregue, não de cláusula de retenção. No Bespoke/CaaS, o período mínimo é de 3 meses: os planos de ação envolvem objetivos e problemas que demandam mais tempo para entrega (6 a 12 meses, em geral), e esse ciclo mínimo assegura a remuneração adequada do diagnóstico e do plano de ação elaborado.',
+  },
+  {
+    question: 'O que está incluído no acompanhamento dos planos?',
+    answer:
+      'Depende do formato. No MaaS Híbrido, o algoritmo determinístico gera o diagnóstico e a supervisão executiva de C-level valida e orienta a aplicação — incluindo a devolutiva de 45 minutos. No Bespoke/CaaS, o acompanhamento é personalizado: profundidade maior na análise, desdobramento do plano de ação com a sua equipe e presença executiva contínua ao longo do ciclo contratado.',
+  },
+  {
+    question: 'Qual plano é o ideal para a minha empresa?',
+    answer:
+      'Como regra prática: se você precisa de monitoramento contínuo e sua operação é madura o bastante para aplicar as recomendações internamente, o SaaS (a partir de R$ 1.190/mês) é o ponto de entrada. Se você quer o diagnóstico completo com supervisão executiva de C-level conduzindo a leitura, o MaaS Híbrido (R$ 3.290/mês). Se o momento pede profundidade máxima — turnaround, expansão, reestruturação —, o Bespoke/CaaS (R$ 15.750/mês). Na dúvida, comece pelo questionário estratégico do seu setor: ele nos dá o contexto para recomendar o formato certo, sem compromisso.',
+  },
+  {
     question: 'Como o Vetor Master se compara a uma Big Four ou a uma IA genérica?',
     answer:
       'As Big Four são precisas, mas custam dezenas de milhares de reais e exigem meses de consultoria. As IAs genéricas são rápidas e baratas, porém superficiais e alucinam sem entender o contexto das PMEs brasileiras. O Vetor Master é o meio inteligente: rigor executivo determinístico de C-Level, entrega em 72h, zero alucinação e preço acessível de software.',
+  },
+  {
+    question: 'Quem conduz a devolutiva de 45 minutos?',
+    answer:
+      'Um executivo sênior — não um atendente e não um robô. As devolutivas são conduzidas por profissionais com trajetória de C-level, os mesmos que orientam o rigor analítico do motor determinístico. É uma sessão prática: você recebe as recomendações, entende o raciocínio por trás de cada uma e sai com o caminho claro para aplicar.',
+  },
+  {
+    question: 'Quem já utilizou o método?',
+    answer:
+      'O método nasceu de mais de 40 anos de decisões executivas reais — entre elas transformações mensuráveis em trading companies, indústria, varejo e facilities (como a estruturação que multiplicou por 12 a receita de uma trading em 8 anos). Na página inicial, a seção Cases Reais mostra como cada intervenção funcionou, com os resultados de cada uma.',
   },
 ]
 

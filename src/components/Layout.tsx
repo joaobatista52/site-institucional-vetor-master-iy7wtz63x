@@ -221,7 +221,7 @@ function Footer() {
       <div className="site-container footer-bottom">
         <p>© {year} VETOR MASTER. Todos os direitos reservados.</p>
         <div className="flex items-center gap-2">
-          <Link to="/#privacidade" className="hover:text-[#5B9DFF] transition-colors">
+          <Link to="/privacidade" className="hover:text-[#5B9DFF] transition-colors">
             Privacidade e LGPD
           </Link>
           <span aria-hidden="true">•</span>

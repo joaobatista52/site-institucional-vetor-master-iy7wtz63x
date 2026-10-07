@@ -4,6 +4,7 @@ import Layout from './components/Layout'
 import Index from './pages/Index'
 import Metodo from './pages/Metodo'
 import Sectors from './pages/Sectors'
+import Privacidade from './pages/Privacidade'
 import Questionnaire from './pages/Questionnaire'
 import Leads from './pages/Leads'
 import LeadQuestionnaireView from './pages/LeadQuestionnaireView'
@@ -43,6 +44,7 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/metodo" element={<Metodo />} />
           <Route path="/setores" element={<Sectors />} />
+          <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/questionario" element={<Navigate to="/setores" replace />} />
           <Route
             path="/questionario/:sectorId"
