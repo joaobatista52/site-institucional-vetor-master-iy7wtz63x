@@ -368,8 +368,21 @@ const faqItems = [
   },
   {
     question: 'Meu setor não está na lista. Vocês atendem?',
-    answer:
-      'O questionário estratégico está disponível hoje para 12 setores da economia, de Saúde a Academias de Ginástica. Se o seu segmento não está na grade, sua empresa ainda pode ser atendida: pelo plano Bespoke/CaaS, o diagnóstico é desenhado sob medida para o seu contexto. Fale conosco pelo e-mail contato.comercial@vetormaster.com.br e avaliaremos o seu caso.',
+    answer: (
+      <>
+        O questionário estratégico está disponível hoje para 12 setores da economia, de Saúde a
+        Academias de Ginástica. Se o seu segmento não está na grade, sua empresa ainda pode ser
+        atendida: pelo plano Bespoke/CaaS, o diagnóstico é desenhado sob medida para o seu contexto.
+        Fale conosco pelo e-mail{' '}
+        <a
+          href="mailto:contato.comercial@vetormaster.com.br"
+          className="text-[#0066CC] underline hover:text-[#0052a3]"
+        >
+          contato.comercial@vetormaster.com.br
+        </a>{' '}
+        e avaliaremos o seu caso.
+      </>
+    ),
   },
   {
     question: 'Qual é o investimento inicial?',
@@ -389,12 +402,12 @@ const faqItems = [
   {
     question: 'O que está incluído no acompanhamento dos planos?',
     answer:
-      'Depende do formato. No MaaS Híbrido, o algoritmo determinístico gera o diagnóstico e a supervisão executiva de C-level valida e orienta a aplicação — incluindo a devolutiva de 45 minutos. No Bespoke/CaaS, o acompanhamento é personalizado: profundidade maior na análise, desdobramento do plano de ação com a sua equipe e presença executiva contínua ao longo do ciclo contratado.',
+      'Depende do formato. No SaaS, inteligência sob demanda: monitoramento contínuo das variáveis do seu setor, com as recomendações do motor determinístico sempre disponíveis para aplicação imediata pela sua equipe. No MaaS Híbrido, o algoritmo determinístico gera o diagnóstico e a supervisão executiva de C-level valida e orienta a aplicação — incluindo a devolutiva de 45 minutos. No Bespoke/CaaS, o acompanhamento é personalizado: profundidade maior na análise, desdobramento do plano de ação com a sua equipe e presença executiva contínua ao longo do ciclo contratado.',
   },
   {
     question: 'Qual plano é o ideal para a minha empresa?',
     answer:
-      'Como regra prática: se você precisa de monitoramento contínuo e sua operação é madura o bastante para aplicar as recomendações internamente, o SaaS (a partir de R$ 1.190/mês) é o ponto de entrada. Se você quer o diagnóstico completo com supervisão executiva de C-level conduzindo a leitura, o MaaS Híbrido (R$ 3.290/mês). Se o momento pede profundidade máxima — turnaround, expansão, reestruturação —, o Bespoke/CaaS (R$ 15.750/mês). Na dúvida, comece pelo questionário estratégico do seu setor: ele nos dá o contexto para recomendar o formato certo, sem compromisso.',
+      'Como regra prática: quando o empresário precisa de monitoramento contínuo — acompanhar as variáveis do setor e reagir rápido, aplicando as recomendações com a própria equipe —, o SaaS (a partir de R$ 1.190/mês) é o ponto de entrada. Se você quer o diagnóstico completo com supervisão executiva de C-level conduzindo a leitura, o MaaS Híbrido (R$ 3.290/mês). Se o momento pede profundidade máxima — turnaround, expansão, reestruturação —, o Bespoke/CaaS (R$ 15.750/mês). Na dúvida, comece pelo questionário estratégico do seu setor: ele nos dá o contexto para recomendar o formato certo, sem compromisso.',
   },
   {
     question: 'Como o Vetor Master se compara a uma Big Four ou a uma IA genérica?',

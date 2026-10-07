@@ -1710,19 +1710,32 @@ export default function Questionnaire() {
 
               {step === totalSteps - 1 &&
                 (isAdminAuthenticated ? (
-                  <div className="flex flex-col sm:flex-row items-center gap-2.5">
-                    <div className="text-xs text-amber-800 bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 text-center sm:text-right font-medium">
-                      Modo revisão ativo — envio desativado para nunca registrar leads de teste.
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="flex flex-col sm:flex-row items-center gap-2.5">
+                      <div className="text-xs text-amber-800 bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 text-center sm:text-right font-medium">
+                        Modo revisão ativo — envio desativado para nunca registrar leads de teste.
+                      </div>
+                      <Button
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        className="bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400 opacity-70 font-semibold"
+                        title="Envio desativado no modo revisão"
+                      >
+                        Envio desativado (Modo Revisão)
+                      </Button>
                     </div>
-                    <Button
-                      type="button"
-                      disabled
-                      aria-disabled="true"
-                      className="bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400 opacity-70 font-semibold"
-                      title="Envio desativado no modo revisão"
-                    >
-                      Envio desativado (Modo Revisão)
-                    </Button>
+                    <p className="text-xs text-gray-500 text-right">
+                      Ao enviar, você concorda com nossa{' '}
+                      <Link
+                        to="/privacidade"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#0066CC] underline hover:text-[#0052a3]"
+                      >
+                        Política de Privacidade
+                      </Link>
+                    </p>
                   </div>
                 ) : (
                   <div className="flex flex-col items-end gap-2">

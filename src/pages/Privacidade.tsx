@@ -38,7 +38,7 @@ export default function Privacidade() {
               nº 13.709/2018 — LGPD).
             </p>
             <div className="metodo-hero-badges">
-              <span>Última atualização: Abril de 2025</span>
+              <span>Última atualização: Outubro de 2026</span>
               <span>Lei Geral de Proteção de Dados (Lei 13.709/2018)</span>
               <span>Canal do Encarregado Ativo</span>
               <span>Criptografia Ponta a Ponta</span>
@@ -82,11 +82,11 @@ export default function Privacidade() {
                     Canal Oficial do Encarregado (DPO)
                   </span>
                   <strong className="text-sm sm:text-base text-[#0066CC] font-heading">
-                    contato.comercial@vetormaster.com.br
+                    privacidade@vetormaster.com.br
                   </strong>
                 </div>
                 <Button variant="outline" size="sm" asChild>
-                  <a href="mailto:contato.comercial@vetormaster.com.br">
+                  <a href="mailto:privacidade@vetormaster.com.br">
                     <Mail className="w-4 h-4 mr-2" />
                     Enviar mensagem
                   </a>
@@ -303,10 +303,10 @@ export default function Privacidade() {
                 arquivos enviados, bastando encaminhar uma solicitação ao canal oficial do
                 encarregado (
                 <a
-                  href="mailto:contato.comercial@vetormaster.com.br"
+                  href="mailto:privacidade@vetormaster.com.br"
                   className="text-[#0066CC] underline hover:text-[#0052a3]"
                 >
-                  contato.comercial@vetormaster.com.br
+                  privacidade@vetormaster.com.br
                 </a>
                 ), ressalvadas as hipóteses legais de guarda obrigatória.
               </p>
@@ -425,10 +425,10 @@ export default function Privacidade() {
                 Todos esses direitos são exercíveis de forma gratuita e facilitada mediante contato
                 direto pelo canal do encarregado:{' '}
                 <a
-                  href="mailto:contato.comercial@vetormaster.com.br"
+                  href="mailto:privacidade@vetormaster.com.br"
                   className="font-bold text-[#0066CC] hover:underline"
                 >
-                  contato.comercial@vetormaster.com.br
+                  privacidade@vetormaster.com.br
                 </a>
                 .
               </p>
