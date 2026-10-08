@@ -81,9 +81,12 @@ export default function Privacidade() {
                   <span className="text-xs text-gray-500 uppercase tracking-wider block font-semibold">
                     Canal Oficial do Encarregado (DPO)
                   </span>
-                  <strong className="text-sm sm:text-base text-[#0066CC] font-heading">
+                  <a
+                    href="mailto:privacidade@vetormaster.com.br"
+                    className="text-sm sm:text-base text-[#0066CC] font-heading font-bold underline hover:text-[#0052a3] transition-colors"
+                  >
                     privacidade@vetormaster.com.br
-                  </strong>
+                  </a>
                 </div>
                 <Button variant="outline" size="sm" asChild>
                   <a href="mailto:privacidade@vetormaster.com.br">
