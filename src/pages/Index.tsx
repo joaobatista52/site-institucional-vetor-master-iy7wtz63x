@@ -395,6 +395,11 @@ const faqItems = [
       'O SaaS está em fase final de preparação e as vagas iniciais são limitadas. Ao se inscrever na Lista de Prioridade, você garante sua posição na ordem de convocação e, como membro fundador, condições especiais no lançamento. Não há compromisso: sua inscrição apenas reserva o lugar. Quando sua vaga abrir, avisaremos pelo e-mail cadastrado — e, se quiser antecipar o valor da inteligência executiva, o MaaS Híbrido já está disponível hoje.',
   },
   {
+    question: 'O que é a condição de Membro Fundador?',
+    answer:
+      'É o pacote de benefícios reservado a quem entra pela Lista de Prioridade durante a fase fundadora: trava de preço vitalícia (enquanto a assinatura estiver ativa e contínua), checkpoint mensal de acompanhamento por 12 meses, prioridade na fila de diagnóstico por 12 meses e acesso antecipado a novos módulos. O checkpoint mensal é sessão de acompanhamento de sucesso do cliente — não consultoria estratégica. Em caso de upgrade de plano, o checkpoint é substituído pelas sessões do plano contratado. Condições completas no contrato de adesão.',
+  },
+  {
     question: 'Preciso de fidelidade? Posso cancelar?',
     answer:
       'No SaaS e no MaaS Híbrido, não há fidelidade: os planos são mensais e você pode cancelar a qualquer momento, sem multa — a decisão de continuar deve nascer do valor entregue, não de cláusula de retenção. No Bespoke/CaaS, o período mínimo é de 3 meses: os planos de ação envolvem objetivos e problemas que demandam mais tempo para entrega (6 a 12 meses, em geral), e esse ciclo mínimo assegura a remuneração adequada do diagnóstico e do plano de ação elaborado.',
@@ -613,6 +618,14 @@ export default function Index() {
             </div>
 
             <h1>Diagnósticos estratégicos em 72h. Expertise de C-level. Preço de SaaS.</h1>
+
+            <div className="hero-founder-badge-line" aria-label="Selo Fase Fundadora">
+              <span className="hero-founder-pill">
+                <Sparkles aria-hidden="true" className="w-3.5 h-3.5" />
+                Fase fundadora em curso — condição de Membro Fundador disponível pela Lista de
+                Prioridade.
+              </span>
+            </div>
 
             <p className="hero-slogan">
               Expertise Executiva. Velocidade Tecnológica. Preço Acessível.
@@ -1241,6 +1254,137 @@ export default function Index() {
         </div>
       </section>
 
+      {/* BLOCO ADITIVO: CONDIÇÃO DE MEMBRO FUNDADOR (M4 / M6) */}
+      <section
+        className="section founder-condition-section"
+        id="membro-fundador"
+        aria-label="Condição de Membro Fundador"
+      >
+        <div className="site-container">
+          <div className="founder-condition-wrapper reveal">
+            <div className="founder-condition-header text-center max-w-3xl mx-auto">
+              <span className="eyebrow eyebrow-founder">FASE FUNDADORA</span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#111827] mt-2 mb-4 tracking-tight">
+                Condição de Membro Fundador
+              </h2>
+              <p className="text-base sm:text-lg text-[#4b5563] leading-relaxed">
+                Quem entra pela Lista de Prioridade garante a condição de Membro Fundador — o pacote
+                de acompanhamento reservado aos primeiros assinantes da Vetor Master.
+              </p>
+            </div>
+
+            <div className="founder-benefits-grid grid grid-cols-1 md:grid-cols-2 gap-5 mt-10">
+              <div className="founder-benefit-card">
+                <div className="benefit-icon-wrap">
+                  <Lock className="w-5 h-5 text-[#0066CC]" aria-hidden="true" />
+                </div>
+                <div className="benefit-content">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <strong className="text-base font-bold text-[#111827]">
+                      Trava de preço vitalícia
+                    </strong>
+                    <span className="benefit-validity-pill">VITALÍCIO</span>
+                  </div>
+                  <p className="text-sm text-[#4b5563] leading-relaxed m-0">
+                    Trava de preço vitalícia — o valor da sua assinatura não sobe enquanto ela
+                    permanecer ativa e contínua.
+                  </p>
+                </div>
+              </div>
+
+              <div className="founder-benefit-card">
+                <div className="benefit-icon-wrap">
+                  <UserCheck className="w-5 h-5 text-[#22B14C]" aria-hidden="true" />
+                </div>
+                <div className="benefit-content">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <strong className="text-base font-bold text-[#111827]">
+                      Checkpoint mensal de acompanhamento
+                    </strong>
+                    <span className="benefit-validity-pill">12 MESES</span>
+                  </div>
+                  <p className="text-sm text-[#4b5563] leading-relaxed m-0">
+                    Checkpoint mensal de acompanhamento — 12 meses — sessão mensal de 20 a 30
+                    minutos com o time de Customer Success para revisar o progresso do seu plano de
+                    ação e destravar o próximo passo.
+                  </p>
+                </div>
+              </div>
+
+              <div className="founder-benefit-card">
+                <div className="benefit-icon-wrap">
+                  <Zap className="w-5 h-5 text-[#0066CC]" aria-hidden="true" />
+                </div>
+                <div className="benefit-content">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <strong className="text-base font-bold text-[#111827]">
+                      Prioridade na fila de diagnóstico
+                    </strong>
+                    <span className="benefit-validity-pill">12 MESES</span>
+                  </div>
+                  <p className="text-sm text-[#4b5563] leading-relaxed m-0">
+                    Prioridade na fila de diagnóstico — 12 meses — seu diagnóstico entra na frente
+                    da fila enquanto durar a fase fundadora.
+                  </p>
+                </div>
+              </div>
+
+              <div className="founder-benefit-card">
+                <div className="benefit-icon-wrap">
+                  <Sparkles className="w-5 h-5 text-[#22B14C]" aria-hidden="true" />
+                </div>
+                <div className="benefit-content">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <strong className="text-base font-bold text-[#111827]">
+                      Acesso antecipado a novos módulos
+                    </strong>
+                    <span className="benefit-validity-pill">VITALÍCIO</span>
+                  </div>
+                  <p className="text-sm text-[#4b5563] leading-relaxed m-0">
+                    Acesso antecipado a novos módulos — vitalício — você conhece e testa cada novo
+                    módulo antes do lançamento para todos.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="founder-condition-cta-box mt-10 text-center flex flex-col items-center">
+              <Button
+                type="button"
+                size="lg"
+                className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold h-12 px-8 shadow-md text-base"
+                onClick={() => {
+                  const saasCard = document.getElementById('solucoes')
+                  if (saasCard) {
+                    saasCard.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }}
+              >
+                Garantir minha condição de Membro Fundador
+                <ArrowRight aria-hidden="true" className="w-4 h-4 ml-2" />
+              </Button>
+              <p className="text-xs text-[#555555] mt-2.5 max-w-xl mx-auto leading-relaxed">
+                Vagas limitadas à fase fundadora. Entrar na lista não gera compromisso — a condição
+                é confirmada na assinatura.
+              </p>
+            </div>
+
+            <div className="founder-legal-note mt-8 pt-6 border-t border-[#E5E7EB]">
+              <p className="text-[11px] sm:text-xs text-[#6B7280] leading-relaxed text-center sm:text-left m-0">
+                Condição de Membro Fundador exclusiva para adesões à Lista de Prioridade durante a
+                fase fundadora. Checkpoint mensal e prioridade na fila: válidos por 12 meses
+                contados da assinatura (prioridade: ou enquanto durar a fase fundadora, o que
+                ocorrer primeiro). Trava de preço e acesso antecipado: válidos enquanto a assinatura
+                estiver ativa e contínua. Em caso de upgrade de plano, o checkpoint mensal é
+                substituído pelas sessões consultivas do plano contratado. O checkpoint é sessão de
+                acompanhamento de sucesso do cliente e não constitui consultoria estratégica.
+                Condições completas no contrato de adesão.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 5. SOLUÇÕES (SaaS, MaaS Híbrido, Bespoke/CaaS) */}
       <section className="section solutions-section" id="solucoes">
         <div className="site-container">
@@ -1266,15 +1410,22 @@ export default function Index() {
                       <SolutionIcon aria-hidden="true" />
                     </div>
                     {isSaas ? (
-                      <Button
-                        type="button"
-                        onClick={() => setSaasWaitlistOpen(true)}
-                        className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold text-xs h-8 px-3.5 rounded-md shadow-sm transition-all inline-flex items-center gap-1.5"
-                        title="Cadastre-se para receber acesso antecipado e condição especial de fundador"
-                      >
-                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-                        Entrar na lista de prioridade
-                      </Button>
+                      <div className="flex flex-col items-end gap-1.5 text-right">
+                        <Button
+                          type="button"
+                          onClick={() => setSaasWaitlistOpen(true)}
+                          className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold text-xs h-8 px-3.5 rounded-md shadow-sm transition-all inline-flex items-center gap-1.5"
+                          title="Cadastre-se para receber acesso antecipado e condição especial de fundador"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+                          Entrar na lista de prioridade
+                        </Button>
+                        <span className="text-[11px] text-[#555555] leading-tight max-w-[260px]">
+                          Quem entra pela Lista garante a condição de Membro Fundador: trava de
+                          preço vitalícia, checkpoint mensal por 12 meses e acesso antecipado a
+                          novos módulos.
+                        </span>
+                      </div>
                     ) : (
                       <Badge className="badge-neutral">{solution.badge}</Badge>
                     )}
@@ -1296,13 +1447,20 @@ export default function Index() {
                   ) : null}
                   <div className="solution-action">
                     {isSaas ? (
-                      <Button
-                        type="button"
-                        className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold w-full h-11 shadow-sm"
-                        onClick={() => setSaasWaitlistOpen(true)}
-                      >
-                        Entrar na lista de prioridade <ArrowRight aria-hidden="true" />
-                      </Button>
+                      <div className="space-y-2">
+                        <Button
+                          type="button"
+                          className="conversion-button bg-[#22B14C] hover:bg-[#1ea144] text-white font-bold w-full h-11 shadow-sm"
+                          onClick={() => setSaasWaitlistOpen(true)}
+                        >
+                          Entrar na lista de prioridade <ArrowRight aria-hidden="true" />
+                        </Button>
+                        <p className="text-xs text-[#555555] text-center leading-relaxed m-0">
+                          Quem entra pela Lista garante a condição de Membro Fundador: trava de
+                          preço vitalícia, checkpoint mensal por 12 meses e acesso antecipado a
+                          novos módulos.
+                        </p>
+                      </div>
                     ) : (
                       <Button
                         type="button"

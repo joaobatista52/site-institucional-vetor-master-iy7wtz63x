@@ -5547,3 +5547,113 @@ footer[id],
     transform: none;
   }
 }
+
+/* =====================================================================
+   ESPECIFICAÇÃO DE AJUSTES — CONDIÇÃO DE MEMBRO FUNDADOR (M1, M3, M4, M6)
+   ===================================================================== */
+.hero-founder-badge-line {
+  margin: 12px 0 16px;
+  display: flex;
+}
+
+.hero-founder-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34, 177, 76, 0.12);
+  color: #6ee7b7;
+  border: 1px solid rgba(34, 177, 76, 0.35);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+.hero-founder-pill svg {
+  color: #22b14c;
+  flex-shrink: 0;
+}
+
+.founder-condition-section {
+  background: #ffffff;
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+
+.founder-condition-wrapper {
+  background: linear-gradient(180deg, #f8fbff 0%, #f0f7ff 100%);
+  border: 1px solid rgba(0, 102, 204, 0.18);
+  border-radius: 20px;
+  padding: 44px 36px 36px;
+  box-shadow: 0 12px 32px rgba(0, 102, 204, 0.06);
+}
+
+@media (max-width: 640px) {
+  .founder-condition-wrapper {
+    padding: 28px 20px 24px;
+    border-radius: 14px;
+  }
+}
+
+.eyebrow-founder {
+  background: rgba(0, 102, 204, 0.08);
+  color: #0066cc;
+  border: 1px solid rgba(0, 102, 204, 0.2);
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.founder-benefit-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease;
+}
+
+.founder-benefit-card:hover {
+  border-color: #0066cc;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.08);
+}
+
+.benefit-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f0f7ff;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 102, 204, 0.12);
+}
+
+.founder-benefit-card:nth-child(even) .benefit-icon-wrap {
+  background: #f0fdf4;
+  border-color: rgba(34, 177, 76, 0.18);
+}
+
+.benefit-validity-pill {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #eaf3fd;
+  color: #0066cc;
+  border: 1px solid rgba(0, 102, 204, 0.2);
+}
