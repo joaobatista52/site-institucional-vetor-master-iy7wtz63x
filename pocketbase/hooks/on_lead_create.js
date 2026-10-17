@@ -183,11 +183,35 @@ onRecordCreateRequest((e) => {
     }
   }
 
+  // Validação de formato de e-mail robusta via regex (algo@dominio.tld com TLD de 2+ letras)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/
+  const isEmailValid = Boolean(email && emailRegex.test(email))
+
+  // Registro de diagnóstico em console.log para auditoria futura nos logs do servidor
+  console.log(
+    '[on_lead_create] Validação recebida:',
+    JSON.stringify({
+      hasEmpresa: Boolean(empresa),
+      hasEmail: Boolean(email),
+      isEmailValid: isEmailValid,
+      hasRespondente: Boolean(respondente),
+      hasCargo: Boolean(cargo),
+      setor: setor || null,
+      setorId: setorId || null,
+      filledAnswersCount: filledAnswersCount,
+      isSaasPriority:
+        ((cadastro && (cadastro.origem || cadastro['origem'])) || '').trim() ===
+          'Lista de Prioridade SaaS' ||
+        (cadastro &&
+          (cadastro.origemTipo === 'saas_prioridade' ||
+            cadastro['origemTipo'] === 'saas_prioridade')),
+    }),
+  )
+
   // Validação:
   // Se for da 'Lista de Prioridade SaaS', aplicamos a validação específica do formulário da lista de prioridade:
   // nome, empresa, e-mail, whatsapp, setor e faturamento anual estimado.
-  // Caso contrário, mantemos a validação do questionário setorial de 72h.
-  const isEmailValid = email.indexOf('@') > 0 && email.indexOf('.') > email.indexOf('@')
+  // Caso contrário, mantemos a validação do questionário setorial de 72h com mensagens específicas.
   const origem = ((cadastro && (cadastro.origem || cadastro['origem'])) || '').trim()
   const isSaasPriority =
     origem === 'Lista de Prioridade SaaS' ||
@@ -209,11 +233,86 @@ onRecordCreateRequest((e) => {
     return e.next()
   }
 
-  const hasMinAnswers = filledAnswersCount >= 10
+  // Validações específicas por item no questionário setorial:
+  if (!empresa) {
+    throw new BadRequestError('Envio rejeitado: nome da empresa ausente.', {
+      field: 'empresa',
+      reason: 'empresa_ausente',
+    })
+  }
 
-  if (!empresa || !isEmailValid || !respondente || !cargo || !setor || !hasMinAnswers) {
+  if (!isEmailValid) {
+    throw new BadRequestError('Envio rejeitado: e-mail do respondente inválido ou ausente.', {
+      field: 'email',
+      reason: 'email_invalido',
+    })
+  }
+
+  if (!respondente) {
+    throw new BadRequestError('Envio rejeitado: nome do respondente ausente.', {
+      field: 'nomeCompleto',
+      reason: 'respondente_ausente',
+    })
+  }
+
+  if (!cargo) {
+    throw new BadRequestError('Envio rejeitado: cargo do respondente ausente.', {
+      field: 'cargo',
+      reason: 'cargo_ausente',
+    })
+  }
+
+  if (!setor) {
+    throw new BadRequestError('Envio rejeitado: setor não identificado.', {
+      field: 'setor',
+      reason: 'setor_ausente',
+    })
+  }
+
+  if (filledAnswersCount < 10) {
+    // Identificar perguntas com chave definida no padrão setorial ou lacunas preenchíveis
+    const sectorPrefixMap = {
+      saude: 'saude',
+      varejo: 'varejo',
+      servicos: 'servicos',
+      'comercio-internacional': 'trade',
+      facilities: 'fac',
+      industria: 'industria',
+      tecnologia: 'tech',
+      construcao: 'const',
+      logistica: 'log',
+      educacao: 'edu',
+      agronegocio: 'agro',
+      academias: 'acad',
+    }
+    const prefix = sectorPrefixMap[setorId] || setorId || ''
+
+    // Descobrir quais seções e chaves estão vazias
+    const missingKeys = []
+    if (respostas && typeof respostas === 'object') {
+      const allAnswerKeys = Object.keys(respostas)
+      for (let k = 0; k < allAnswerKeys.length; k++) {
+        const keyName = allAnswerKeys[k]
+        const val = respostas[keyName]
+        if (val === null || typeof val === 'undefined' || String(val).trim().length === 0) {
+          missingKeys.push(keyName)
+        }
+      }
+    }
+
     throw new BadRequestError(
-      'Todas as perguntas devem ser respondidas para a elaboração completa do Dossiê Estratégico.',
+      'Envio rejeitado: o questionário está incompleto (' +
+        filledAnswersCount +
+        ' de 10 respostas obrigatórias preenchidas).',
+      {
+        field: 'respostas',
+        reason: 'respostas_insuficientes',
+        filledCount: filledAnswersCount,
+        requiredCount: 10,
+        setorId: setorId,
+        sectorPrefix: prefix,
+        missingKeys: missingKeys,
+      },
     )
   }
 
@@ -1007,5 +1106,7 @@ onRecordAfterCreateSuccess((e) => {
   } catch (errGlobal) {
     // Garantir que nenhuma exceção imprevista quebre o lifecycle do lead
     console.error('Falha geral no hook onRecordAfterCreateSuccess de leads:', errGlobal)
+  } finally {
+    e.next()
   }
 }, 'leads')

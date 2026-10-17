@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 
 import pb from '@/lib/pocketbase/client'
-import { getErrorMessage } from '@/lib/pocketbase/errors'
+import { extractServerErrorData, getErrorMessage } from '@/lib/pocketbase/errors'
 import { useAuth } from '@/services/auth'
 import { findSector } from '@/data/sectors'
 import { engagementFormats } from '@/data/questionnaire'
@@ -210,6 +210,7 @@ export default function Questionnaire() {
   const [documentosOpcao, setDocumentosOpcao] = useState<string>('')
   const [highestReachedStep, setHighestReachedStep] = useState<number>(0)
   const [stepErrors, setStepErrors] = useState<string[]>([])
+  const [highlightedFields, setHighlightedFields] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [submittedId, setSubmittedId] = useState<string | null>(null)
@@ -377,6 +378,9 @@ export default function Questionnaire() {
 
   function setAnswer(id: string, value: string) {
     setAnswers((prev) => ({ ...prev, [id]: value }))
+    if (highlightedFields.includes(id)) {
+      setHighlightedFields((prev) => prev.filter((fieldId) => fieldId !== id))
+    }
   }
 
   function formatFileSize(bytes: number): string {
@@ -590,6 +594,7 @@ export default function Questionnaire() {
       if (errors.length > 0) return
     }
     setStepErrors([])
+    setHighlightedFields([])
     setStep((prev) => {
       const nextStep = Math.min(prev + 1, totalSteps - 1)
       setHighestReachedStep((curr) => Math.max(curr, nextStep))
@@ -599,12 +604,14 @@ export default function Questionnaire() {
 
   function handleBack() {
     setStepErrors([])
+    setHighlightedFields([])
     setStep((prev) => Math.max(prev - 1, 0))
   }
 
   function renderQuestionInput(question: Question) {
     const value = answers[question.id] ?? ''
     const options = question.type === 'yes-no' ? yesNoOptions(question) : (question.options ?? [])
+    const isHighlighted = highlightedFields.includes(question.id)
 
     if (question.type === 'textarea') {
       return (
@@ -614,6 +621,11 @@ export default function Questionnaire() {
           onChange={(event) => setAnswer(question.id, event.target.value)}
           placeholder={question.placeholder}
           rows={3}
+          className={
+            isHighlighted
+              ? 'border-red-500 focus-visible:ring-red-500 bg-red-50/20 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]'
+              : undefined
+          }
         />
       )
     }
@@ -632,7 +644,12 @@ export default function Questionnaire() {
       }
 
       return (
-        <div className="space-y-2 pt-1" id={question.id}>
+        <div
+          className={`space-y-2 pt-1 rounded-lg ${
+            isHighlighted ? 'p-2 bg-red-50/30 border border-red-400' : ''
+          }`}
+          id={question.id}
+        >
           {options.map((option) => {
             const isChecked = selectedValues.includes(option.value)
             return (
@@ -641,7 +658,9 @@ export default function Questionnaire() {
                 className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                   isChecked
                     ? 'bg-[#0066CC]/5 border-[#0066CC]/50 text-gray-900 font-medium'
-                    : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-700'
+                    : isHighlighted
+                      ? 'bg-white border-red-300 hover:bg-red-50/40 text-gray-700'
+                      : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-700'
                 }`}
               >
                 <Checkbox
@@ -661,7 +680,14 @@ export default function Questionnaire() {
     if (question.type === 'select' || question.type === 'yes-no') {
       return (
         <Select value={value} onValueChange={(next) => setAnswer(question.id, next)}>
-          <SelectTrigger id={question.id}>
+          <SelectTrigger
+            id={question.id}
+            className={
+              isHighlighted
+                ? 'border-red-500 focus-visible:ring-red-500 bg-red-50/20 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]'
+                : undefined
+            }
+          >
             <SelectValue placeholder="Selecione uma opção" />
           </SelectTrigger>
           <SelectContent>
@@ -707,6 +733,11 @@ export default function Questionnaire() {
         }}
         placeholder={
           isDateField ? 'DD/MM/AAAA' : isPhoneField ? '(00) 90000-0000' : question.placeholder
+        }
+        className={
+          isHighlighted
+            ? 'border-red-500 focus-visible:ring-red-500 bg-red-50/20 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]'
+            : undefined
         }
       />
     )
@@ -980,40 +1011,116 @@ export default function Questionnaire() {
 
   function renderCadastroStep() {
     const isLast = step === totalSteps - 1
+    const isNomeHighlighted =
+      highlightedFields.includes('nomeCompleto') || highlightedFields.includes('respondente')
+    const isEmpresaHighlighted =
+      highlightedFields.includes('empresa') || highlightedFields.includes('razaoSocial')
+    const isEmailHighlighted = highlightedFields.includes('email')
+    const isCargoHighlighted = highlightedFields.includes('cargo')
+
     return (
-      <div className="wizard-cadastro">
+      <div className="wizard-cadastro space-y-4">
+        {isCargoHighlighted && (
+          <div className="p-3 bg-red-50 border border-red-300 rounded-lg text-xs text-red-700 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+            <span>
+              O cargo do respondente não foi identificado nas etapas anteriores. Por favor, revise a
+              etapa de identificação do questionário.
+            </span>
+          </div>
+        )}
         <div className="wizard-cadastro-grid">
           <div className="wizard-field">
-            <Label htmlFor="cadastro-nome">Nome completo *</Label>
+            <Label
+              htmlFor="cadastro-nome"
+              className={isNomeHighlighted ? 'text-red-600 font-bold' : undefined}
+            >
+              Nome completo *
+            </Label>
             <Input
               id="cadastro-nome"
               value={cadastro.nomeCompleto}
-              onChange={(event) =>
+              onChange={(event) => {
                 setCadastro((prev) => ({ ...prev, nomeCompleto: event.target.value }))
-              }
+                if (isNomeHighlighted) {
+                  setHighlightedFields((prev) =>
+                    prev.filter((f) => f !== 'nomeCompleto' && f !== 'respondente'),
+                  )
+                }
+              }}
               placeholder="Seu nome"
+              className={
+                isNomeHighlighted
+                  ? 'border-red-500 focus-visible:ring-red-500 bg-red-50/20 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]'
+                  : undefined
+              }
             />
+            {isNomeHighlighted && (
+              <span className="text-[11px] text-red-600 font-medium">
+                Por favor, informe o nome completo do respondente.
+              </span>
+            )}
           </div>
           <div className="wizard-field">
-            <Label htmlFor="cadastro-empresa">Empresa *</Label>
+            <Label
+              htmlFor="cadastro-empresa"
+              className={isEmpresaHighlighted ? 'text-red-600 font-bold' : undefined}
+            >
+              Empresa *
+            </Label>
             <Input
               id="cadastro-empresa"
               value={cadastro.empresa}
-              onChange={(event) =>
+              onChange={(event) => {
                 setCadastro((prev) => ({ ...prev, empresa: event.target.value }))
-              }
+                if (isEmpresaHighlighted) {
+                  setHighlightedFields((prev) =>
+                    prev.filter((f) => f !== 'empresa' && f !== 'razaoSocial'),
+                  )
+                }
+              }}
               placeholder="Razão social ou nome fantasia"
+              className={
+                isEmpresaHighlighted
+                  ? 'border-red-500 focus-visible:ring-red-500 bg-red-50/20 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]'
+                  : undefined
+              }
             />
+            {isEmpresaHighlighted && (
+              <span className="text-[11px] text-red-600 font-medium">
+                Por favor, informe a razão social ou nome da empresa.
+              </span>
+            )}
           </div>
           <div className="wizard-field">
-            <Label htmlFor="cadastro-email">E-mail corporativo *</Label>
+            <Label
+              htmlFor="cadastro-email"
+              className={isEmailHighlighted ? 'text-red-600 font-bold' : undefined}
+            >
+              E-mail corporativo *
+            </Label>
             <Input
               id="cadastro-email"
               type="email"
               value={cadastro.email}
-              onChange={(event) => setCadastro((prev) => ({ ...prev, email: event.target.value }))}
+              onChange={(event) => {
+                setCadastro((prev) => ({ ...prev, email: event.target.value }))
+                if (isEmailHighlighted) {
+                  setHighlightedFields((prev) => prev.filter((f) => f !== 'email'))
+                }
+              }}
               placeholder="voce@empresa.com.br"
+              className={
+                isEmailHighlighted
+                  ? 'border-red-500 focus-visible:ring-red-500 bg-red-50/20 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]'
+                  : undefined
+              }
             />
+            {isEmailHighlighted && (
+              <span className="text-[11px] text-red-600 font-medium">
+                Informe um e-mail corporativo válido (exemplo: voce@empresa.com.br).
+              </span>
+            )}
           </div>
           <div className="wizard-field">
             <Label htmlFor="cadastro-whatsapp">Celular / WhatsApp (11 dígitos) *</Label>
@@ -1316,6 +1423,7 @@ export default function Questionnaire() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error: any) {
       console.error('Erro na submissão do questionário:', error)
+      const serverData = extractServerErrorData(error)
       const errorMsg =
         error?.message && !error?.status
           ? error.message
@@ -1323,11 +1431,73 @@ export default function Questionnaire() {
             'Ocorreu um erro ao enviar o questionário. Verifique os campos e tente novamente.'
 
       setSubmitError(errorMsg)
-      toast({
-        variant: 'destructive',
-        title: 'Não foi possível enviar o formulário',
-        description: errorMsg,
-      })
+
+      // Interpretar o payload do erro server-side para direcionar o usuário
+      if (serverData && serverData.reason === 'respostas_insuficientes') {
+        // Encontrar a primeira seção com perguntas não respondidas
+        let targetStepIndex = -1
+        const missingQuestionIds: string[] = []
+
+        for (let sIdx = 0; sIdx < sections.length; sIdx++) {
+          const sec = sections[sIdx]
+          let sectionHasMissing = false
+          for (const q of sec.questions) {
+            if (!isQuestionVisible(q)) continue
+            const rawVal = answers[q.id]
+            const isFilled =
+              rawVal !== null &&
+              typeof rawVal !== 'undefined' &&
+              (Array.isArray(rawVal)
+                ? rawVal.length > 0
+                : parseCheckboxValue(rawVal).length > 0 || String(rawVal).trim().length > 0)
+            if (!isFilled) {
+              sectionHasMissing = true
+              missingQuestionIds.push(q.id)
+            }
+          }
+          if (sectionHasMissing && targetStepIndex === -1) {
+            targetStepIndex = sIdx
+          }
+        }
+
+        // Se não achou em nenhuma seção (raro), direciona para a primeira etapa do questionário
+        const finalStep = targetStepIndex !== -1 ? targetStepIndex : 0
+        setStep(finalStep)
+        setHighlightedFields(missingQuestionIds)
+        setStepErrors([errorMsg])
+        scrollToTop()
+      } else if (
+        serverData &&
+        (serverData.field === 'email' ||
+          serverData.field === 'empresa' ||
+          serverData.field === 'nomeCompleto' ||
+          serverData.field === 'cargo' ||
+          serverData.reason === 'email_invalido' ||
+          serverData.reason === 'empresa_ausente' ||
+          serverData.reason === 'respondente_ausente' ||
+          serverData.reason === 'cargo_ausente')
+      ) {
+        // Se for erro de identificação / cadastro, navegar até o passo de Cadastro (último passo)
+        setStep(cadastroStep)
+        const fieldsToHighlight: string[] = []
+        if (serverData.field) {
+          fieldsToHighlight.push(serverData.field)
+        }
+        if (serverData.reason === 'email_invalido') fieldsToHighlight.push('email')
+        if (serverData.reason === 'empresa_ausente') fieldsToHighlight.push('empresa')
+        if (serverData.reason === 'respondente_ausente') fieldsToHighlight.push('nomeCompleto')
+        if (serverData.reason === 'cargo_ausente') fieldsToHighlight.push('cargo')
+        setHighlightedFields(fieldsToHighlight)
+        setStepErrors([errorMsg])
+        scrollToTop()
+      } else {
+        // Erro genérico ou não mapeado
+        toast({
+          variant: 'destructive',
+          title: 'Não foi possível enviar o formulário',
+          description: errorMsg,
+        })
+      }
     } finally {
       setSubmitting(false)
     }
